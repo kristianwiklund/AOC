@@ -1,4 +1,4 @@
-pyzz =    ["....#.....#.#...##..........#.......#......",
+pzazz =    ["....#.....#.#...##..........#.......#......",
 ".....#...####..##...#......#.........#.....",
 ".#.#...#..........#.....#.##.......#...#..#",
 ".#..#...........#..#..#.#.......####.....#.",
@@ -42,24 +42,82 @@ pyzz =    ["....#.....#.#...##..........#.......#......",
 "...##..............#......#................",
 "........................#....##..#........#"]
 
+pzazz2 = [
+".#..##.###...#######",
+"##.############..##.",
+".#.######.########.#",
+".###.#######.####.#.",
+"#####.##.#.##.###.##",
+"..#####..#.#########",
+"####################",
+"#.####....###.#.#.##",
+"##.#################",
+"#####.##.###..####..",
+"..######..##.#######",
+"####.##.####...##..#",
+".#####..#.######.###",
+"##...#.##########...",
+"#.##########.#######",
+".####.#.###.###.#.##",
+"....##.##.###..#####",
+".#.#.###########.###",
+"#.#.#.#####.####.###",
+"###.##.####.##.#..##"
+]
+
+
+
+
+
+
+
 import math
 from pprint import pprint
-asteroids = dict()
+asteroids = list()
 
 nodx=30
 nody=34
+#nodx=11
+#nody=13
 
-for x in range(0, len(pyzz[0])):
-    print("")
-    for y in range(0, len(pyzz)):
-        print(pyzz[x][y],end="")
-        if pyzz[x][y] == "#":
+for x in range(0, len(pzazz[0])):
+ #   print("")
+    for y in range(0, len(pzazz)):
+#       print(pzazz[x][y],end="")
+        if pzazz[y][x] == "#" and not (y==nody and x==nodx):
             xm = x-nodx
             ym = y-nody
-            asteroids[str(x)+","+str(y)] = (math.sqrt(xm*xm+ym*ym),math.atan2(x,y))
+            at = -(math.atan2(xm,ym)*180/math.pi-180)
+            if at <0:
+                at = at+360
+            asteroids.append((x,y,math.sqrt(xm*xm+ym*ym),at))
+            
 
-import operator
-print (asteroids)
+def sa(v):
+    return v[3]
 
-for i in sorted(asteroids.items, key=operator.itemgetter(0)):
-    print(i)
+def sr(v):
+    return v[2]
+
+asteroids.sort(key=sr)
+asteroids.sort(key=sa)
+#print(asteroids)
+
+acc=list()
+oa=-10000
+cnt=1
+
+while asteroids:
+    for i in asteroids:
+        print (i)
+        if i[3]<=oa:
+            acc.append(i)
+            continue
+
+        print (str(cnt)+": ("+str(i[0])+","+str(i[1])+")\n")
+        cnt=cnt+1
+        oa=i[3]
+        
+    oa=-10000000
+    asteroids=acc
+    acc=list()
