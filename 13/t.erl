@@ -4,14 +4,15 @@
 -include_lib("../../cecho/_build/default/lib/cecho/include/cecho.hrl").
 
 setup() ->
-    %code:add_patha("../../cecho/_build/default/lib/cecho/ebin"),
-    %application:start(cecho),
+    code:add_patha("../../cecho/_build/default/lib/cecho/ebin"),
+    application:start(cecho),
     % Set attributes
-    %cecho:cbreak(),
-    %cecho:noecho(),
-%    cecho:curs_set(?ceCURS_INVISIBLE),
-    %cecho:refresh(),
-    %cecho:erase(),
+    cecho:cbreak(),
+    cecho:noecho(),
+    cecho:curs_set(?ceCURS_INVISIBLE),
+    cecho:refresh(),
+    cecho:erase(),
+    cecho:refresh(),
     C = spawn(ic, run, [datan13(), self()]),
     C.
 
@@ -43,6 +44,7 @@ listener(Game, Ball, Paddle, Score) ->
     if 
 	{-1,0} == {X,Y} ->
 	    NewScore = O,
+	    cecho:mvaddstr(1, 0, io_lib:format("Score: ~p         ",[NewScore])),	    
 	    {NewBall, NewPaddle} = {Ball, Paddle};
 	
 	true ->
@@ -74,6 +76,7 @@ listener(Game, Ball, Paddle, Score) ->
 
 t() ->
     Game = setup(),
+    
     listener(Game,{0,0},{0,0}, 0).
 
 
@@ -81,8 +84,8 @@ t() ->
 draw(X,Y,What, Ball,  Paddle) ->
 
     Tile = lists:nth(What+1, " #-=*"),
-    %cecho:mvaddch(Y,X,Tile),
-    %cecho:refresh(),
+    cecho:mvaddch(Y+3,X,Tile),
+    cecho:refresh(),
     
     case What of
 	3 ->
