@@ -65,6 +65,7 @@ decode(3, LongI, [P1|ProgMem], DataMem, Pid, Rel) ->
 	Pid == undefined ->
 	    {ok, Result} = io:read("Enter value> ");
 	true ->
+	    %io:fwrite("Waiting for input to IC\n"),
 	    receive
 		Result ->
 		    Result
