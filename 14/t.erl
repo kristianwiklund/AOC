@@ -177,6 +177,7 @@ trycook(What, Store, Reactions) ->
     Min.
     
 t()->
-    ok.
+    
+    cooker(3568888, "FUEL", #{"TOTALORE"=>0}, readdata("puzzle.txt")).
 
 % 3568888
