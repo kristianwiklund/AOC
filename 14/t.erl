@@ -2,6 +2,7 @@
 -export([t/0,tdata1/0]).
 -export([rchem/3]).
 -export([cooker/4]).
+-export([readlines/1,readdata/1]).
 
 % minimum amount  of what I will get, and a tuple with how much and its components
 tdata1() ->
@@ -12,7 +13,24 @@ tdata1() ->
       "C" => {1,[{7,"A"},{1,"B"}]},
       "B" => {1,[{1,"ORE"}]},
       "A" => {10, [{10,"ORE"}]}}.
-      
+    
+readlines(FileName) ->    {ok, Data} = file:read_file(FileName),
+			      binary:split(Data, [<<"\n">>], [global]).
+  
+
+% line looks like this: 10 ORE => 10 A or 7 A, 1 B => 1 C
+% split on =>, then split the first on , and recurse again
+readdata([L|LS], Acc) ->
+    
+readdata(_, Acc) ->
+    Acc.
+    
+
+readdata(FN) ->
+    D = readlines(FN),
+    readdata(D, #{}).
+
+
 rchem(Amount, What, Reactions) ->
     % I want at least Amount of What, what do I need to get that, and what do I get?
     {A, W} = maps:get(What,Reactions),
