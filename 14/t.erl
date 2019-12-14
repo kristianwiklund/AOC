@@ -2,7 +2,7 @@
 -export([t/0,tdata1/0]).
 -export([rchem/3]).
 -export([cooker/4]).
--export([readlines/1,readdata/1]).
+-export([readlines/1,readdata/1,readdata/2]).
 
 % minimum amount  of what I will get, and a tuple with how much and its components
 tdata1() ->
@@ -15,19 +15,55 @@ tdata1() ->
       "A" => {10, [{10,"ORE"}]}}.
     
 readlines(FileName) ->    {ok, Data} = file:read_file(FileName),
-			      binary:split(Data, [<<"\n">>], [global]).
+			      string:split(Data, ["\n"], [global]).
   
+file2lines(File) ->
+   {ok, Bin} = file:read_file(File),
+   string2lines(binary_to_list(Bin), []).
+
+
+string2lines("\n" ++ Str, Acc) -> [lists:reverse([$\n|Acc]) | string2lines(Str,[])];
+string2lines([H|T], Acc)       -> string2lines(T, [H|Acc]);
+string2lines([], Acc)          -> [lists:reverse(Acc)].
 
 % line looks like this: 10 ORE => 10 A or 7 A, 1 B => 1 C
 % split on =>, then split the first on , and recurse again
-readdata([L|LS], Acc) ->
+parsecomps([C|CS], Acc) ->
+    io:fwrite("Component ~s\n", [C]),
+    ToL = string:split(string:trim(C)," "),
+    ToN = lists:nth(1,ToL),
+    ToWhat = lists:nth(2,ToL),
+    AccP = [{list_to_integer(ToN),ToWhat}|Acc],
+    parsecomps(CS, AccP);
+parsecomps(_,Acc) ->
+    Acc.
+
+readdata([""|LS], Acc) ->
+    readdata(LS, Acc);
     
+readdata([L|LS], Acc) ->
+    %io:fwrite("Parsing ~s\n", [L]),
+    FromTo=string:split(string:trim(L)," => "),
+    From = lists:nth(1,FromTo),
+    To = lists:nth(2,FromTo),
+
+    ToL = string:split(string:trim(To)," "),
+    ToN = lists:nth(1,ToL),
+    ToWhat = lists:nth(2,ToL),
+
+    io:fwrite("From: ~s\n", [From]),
+    Comps = string:split(From,",",all),
+    io:fwrite("Comps: ~p\n", [Comps]),
+    CompList = parsecomps(Comps,[]),
+    
+    AccP = maps:put(ToWhat,{list_to_integer(ToN),CompList},Acc),
+    readdata(LS,AccP);
 readdata(_, Acc) ->
     Acc.
     
 
 readdata(FN) ->
-    D = readlines(FN),
+    D = file2lines(FN),
     readdata(D, #{}).
 
 
