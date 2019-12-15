@@ -1,8 +1,8 @@
 -module(t).
--export([move/5,t/0,tt/0,fsu/1,fsm/1]).
+-export([move/5,t/0,tt/0,ttt/0,fsu/2,fsm/1]).
 -export([emptyspaces/3]).
 -export([nremptyspaces/3]).
--export([findstart/1]).
+-export([findstart/2]).
 -include_lib("../../cecho/_build/default/lib/cecho/include/cecho.hrl").
 
 
@@ -284,14 +284,14 @@ findpath(Maze,X,Y, Steps) ->
 fsm(X) ->    
     lists:foldl(fun(S, Acc) ->
 			Acc+S end, 0, X).
-fsu(X) ->
+fsu(X, What) ->
     {Res,_}= lists:mapfoldl(fun(S,Acc)->
-				    {if S==64->Acc;true->0 end,Acc+1} end, 1,X),
+				    {if S==What->Acc;true->0 end,Acc+1} end, 1,X),
     Res.
 
-findstart(M) ->
+findstart(M,What) ->
     F = lists:map(fun(A) ->
-			  fsu(A) end, M),
+			  fsu(A, What) end, M),
     FF = lists:map(fun(T) ->
 			   fsm(T) end,F),
     X = lists:max(FF),
@@ -303,7 +303,7 @@ findstart(M) ->
 
 tt()->
     Maze = file2lines("map5"),
-    {MX,MY} = findstart(Maze),
+    {MX,MY} = findstart(Maze, 64),
     code:add_patha("../../cecho/_build/default/lib/cecho/ebin"),
     application:start(cecho),
     % Set attributes
@@ -317,7 +317,52 @@ tt()->
     cecho:refresh(),
     findpath(Maze, MX, MY, 0).
     
-	
+% 822 - too high
+% 424 - too high
+oxy(Maze, X, Y, Timer) ->
+    
+    Data = lists:nth(X, lists:nth(Y, Maze)),
+    %timer:sleep(250),
+    if 
+	Data == 48 ->
+	    Maze;
+	Data == 35->
+	    Maze;
+	(Data == 42) or (Data == 32)  ->
+	    cecho:mvaddstr(Y,X,"O"),
+	    cecho:mvaddstr(0, 0, io_lib:format("~p Time: ~B",[Data,Timer])),	    
+	    cecho:refresh(),
+	    NewMaze = setmatrix(Maze, X,Y, 48),
+	    N1 = oxy(NewMaze, X-1,Y,Timer+1),
+	    N2 = oxy(N1, X+1,Y, Timer+1),
+	    N3 = oxy(N2, X,Y-1, Timer+1),
+	    N4 = oxy(N3, X,Y+1, Timer+1),
+	    N4;
+	true ->
+	    Maze
+    end.
+	    
+	    
+
+ttt() ->	
+    Maze = file2lines("map5"),
+    {PX,PY} = findstart(Maze, 64),
+    NewMaze = setmatrix(Maze, PX,PY,32), % eliminate start blob
+    {MX,MY} = findstart(NewMaze, 42),
+    code:add_patha("../../cecho/_build/default/lib/cecho/ebin"),
+    application:start(cecho),
+    % Set attributes
+    cecho:cbreak(),
+    cecho:noecho(),
+    cecho:curs_set(?ceCURS_INVISIBLE),
+    cecho:refresh(),
+    cecho:erase(),
+    cecho:refresh(),
+    lists:foldl(fun(S,Y)->cecho:mvaddstr(Y, 1, S),Y+1 end, 1,NewMaze),
+    cecho:refresh(),    
+    oxy(NewMaze,MX,MY,0).
+	     
+    
 
 
 		     
