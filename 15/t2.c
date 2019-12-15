@@ -100,16 +100,16 @@ int main(int argc, char **argv) {
   
   while(spaces) {
     tick();
-    for(int i=0;i<MAXY;i++)
-      printf("%s\n",data[i]);
+    //for(int i=0;i<MAXY;i++)
+    //  printf("%s\n",data[i]);
     clock++;
-    sleep(1);
+    //    sleep(1);
   }
   printf("Full, after %d ticks\n", clock);
   // 136 - too low
   // hence. 135 must also be too low
   
-  for(int i=0;i<MAXY;i++)
-    printf("%s\n",data[i]);
+  //for(int i=0;i<MAXY;i++)
+  //  printf("%s\n",data[i]);
   
 }

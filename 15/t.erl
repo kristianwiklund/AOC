@@ -1,5 +1,5 @@
 -module(t).
--export([move/5,t/0,tt/0,ttt/0,fsu/2,fsm/1]).
+-export([move/5,t/0,tt/0,fsu/2,fsm/1]).
 -export([emptyspaces/3]).
 -export([nremptyspaces/3]).
 -export([findstart/2]).
@@ -240,7 +240,7 @@ setmatrix(Acc, X, Y,D) ->
 
 findpath(Maze,X,Y, Steps) ->
     Data = lists:nth(X, lists:nth(Y, Maze)),
-    % timer:sleep(50),
+    timer:sleep(50),
     case Data of
 	42 ->
 	    cecho:mvaddstr(0, 0, io_lib:format("Found at ~B steps",[Steps])),	    
@@ -317,50 +317,6 @@ tt()->
     cecho:refresh(),
     findpath(Maze, MX, MY, 0).
     
-% 822 - too high
-% 424 - too high
-oxy(Maze, X, Y, Timer) ->
-    
-    Data = lists:nth(X, lists:nth(Y, Maze)),
-    %timer:sleep(250),
-    if 
-	Data == 48 ->
-	    Maze;
-	Data == 35->
-	    Maze;
-	(Data == 42) or (Data == 32)  ->
-	    cecho:mvaddstr(Y,X,"O"),
-	    cecho:mvaddstr(0, 0, io_lib:format("~p Time: ~B",[Data,Timer])),	    
-	    cecho:refresh(),
-	    NewMaze = setmatrix(Maze, X,Y, 48),
-	    N1 = oxy(NewMaze, X-1,Y,Timer+1),
-	    N2 = oxy(N1, X+1,Y, Timer+1),
-	    N3 = oxy(N2, X,Y-1, Timer+1),
-	    N4 = oxy(N3, X,Y+1, Timer+1),
-	    N4;
-	true ->
-	    Maze
-    end.
-	    
-	    
-
-ttt() ->	
-    Maze = file2lines("map5"),
-    {PX,PY} = findstart(Maze, 64),
-    NewMaze = setmatrix(Maze, PX,PY,32), % eliminate start blob
-    {MX,MY} = findstart(NewMaze, 42),
-    code:add_patha("../../cecho/_build/default/lib/cecho/ebin"),
-    application:start(cecho),
-    % Set attributes
-    cecho:cbreak(),
-    cecho:noecho(),
-    cecho:curs_set(?ceCURS_INVISIBLE),
-    cecho:refresh(),
-    cecho:erase(),
-    cecho:refresh(),
-    lists:foldl(fun(S,Y)->cecho:mvaddstr(Y, 1, S),Y+1 end, 1,NewMaze),
-    cecho:refresh(),    
-    oxy(NewMaze,MX,MY,0).
 	     
     
 
