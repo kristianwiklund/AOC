@@ -1,7 +1,8 @@
 -module(t).
--export([move/5,t/0]).
+-export([move/5,t/0,tt/0,fsu/1,fsm/1]).
 -export([emptyspaces/3]).
 -export([nremptyspaces/3]).
+-export([findstart/1]).
 -include_lib("../../cecho/_build/default/lib/cecho/include/cecho.hrl").
 
 
@@ -11,23 +12,27 @@ getcol(Hull, X, Y) ->
     Iskey = maps:is_key(Key, Hull),
     if 
 	Iskey ->
+%	    cecho:mvaddstr(3,0,"Found real key"),
 	    maps:get(Key, Hull);
 	true->
+	    
 	    0
     end.
 				
 setcol(Hull, X, Y, Col) ->
     Key = [X,Y],
+    NHull=maps:put(Key, Col, Hull),
+    
     %io:fwrite("Map: ~p\n", [Hull]),
-    T = getcol(Hull, X,Y),
-    if T =/= Col ->
-	    Tile = lists:nth(Col,"#*"),
+    if Col>-1 ->
+	    Tile = lists:nth(Col+1," #*...."),
 	    cecho:mvaddch(Y,X,Tile),
 	    cecho:refresh(),
-	    maps:put(Key, Col, Hull);
-       true -> Hull
+						%    io:fwrite("***~p***\n", [NHull]),
+	    NHull;
+       true ->
+	    NHull
     end.
-
 
 
 setup() ->
@@ -69,7 +74,8 @@ move(Dir, CurrentX, CurrentY, World, Droid) ->
 	    NewWorld = setcol(World, CurrentX+DX,CurrentY+DY, 1),
 	    {Result, {CurrentX, CurrentY},NewWorld};
 	1 ->  % moved one step
-	    {Result, {CurrentX+DX, CurrentY+DY}, World};
+	    NewWorld = setcol(World, CurrentX+DX,CurrentY+DY, 0),
+	    {Result, {CurrentX+DX, CurrentY+DY}, NewWorld};
 	2 -> % found the oxygen system
 	    NewWorld = setcol(World, CurrentX+DX,CurrentY+DY, 2),
 	    {Result, {CurrentX+DX, CurrentY+DY},NewWorld}
@@ -79,24 +85,19 @@ fixnewdir(DirNR, Prob, X, Y, World) ->
     R = rand:uniform(100),
     Empty = emptyspaces(X,Y,World),
     NrEmpty = nremptyspaces(X,Y,World),
-    if 
-	NrEmpty == 1 -> % dead end, reverse
-	    lists:nth(DirNR,[3,4,1,2]);
-	true ->
-	    if NrEmpty > 2 -> % more than two exits, eliminate the one we come from
-		    TL = ic:setnth(lists:nth(DirNR,[3,4,1,2]), Empty, false),
-		    {TL2,_} = lists:mapfoldl(fun(X, Acc) -> {if X->Acc; true->0 end,Acc+1} end,1,TL),
-		    TL3 = lists:filter(fun(X)->
-					       X=/=0 end, TL2),
-		    lists:nth(rand:uniform(length(TL3)),TL3);
-	       true ->
-		    if R < Prob+1 ->
-			    rand:uniform(4);
-		       true ->
-			    DirNR
-		    end
-	    end
+    Reverse = lists:nth(DirNR,[3,4,1,2]),
+    TL = ic:setnth(Reverse, Empty, false),
+    {TL2,_} = lists:mapfoldl(fun(X, Acc) -> {if X->Acc; true->0 end,Acc+1} end,1,TL),
+    TL3 = lists:filter(fun(X)->
+			       X=/=0 end, TL2),
+    cecho:mvaddstr(2, 0, io_lib:format("Exits    : ~p       ",[TL3])),	    
+    LTL3 = length(TL3),
+    if LTL3 == 0 ->
+	    Reverse;
+       true->
+	    lists:nth(rand:uniform(length(TL3)),TL3)
     end.
+    
 	    
 
 dirvector(Dir) ->
@@ -104,7 +105,11 @@ dirvector(Dir) ->
 	78 -> {0,-1}; %N
 	69 -> {1,0}; %E
 	87 -> {-1,0}; %W
-	83 -> {0,1} %S
+	83 -> {0,1}; %S
+	1 -> {0,-1}; %N
+	2 -> {1,0}; %E
+	4 -> {-1,0}; %W
+	3 -> {0,1} %S
     end.
 
 emptyspaces(X,Y, World) ->
@@ -112,8 +117,13 @@ emptyspaces(X,Y, World) ->
 			  dirvector(P) end, "NESW"),
     D = lists:map(fun({DX, DY}) ->
 			  {DX+X,DY+Y} end, L),
+
     T = lists:map(fun({DX, DY}) ->
-			  getcol(World, X,Y)==0 end, D).
+			  getcol(World, DX,DY) end, D),
+    lists:map(fun(TT)->
+		      TT==0 end, T).
+    
+    
 
 nremptyspaces(X,Y,World) ->
     T = emptyspaces(X,Y,World),
@@ -205,11 +215,108 @@ runaround(DirNR, X,Y, World, Droid) ->
     end.
 
 % 182 - too low
+% 226 - incorrect
+% 234 
 % 281 - too high
 
 t() ->
     Droid = setup(),
     runaround(1, 30,30,#{},Droid).
+
+file2lines(File) ->
+   {ok, Bin} = file:read_file(File),
+   string2lines(binary_to_list(Bin), []).
+
+
+string2lines("\n" ++ Str, Acc) -> [lists:reverse([$\n|Acc]) | string2lines(Str,[])];
+string2lines([H|T], Acc)       -> string2lines(T, [H|Acc]);
+string2lines([], Acc)          -> [lists:reverse(Acc)].
+
+setmatrix(Acc, X, Y,D) ->
+    Row = lists:nth(Y, Acc),
+    RowT = ic:setnth(X, Row, D),
+    AccT = ic:setnth(Y, Acc, RowT),
+    AccT.
+
+findpath(Maze,X,Y, Steps) ->
+    Data = lists:nth(X, lists:nth(Y, Maze)),
+    % timer:sleep(50),
+    case Data of
+	42 ->
+	    cecho:mvaddstr(0, 0, io_lib:format("Found at ~B steps",[Steps])),	    
+	    Maze;
+	35 -> % # 
+	    Maze;	
+	43 -> % +
+	    Maze;
+	_ ->
+	    NewMaze = setmatrix(Maze, X,Y,43),
+	    cecho:mvaddstr(Y,X,"+"),
+	    cecho:refresh(),
+	    TA=findpath(NewMaze, X,Y-1, Steps+1),
+	    if  TA ->
+		    NewMaze;
+	       true ->
+		    TB = findpath(NewMaze, X-1,Y, Steps+1),
+		    if TB  ->
+			    NewMaze;
+		       true ->
+			    TC = findpath(NewMaze, X,Y+1, Steps+1),
+		    	    if TC ->
+				    NewMaze;
+			       true ->
+				    TD = findpath(NewMaze, X+1,Y, Steps+1),
+				    if TD ->
+					    NewMaze;
+				       true ->
+					    cecho:mvaddstr(Y,X,"."),
+					    cecho:refresh(),
+					    Maze
+				    end
+			    end
+		    end
+	    end
+
+    end.    
+    
+		       
+
+fsm(X) ->    
+    lists:foldl(fun(S, Acc) ->
+			Acc+S end, 0, X).
+fsu(X) ->
+    {Res,_}= lists:mapfoldl(fun(S,Acc)->
+				    {if S==64->Acc;true->0 end,Acc+1} end, 1,X),
+    Res.
+
+findstart(M) ->
+    F = lists:map(fun(A) ->
+			  fsu(A) end, M),
+    FF = lists:map(fun(T) ->
+			   fsm(T) end,F),
+    X = lists:max(FF),
+    {TT,_} = lists:mapfoldl(fun(S,Acc)->{if S=/=0->Acc;true->0 end,Acc+1} end, 1,FF),
+    Y = lists:max(TT),
+    {X,Y}.
+			
+
+
+tt()->
+    Maze = file2lines("map5"),
+    {MX,MY} = findstart(Maze),
+    code:add_patha("../../cecho/_build/default/lib/cecho/ebin"),
+    application:start(cecho),
+    % Set attributes
+    cecho:cbreak(),
+    cecho:noecho(),
+    cecho:curs_set(?ceCURS_INVISIBLE),
+    cecho:refresh(),
+    cecho:erase(),
+    cecho:refresh(),
+    lists:foldl(fun(S,Y)->cecho:mvaddstr(Y, 1, S),Y+1 end, 1,Maze),
+    cecho:refresh(),
+    findpath(Maze, MX, MY, 0).
+    
 	
 
 
