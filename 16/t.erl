@@ -1,5 +1,5 @@
 -module(t).
--export([t/0,t2/0, t3/0, t4/0, t5/0, pattern/2,applypattern/1,pmatrix/1,applypattern/2,datan/0,datan2/0]).
+-export([lcm/2,t/0,t2/0, t3/0, t4/0, t5/0, pattern/2,applypattern/1,pmatrix/1,applypattern/2,datan/0,datan2/0]).
 -export([app2/4,varannan/3, interleave/4, app2/1, combinator/2, cunningcalc/3]).
 
 datan() ->
@@ -123,9 +123,9 @@ t() ->
 
 	    
 t3() ->
-   
-    io:fwrite("orig: ~p\n",[t:applypattern([1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8])]),
-    {L,_} = app2([1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8],1,[],8),
+    Signal = lists:flatten(lists:duplicate(100,[1,2,3,4,5,6,7,8])),
+    io:fwrite("orig: ~p\n",[t:applypattern(Signal)]),
+    {L,_} = app2(Signal,1,[],8),
     io:fwrite("new: ~p\n,",[lists:map(fun(X)->abs(X rem 10) end,L)]).
 
 t2() ->
@@ -171,21 +171,21 @@ t5() ->
 
 cunningcalc(Signal, Row, Siglen) ->
     N = Row*4,
-    LCM = lcm(N,length(Signal)),
+    LCM = lcm(N,Siglen),
+    PatRep = trunc(LCM/N),
+    SigRep = trunc(LCM/Siglen),    
+
     if 
-%	(N=<Siglen) ->
-	false ->
+	length(Signal) > LCM ->
 	    Pat = pattern(Row, Row*4),
 	    {Sig,_} = lists:split(Siglen, Signal), 
 
-	    PatRep = trunc(LCM/N),
-	    SigRep = trunc(LCM/Siglen),    
 
 	    %io:fwrite("Cunning: Signal length: ~B, Siglen: ~B, N: ~B, Patrep: ~B, Sigrep: ~B, LCM: ~B\n", [length(Signal), Siglen, N, PatRep, SigRep, LCM]),
 	    
 	    combinator(lists:flatten(lists:duplicate(PatRep, Pat)), lists:flatten(lists:duplicate(SigRep, Sig)));
        true -> 
-	    %io:fwrite("Classic: Signal length: ~B, Siglen: ~B, N: ~B\n", [length(Signal), Siglen, N]),
+%	    io:fwrite("Classic: Signal length: ~B, Siglen: ~B, N: ~B, LCM: ~B\n", [length(Signal), Siglen, N, LCM]),
 	    Pat = pattern(Row, length(Signal)),
 	    Mx = lists:zipwith(fun(X,Y) ->
 				       X*Y end, Pat, Signal),
