@@ -1,8 +1,6 @@
 -module(t).
--export([t/0,pattern/2,applypattern/1,pmatrix/1]).
+-export([t/1,pattern/2,applypattern/1,pmatrix/1,applypattern/2]).
 
-t() ->
-    ok.
 
 pattern(1) ->
     [0,1,0,-1].
@@ -19,9 +17,9 @@ pmatrix(Txt)->
     TP1.
 
 applypattern(Signal) ->
-    Txt = integer_to_list(Signal),
-    NList = lists:map(fun(X)->X-48 end,Txt),
-    NMatrix = lists:duplicate(length(Txt),NList),
+    Txt = Signal,
+    %NList = lists:map(fun(X)->X-48 end,Txt),
+    NMatrix = lists:duplicate(length(Txt),Txt),
     PMatrix = pmatrix(Txt),
     TM1 = lists:zipwith(fun(X,Y)->
 				lists:zipwith(fun(W,V)->
@@ -35,6 +33,17 @@ applypattern(Signal) ->
     TM3.
 
 
+applypattern(Signal, 0)->
+    Signal;
+
+
+applypattern(Signal, N) ->
+    applypattern(applypattern(Signal), N-1).
+
+t(Signal) ->
+    NList = lists:map(fun(X)->X-48 end,Signal),
+    TM3=applypattern(NList, 100),
+    lists:map(fun(X)->X+48 end, TM3).
 
 
 
