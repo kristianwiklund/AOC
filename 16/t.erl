@@ -18,7 +18,6 @@ pmatrix(Txt)->
 
 applypattern(Signal) ->
     Txt = Signal,
-    %NList = lists:map(fun(X)->X-48 end,Txt),
     NMatrix = lists:duplicate(length(Txt),Txt),
     PMatrix = pmatrix(Txt),
     TM1 = lists:zipwith(fun(X,Y)->
