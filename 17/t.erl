@@ -1,5 +1,5 @@
 -module(t).
--export([t/0,datan/0]).
+-export([t/0,datan/0, datan2/0,sendprog/2]).
 -include_lib("../../cecho/_build/default/lib/cecho/include/cecho.hrl").
 
 setup() ->
@@ -43,8 +43,14 @@ getimage(Cam,X,Y, World) ->
     
     if 
 	Result =/= -1 ->
-		
-	    cecho:mvaddch(Y+1,X+1, Result),
+	    
+	    if 
+		Result == 46 ->
+		    cecho:mvaddch(Y+1,X+1, 32);
+		true ->		    
+		    cecho:mvaddch(Y+1,X+1, Result)
+	    end,
+					    
 	    cecho:refresh(),
 	    getimage(Cam,NX,NY,NWorld);
 	true ->
@@ -68,6 +74,19 @@ dirvector(Dir) ->
         3 -> {0,1} %S
     end. 
 
+turnleft(Dir) ->
+    if Dir == 1 ->
+	    4;
+       true ->
+	    Dir - 1
+    end.
+
+turnright(Dir) ->
+    if Dir == 4 ->
+	    1;
+       true ->
+	    Dir + 1
+    end.
 
 emptyspaces(X,Y, World) ->
     L = lists:map(fun(P)->
@@ -103,11 +122,78 @@ isex(World, Where) ->
 
 findisex(World) ->
     Intersections = maps:filter(fun(Key, Value)->
-					isex(World, Key) end, World).
+					isex(World, Key) end, World),
+    Intersections.
 
 % 9250 too high
 % 8538 too high
+%7720 
     
+
+sendprog(Bot, Prog) ->
+    
+    lists:foreach(fun(X)->
+			  Bot ! X end, Prog).
+    
+printerer() ->
+    receive
+	Result ->
+	    Result,
+	    io:fwrite("~s",[[Result]]),
+	    printerer()
+    after
+	10000 ->
+	    ok
+    end.
+
+findplayer(World) ->
+    Player = maps:filter(fun(Key, Value)->
+				 Value == 94 end, World),
+    [[X,Y]]=maps:keys(Player),
+    {X,Y}.
+
+
+
+
+findpath(Maze,X,Y, Steps, Mode, Dir, LastTurn,S) ->
+
+    Tile = ic:getcol(Maze, X,Y),
+    {DX, DY} = dirvector(Dir),
+    timer:sleep(50),
+    if Tile =/= 0 ->
+						% move us to this location, continue searching ahead
+						%	    cecho:mvaddstr(Y+1,X+1,"#"),
+	    cecho:mvaddstr(Y+1,X+1, "@"),
+	    cecho:mvaddstr(1, 0, io_lib:format("(~B,~B) ~B       ",[X,Y,Steps])),
+	    cecho:refresh(),
+	    {FP0, NM0} = findpath(Maze, DX+X, DY+Y, Steps+1, Mode, Dir, LastTurn, S),
+	    
+	    if not FP0 ->
+
+		    io:format(S, "~S~B\n", [LastTurn,Steps]),
+
+		    {FP, NM} = findpath(Maze, DX+X, DY+Y, 1, Mode, turnright(Dir),"R",S),
+		    if not FP ->
+			    {FP2, NM2} = findpath(Maze, DX+X, DY+Y, 1, Mode, turnleft(Dir),"L",S),
+			    if not FP2 ->
+				    cecho:mvaddstr(2, 0, "Out of scaffolding"),
+				    throw(banana),
+				    {false, NM2};
+			       true ->
+				    {FP2, NM2}
+			    end;
+		       true ->
+			    {FP, NM}
+		    end;
+	       true ->
+		    {FP0, NM0}
+	    end;
+
+       true ->
+	    {false, Maze}
+    end.
+
+
 t() ->
     Cam = setup(),
     
@@ -115,10 +201,18 @@ t() ->
     I = findisex(World),
     F = maps:fold(fun(Key, Value, AccIn) ->  [X,Y] = Key,X*Y+AccIn end, 0, I),
     cecho:mvaddstr(0, 0, io_lib:format("ISEX: ~B       ",[F])),
-    cecho:refresh().
+    cecho:refresh(),
+    {X,Y}=findplayer(World),
+    {ok, S} = file:open("fruit_count.txt", [append]),
+    findpath (World, X-1, Y, 1, walktru, 4,"L",S). % start one step left of the playah
+
+
+
     
 
 
+datan2() ->
+    ic:setnth(1,datan(),2).
 
 
 
