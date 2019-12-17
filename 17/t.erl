@@ -169,12 +169,12 @@ findpath(Maze,X,Y, Steps, Mode, Dir, LastTurn,S) ->
 	    {FP0, NM0} = findpath(Maze, DX+X, DY+Y, Steps+1, Mode, Dir, LastTurn, S),
 	    
 	    if not FP0 ->
-
-		    io:format(S, "~S~B\n", [LastTurn,Steps]),
-
-		    {FP, NM} = findpath(Maze, DX+X, DY+Y, 1, Mode, turnright(Dir),"R",S),
+		    % out in the voidinator
+		    io:format(S, "~s~B\n", [LastTurn,Steps]),
+		    
+		    {FP, NM} = findpath(Maze, X, Y, 1, Mode, turnright(Dir),"R",S),
 		    if not FP ->
-			    {FP2, NM2} = findpath(Maze, DX+X, DY+Y, 1, Mode, turnleft(Dir),"L",S),
+			    {FP2, NM2} = findpath(Maze, X, Y, 1, Mode, turnleft(Dir),"L",S),
 			    if not FP2 ->
 				    cecho:mvaddstr(2, 0, "Out of scaffolding"),
 				    throw(banana),
