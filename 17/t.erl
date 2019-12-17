@@ -5,14 +5,14 @@
 setup() ->
     
     code:add_patha("../../cecho/_build/default/lib/cecho/ebin"),
-    %application:start(cecho),
+    application:start(cecho),
         % Set attributes
-    %cecho:cbreak(),
-    %cecho:noecho(),
-    %cecho:curs_set(?ceCURS_INVISIBLE),
-    %cecho:refresh(),
-    %cecho:erase(),
-    %cecho:refresh(),
+    cecho:cbreak(),
+    cecho:noecho(),
+    cecho:curs_set(?ceCURS_INVISIBLE),
+    cecho:refresh(),
+    cecho:erase(),
+    cecho:refresh(),
     C = spawn(ic, run, [datan(), self()]),
         C.
 
@@ -44,7 +44,8 @@ getimage(Cam,X,Y, World) ->
     if 
 	Result =/= -1 ->
 		
-	    io:fwrite("~s",[[Result]]),
+	    cecho:mvaddch(Y+1,X+1, Result),
+	    cecho:refresh(),
 	    getimage(Cam,NX,NY,NWorld);
 	true ->
 	    NWorld
@@ -89,21 +90,33 @@ nremptyspaces(X,Y,World) ->
 
 isex(World, Where) ->
     [X,Y]=Where,
-    nremptyspaces(X,Y,World)<2.
+    Char = ic:getcol(World, X,Y),
+    Test = (nremptyspaces(X,Y,World)<2) and (Char==35),
+    if
+	Test ->
+	    cecho:mvaddstr(Y+1,X+1,"O"),
+	    cecho:refresh();
+	true ->
+	    ok
+    end,
+    Test.
 
 findisex(World) ->
     Intersections = maps:filter(fun(Key, Value)->
 					isex(World, Key) end, World).
 
-# 9250 too high
-# 8538 too high
+% 9250 too high
+% 8538 too high
     
 t() ->
     Cam = setup(),
     
     World = getimage(Cam,0,0,#{}),
     I = findisex(World),
-    I.
+    F = maps:fold(fun(Key, Value, AccIn) ->  [X,Y] = Key,X*Y+AccIn end, 0, I),
+    cecho:mvaddstr(0, 0, io_lib:format("ISEX: ~B       ",[F])),
+    cecho:refresh().
+    
 
 
 
