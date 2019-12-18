@@ -2,7 +2,7 @@
 -export([fsu/2,fsm/1]).
 -export([emptyspaces/3]).
 -export([nremptyspaces/3]).
--export([findpath/4]).
+-export([findpath/5]).
 -export([findstart/2,file2lines/1]).
 -include_lib("../../cecho/_build/default/lib/cecho/include/cecho.hrl").
 
@@ -100,11 +100,11 @@ setmatrix(Acc, X, Y,D) ->
     AccT = setnth(Y, Acc, RowT),
     AccT.
 
-findpath(Maze,X,Y, Steps) ->
+findpath(Maze,X,Y, Steps, Where) ->
     Data = lists:nth(X, lists:nth(Y, Maze)),
 %    timer:sleep(50),
     case Data of
-	65 -> % a, for testing
+	Where -> % a, for testing
 	    cecho:mvaddstr(0, 0, io_lib:format("Found at ~B steps",[Steps])),	    
 	    Maze;
 	35 -> % # 
@@ -115,19 +115,19 @@ findpath(Maze,X,Y, Steps) ->
 	    NewMaze = setmatrix(Maze, X,Y,43),
 	    cecho:mvaddstr(Y,X,"+"),
 	    cecho:refresh(),
-	    TA=findpath(NewMaze, X,Y-1, Steps+1),
+	    TA=findpath(NewMaze, X,Y-1, Steps+1, Where),
 	    if  TA ->
 		    NewMaze;
 	       true ->
-		    TB = findpath(NewMaze, X-1,Y, Steps+1),
+		    TB = findpath(NewMaze, X-1,Y, Steps+1, Where),
 		    if TB  ->
 			    NewMaze;
 		       true ->
-			    TC = findpath(NewMaze, X,Y+1, Steps+1),
+			    TC = findpath(NewMaze, X,Y+1, Steps+1, Where),
 		    	    if TC ->
 				    NewMaze;
 			       true ->
-				    TD = findpath(NewMaze, X+1,Y, Steps+1),
+				    TD = findpath(NewMaze, X+1,Y, Steps+1, Where),
 				    if TD ->
 					    NewMaze;
 				       true ->

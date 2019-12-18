@@ -16,4 +16,4 @@ tt()->
     cecho:refresh(),
     lists:foldl(fun(S,Y)->cecho:mvaddstr(Y, 1, S),Y+1 end, 1,Maze),
     cecho:refresh(),
-    maze:findpath(Maze, MX, MY, 0).
+    maze:findpath(Maze, MX, MY, 0, 65).
