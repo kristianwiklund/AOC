@@ -22,8 +22,7 @@ getcol(Hull, X, Y) ->
 	Iskey ->
 %	    cecho:mvaddstr(3,0,"Found real key"),
 	    maps:get(Key, Hull);
-	true->
-	    
+	true->	    
 	    0
     end.
 				
@@ -93,7 +92,7 @@ decode(3, LongI, [P1|ProgMem], DataMem, Pid, Rel) ->
 	Pid == undefined ->
 	    {ok, Result} = io:read("Enter value> ");
 	true ->
-	    %io:fwrite("Waiting for input to IC\n"),
+%	    io:fwrite("Waiting for input to IC\n"),
 	    receive
 		Result ->
 		    Result
@@ -108,6 +107,7 @@ decode(4, LongI, [P1|ProgMem], DataMem, Pid, Rel) ->
 	Pid == undefined ->
 	    io:fwrite("Output: ~B\n", [A1]);
 	true ->
+%	    io:fwrite("Output: ~B\n", [A1]),
 	    Pid ! A1
     end,
     r(ProgMem, DataMem, Pid, Rel);

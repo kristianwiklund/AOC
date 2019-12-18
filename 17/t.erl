@@ -1,5 +1,5 @@
 -module(t).
--export([t/0,datan/0, datan2/0,sendprog/2]).
+-export([t/0,datan/0, datan2/0,sendprog/2,t2/0]).
 -include_lib("../../cecho/_build/default/lib/cecho/include/cecho.hrl").
 
 setup() ->
@@ -135,12 +135,24 @@ sendprog(Bot, Prog) ->
     lists:foreach(fun(X)->
 			  Bot ! X end, Prog).
     
-printerer() ->
+sendprogA(Bot) ->
+    sendprog(Bot,"L,10,R,10,L,10,L,10\n").
+
+sendprogB(Bot) ->
+    sendprog(Bot,"R,10,R,12,L,12\n").
+
+sendprogC(Bot) ->
+    sendprog(Bot, "R,12,L,12,R,6\n").
+
+sendprogMain(Bot) ->
+    sendprog(Bot, "A,B,A,B,C,C,B,A,B,C\n").
+
+printerer(Y,X) ->
     receive
 	Result ->
 	    Result,
-	    io:fwrite("~s",[[Result]]),
-	    printerer()
+	    cecho:mvaddstr(Y, X, io_lib:format(">>~s<<~B>>",[[Result],Result])),
+	    printerer(Y,X+1)
     after
 	10000 ->
 	    ok
@@ -157,10 +169,11 @@ findplayer(World) ->
 
 findpath(Maze,X,Y, Steps, Mode, Dir, LastTurn,S) ->
 
+
     Tile = ic:getcol(Maze, X,Y),
-    {DX, DY} = dirvector(Dir),
-    timer:sleep(50),
+    timer:sleep(10),
     if Tile =/= 0 ->
+	    {DX, DY} = dirvector(Dir),
 						% move us to this location, continue searching ahead
 						%	    cecho:mvaddstr(Y+1,X+1,"#"),
 	    cecho:mvaddstr(Y+1,X+1, "@"),
@@ -168,27 +181,30 @@ findpath(Maze,X,Y, Steps, Mode, Dir, LastTurn,S) ->
 	    cecho:refresh(),
 	    {FP0, NM0} = findpath(Maze, DX+X, DY+Y, Steps+1, Mode, Dir, LastTurn, S),
 	    
+
 	    if not FP0 ->
-		    % out in the voidinator
 		    io:format(S, "~s~B\n", [LastTurn,Steps]),
+
+		    % try turning right, then left, then stop
+
+		    {DXR,DYR} = dirvector(turnright(Dir)),
+		    {DXL,DYL} = dirvector(turnleft(Dir)),
+		    TileR = ic:getcol(Maze, X+DXR, Y+DYR),
+		    TileL = ic:getcol(Maze, X+DXL, Y+DYL),
 		    
-		    {FP, NM} = findpath(Maze, X, Y, 1, Mode, turnright(Dir),"R",S),
-		    if not FP ->
-			    {FP2, NM2} = findpath(Maze, X, Y, 1, Mode, turnleft(Dir),"L",S),
-			    if not FP2 ->
-				    cecho:mvaddstr(2, 0, "Out of scaffolding"),
-				    throw(banana),
-				    {false, NM2};
-			       true ->
-				    {FP2, NM2}
-			    end;
+		    if TileR =/= 0 ->
+			    {FP, NM} = findpath(Maze, X, Y, 0, Mode, turnright(Dir),"R",S);
+		       TileL =/= 0 ->
+			    {FP, NM} = findpath(Maze, X, Y, 0, Mode, turnleft(Dir),"L",S);
 		       true ->
-			    {FP, NM}
-		    end;
+			    {FP,NM} = {false, Maze},
+			    cecho:mvaddstr(2, 0, "Out of scaffolding"),
+			    throw(banana)
+		    end,
+		    {FP, NM};			
 	       true ->
 		    {FP0, NM0}
 	    end;
-
        true ->
 	    {false, Maze}
     end.
@@ -203,9 +219,32 @@ t() ->
     cecho:mvaddstr(0, 0, io_lib:format("ISEX: ~B       ",[F])),
     cecho:refresh(),
     {X,Y}=findplayer(World),
-    {ok, S} = file:open("fruit_count.txt", [append]),
+    {ok, S} = file:open("fruit_count.txt", [write]),
     findpath (World, X-1, Y, 1, walktru, 4,"L",S). % start one step left of the playah
 
+t2() ->
+    code:add_patha("../../cecho/_build/default/lib/cecho/ebin"),
+    application:start(cecho),
+        % Set attributes
+    cecho:cbreak(),
+    cecho:noecho(),
+    cecho:curs_set(?ceCURS_INVISIBLE),
+    cecho:refresh(),
+    cecho:erase(),
+    cecho:refresh(),
+    Bot = spawn(ic, run, [datan2(), self()]),
+    
+    World = getimage(Bot,0,0,#{}),
+    sendprogMain(Bot),
+    printerer(2,0),
+    sendprogA(Bot),
+    printerer(3,0),
+    sendprogB(Bot),
+    printerer(4,0),
+    sendprogC(Bot),
+    printerer(5,0),
+    sendprog(Bot, "n\n"),
+    printerer(6,0).
 
 
     
