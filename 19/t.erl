@@ -16,7 +16,7 @@ setup() ->
 
 
 
-probespot(X, Y) ->
+probespot(World, X, Y) ->
     cecho:mvaddstr(0,0, io_lib:format("(~B,~B)",[X,Y])),
     Bot = spawn(ic, run, [datan:datan(), self()]),
     
@@ -27,18 +27,26 @@ probespot(X, Y) ->
 	    if 
 		Probe == 1 ->
 		    cecho:mvaddstr(Y+1,X+1,"#"),
+		    ic:setcol(World, X,Y,1),
 		    true;
 	
 		true ->
 		    cecho:mvaddstr(Y+1,X+1,"."),
 		    false		    
-	    end,
+	    end
     end,
     cecho:refresh().
 
 t()->
     setup(),
-    
-    lists:foreach(fun(Y)->
-			 lists:foreach(fun(X)->
-					       probespot(X,Y) end, lists:seq(0,50)) end, lists:seq(0,50)).
+    World = #{},
+    D=lists:map(fun(Y)->
+			 lists:map(fun(X)->
+					   probespot(World,X,Y) end, 
+lists:seq(0,50)) end, lists:seq(0,50)),
+    application:stop(cecho),
+    D.
+
+% idea: use the above to identify the projection lines from the emitter
+% use this to fit a square box within the lines. done
+
