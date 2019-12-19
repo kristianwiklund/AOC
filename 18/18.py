@@ -42,6 +42,7 @@ def setup():
 
 
 def printmaze(maze):
+    return
     for (x,y) in maze.keys():
         stdscr.addstr(y+2,x+1,str(maze[x,y]))
     pass
@@ -99,7 +100,7 @@ def bfs(maze, locs, depth, start):
 
         stdscr.addstr(1,0, "Probing ("+str(x)+","+str(y)+") - depth "+str(depth)+" - "+str(len(newDict)) + " locs")
 
-        stdscr.addstr(y+2,x+1,"X")
+        #stdscr.addstr(y+2,x+1,"X")
         stdscr.addstr(2,20,str(n(x,y))+" "+str(e(x,y))+" "+str(s(x,y))+" "+str(w(x,y)))
         
         if uno(maze,locs,n(x,y)):
@@ -254,7 +255,7 @@ def opt(GG, whereami, distance,visited,havekeys, depth,best):
     if (whereami+alln) in cache.keys():
         cnt=cnt+1
         #        
-        if (cnt % 100) == 0:
+        if (cnt % 10000) == 0:
 #            print (str(cnt)+" "+str(depth))
             print ("cache hit: "+str(cnt)+" "+whereami+alln+" "+str(cache[whereami+alln])+"\n")
         #    print ("Standing at "+whereami+" rem: "+alln + "dist "+str(distance)+"\n")
