@@ -5,6 +5,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from pprint import pprint
 
+# 6483 too high
+# 867 too low
 def readmaze(fn):
 
     maze = dict()
@@ -239,7 +241,7 @@ def opt(GG, whereami, distance,visited,havekeys, depth,best):
     #    return(distance,whereami)
     
     if not neighbors:
-        print (str(cnt)+": all visited "+str(distance))
+#        print (str(cnt)+": all visited \n"+str(best))
         return(0,whereami)
 
     if not whereami:
@@ -248,16 +250,16 @@ def opt(GG, whereami, distance,visited,havekeys, depth,best):
     bestdist=66666666666
     bestpath=[]
 
-    b=list(GG.nodes())
+    b=GG.nodes()
     alln="".join(b)
 
     
-    if (whereami+alln) in cache.keys():
-        cnt=cnt+1
+    if ((whereami+alln) in cache.keys()):
+        #cnt=cnt+1
         #        
-        if (cnt % 10000) == 0:
+       # if (cnt % 10000) == 0:
 #            print (str(cnt)+" "+str(depth))
-            print ("cache hit: "+str(cnt)+" "+whereami+alln+" "+str(cache[whereami+alln])+"\n")
+#            print ("cache hit: "+str(cnt)+" "+whereami+alln+" "+str(cache[whereami+alln])+"\n")
         #    print ("Standing at "+whereami+" rem: "+alln + "dist "+str(distance)+"\n")
         return cache[whereami+alln]
 
@@ -296,27 +298,29 @@ def opt(GG, whereami, distance,visited,havekeys, depth,best):
 
         if i.islower(): # key
             temphavekeys=havekeys+i
-            #if GGG.has_node(i.upper()):
-            #    PGG = copy.deepcopy(GGG)
-            #    PGG = popaway(PGG, i.upper())
+            if GGG.has_node(i.upper()):
+                PGG = copy.deepcopy(GGG)
+                PGG = popaway(PGG, i.upper())
                 #print ("Unlocked door by removing "+i.upper()) # should possibly be replaced by a node removal...
-            #else:
-            #    temphavekeys=havekeys
-             #   PGG = GGG
+            else:
+                temphavekeys=havekeys
+                PGG = GGG
         else:
             temphavekeys=havekeys
-            #PGG = GGG
+            PGG = GGG
         
         # remove the node we are at, and only keep the nodes that we are not at
 
             
-        (newdist, newpath) = opt(GGG, i, distance+neighbors[i]["weight"], visited+whereami,temphavekeys,depth+1,min(best,bestdist))
+        (newdist, newpath) = opt(PGG, i, distance+neighbors[i]["weight"], visited+whereami,temphavekeys,depth+1,min(best,bestdist))
         if (newdist+neighbors[i]["weight"]) < bestdist:
             bestpath = whereami+newpath
             bestdist = newdist+neighbors[i]["weight"]
 
-        if distance==0:
-            print (str(bestpath)+" = "+str(bestdist))
+    if distance==0:
+        print (str(bestpath)+" = "+str(bestdist))
+        totweight=nx.subgraph(GG,bestpath).size(weight="weight")
+            
     cache[whereami+alln] = (bestdist, bestpath)
     return (bestdist, bestpath)
             
