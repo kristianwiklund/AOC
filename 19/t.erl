@@ -26,16 +26,13 @@ probespot(X, Y) ->
 	Probe ->
 	    if 
 		Probe == 1 ->
-		    cecho:mvaddstr(Y+1,X+1,"#");
+		    cecho:mvaddstr(Y+1,X+1,"#"),
+		    true;
 	
 		true ->
-		    cecho:mvaddstr(Y+1,X+1,".")
-		    
-		end
-
-    after
-	1000 ->
-	    cecho:mvaddstr(Y+1,X+1,"X")
+		    cecho:mvaddstr(Y+1,X+1,"."),
+		    false		    
+	    end,
     end,
     cecho:refresh().
 
