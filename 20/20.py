@@ -5,12 +5,6 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from pprint import pprint
 
-#redesign. We have four graphs. Extract those.
-# then call the subgraph thing thingy when we go for a new step
-# breadth first -> graphs -> breadth first
-
-
-
 # 6483 too high
 # 867 too low
 def readmaze(fn):
@@ -50,7 +44,9 @@ def setup():
 
 
 def printmaze(maze):
-    return
+    if not stdscr:
+        return
+    
     for (x,y) in maze.keys():
         stdscr.addstr(y+2,x+1,str(maze[x,y]))
     pass
@@ -85,7 +81,7 @@ def uno(maze, locs, key):
 def checknadd(maze,pos, depth, start):
     global G
     if pos in maze.keys():
-        if (maze[pos].isalpha() or maze[pos] == "@") and (maze[pos] != start):
+        if (len(maze[pos])>1 or maze[pos] == "@") and (maze[pos] != start):
            G.add_edge(start, maze[pos], weight=depth) 
 
 # breadth first helper for the maze router
@@ -106,55 +102,58 @@ def bfs(maze, locs, depth, start):
 
     for (x,y) in newDict.keys():
 
-        stdscr.addstr(1,0, "Probing ("+str(x)+","+str(y)+") - depth "+str(depth)+" - "+str(len(newDict)) + " locs")
+        if stdscr:
+            stdscr.addstr(1,0, "Probing ("+str(x)+","+str(y)+") - depth "+str(depth)+" - "+str(len(newDict)) + " locs")
 
-        #stdscr.addstr(y+2,x+1,"X")
-        stdscr.addstr(2,20,str(n(x,y))+" "+str(e(x,y))+" "+str(s(x,y))+" "+str(w(x,y)))
+            #stdscr.addstr(y+2,x+1,"X")
+            stdscr.addstr(2,20,str(n(x,y))+" "+str(e(x,y))+" "+str(s(x,y))+" "+str(w(x,y)))
         
         if uno(maze,locs,n(x,y)):
             locs[n(x,y)]=depth+1
         else:
-            stdscr.addstr(2,0, "NF ")
             checknadd(maze,n(x,y),depth+1,start)
             
         if uno(maze,locs,e(x,y)):
             locs[e(x,y)]=depth+1
         else:
-            stdscr.addstr(2,4, "EF ")
             checknadd(maze,e(x,y),depth+1,start)
                 
         if uno(maze,locs,w(x,y)):
             locs[w(x,y)]=depth+1
         else:
-            stdscr.addstr(2,8, "WF ")
             checknadd(maze,w(x,y),depth+1,start)
             
         if uno(maze,locs,s(x,y)):
             locs[s(x,y)]=depth+1
         else:
-            stdscr.addstr(2,12, "SF ")
             checknadd(maze,s(x,y),depth+1,start)
-            
-    stdscr.refresh()
+
+    if stdscr:
+        stdscr.refresh()
 
     #time.sleep(3)
     bfs(maze, locs, depth+1, start)
     
 
-def findroutes(maze, start):
+def findroutes(maze, where):
     global G
-    
+
+    print(where)
+    (start,(x,y)) = where
+    start = str(start)
+    print (start)
     # find the distance from symbol start to all other symbols
     # through a breadth first search
 
     if start not in maze.values():
+        print(str(start)+" not found")
         return
     
     (x,y) = (list(maze.keys())[list(maze.values()).index(start)])
-
     
-    stdscr.addstr(0,0, "Starting search at "+start+"=("+str(x)+","+str(y)+")")
-    stdscr.refresh()
+    if stdscr:
+        stdscr.addstr(0,0, "Starting search at "+start+"=("+str(x)+","+str(y)+")")
+        stdscr.refresh()
 
     locs = dict() # empty tracker of locations
     locs[(x,y)]=0 # seed with starting point -     EnQueue( m.StartNode )
@@ -164,10 +163,78 @@ def findroutes(maze, start):
     #    time.sleep(10)
     #time.sleep(1)
 
-    
 #----------------------------------------------
 
+def nearbydot(maze, where):
 
+    (x,y)=where
+    
+    if n(x,y) in maze:
+        if maze[n(x,y)]==".":
+            return n(x,y)
+    if e(x,y) in maze:
+        if maze[e(x,y)]==".":
+            return e(x,y)
+    if s(x,y) in maze:
+        if maze[s(x,y)]==".":
+            return s(x,y)
+    if w(x,y) in maze:
+        if maze[w(x,y)]==".":
+            return w(x,y)
+    return None
+
+
+def nearbyalpha(maze, where):
+
+    (x,y)=where
+    
+    if n(x,y) in maze:
+        if maze[n(x,y)].isupper():
+            return n(x,y)
+    if e(x,y) in maze:
+        if maze[e(x,y)].isupper():
+            return e(x,y)
+    if s(x,y) in maze:
+        if maze[s(x,y)].isupper():
+            return s(x,y)
+    if w(x,y) in maze:
+        if maze[w(x,y)].isupper():
+            return w(x,y)
+    return None
+
+
+def exitfinder(maze):
+    #what we search for:
+    # isupper() next to an empty space and also next to another isupper()
+    exits=[]
+    #print(maze)
+    helalistan=[]
+    
+    for key in maze.keys():
+        value = maze[key]
+
+        if value.isupper():
+            dot =  nearbydot(maze, key)
+            if dot:
+                let = nearbyalpha(maze, key)
+                if let:
+                    # found it!
+                    name=value+maze[let]
+
+                    if name in helalistan:
+                        name = "".join(reversed(name))
+                                       
+                    exits.append((name,key))
+                    maze[dot] = name
+                    maze[key] = " "
+                    maze[let] = " "
+                    helalistan.append(name)
+    return(exits)
+            
+#----------------------------------------------
+
+# AA=start
+# ZZ= end
 
 def main(ko):
     global stdscr
@@ -177,7 +244,13 @@ def main(ko):
     
     maze = readmaze("input.txt")
     printmaze(maze)
-    stdscr.refresh()
+    if stdscr:
+        stdscr.refresh()
+
+    # function to properly identify the two-literal exits/teleports
+    exits=exitfinder(maze)
+    print(exits)
+    print(maze)
 
     # we have the maze. Now extract the nodes and edges. Put them
     # in a weighted graph
@@ -185,13 +258,20 @@ def main(ko):
     # the tricky part here is to explore _all_ relevant paths
     # let's try the dumb way first
 
-    for i in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@":
+    for i in exits:
         printmaze(maze)
-        stdscr.refresh()
+        if stdscr:
+            stdscr.refresh()
         findroutes(maze, i)
 
     # G now contains all (we hope :-)) paths between X and Y
+    # now add one weight edges for the exits
 
+    for i in exits:
+        (name,X) = i
+        if name != "".join(reversed(name)): # don't join the exit to the exit
+            G.add_edge(name, "".join(reversed(name)), weight=1)
+    
 def popaway(GG, what):
 
     GGG = GG
@@ -332,10 +412,11 @@ def opt(GG, whereami, distance,visited,havekeys, depth,best):
             
     
     
-#main(1)
-wrapper(main)
+main(None)
+
+#wrapper(main)
 print(G.edges(data=True))
-print(G.nodes)
+#print(G.nodes)
 nx.draw(G,  with_labels=True)
 #labels = nx.get_edge_attributes(G,'weight')
 #nx.draw_networkx_edge_labels(G,pos=nx.spring_layout(G),edge_labels=labels)
@@ -343,7 +424,13 @@ plt.savefig("maze.png")
 cnt=0
 cache=dict()
 
-pprint(opt(G, "@", 0, "","",0,666666666666))
+# to here, it is the same as for exercise 18, basic
+
+print("Path  : "+str(nx.shortest_path(G,"AA","ZZ",weight="weight")))
+print("Length: "+str(nx.shortest_path_length(G,"AA","ZZ",weight="weight")))
+
+
+#pprint(opt(G, "@", 0, "","",0,666666666666))
 
 
 
