@@ -5,10 +5,9 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from pprint import pprint
 
-# 6483 too high
-# 867 too low
 def readmaze(fn):
-
+    global maxx, maxy
+    
     maze = dict()
     x = 0
     y = 0
@@ -26,7 +25,9 @@ def readmaze(fn):
 
             y=y+1
         
-
+    maxx=x-1
+    maxy=y-1
+    
     return (maze)
 
 #----------------------------------------------
@@ -231,11 +232,81 @@ def exitfinder(maze):
                     helalistan.append(name)
     return(exits)
 
+
+def mapupdown(exits):
+
+    global maxx, maxy
+    inner = []
+    outer = []
+    
+    for (name,(x,y)) in exits:
+        name = "".join(sorted(name)) 
+        if (x > 3 and x< (maxx-3)) and ( y>3 and y<maxy-3):
+            # inside the donut
+            inner.append((name,(x,y)))
+        else:
+            # outside the donut
+            outer.append((name,(x,y)))
+            
+            
+    return (inner, outer)
+
+        
 # relabel graph with level number
 
 
 #----------------------------------------------
+def mkbig(G, inner, outer, levels): # returns (maze, exits)
 
+    #combine the maze in maze to a new maze, connecting inner and outer exits
+    #and make x levels
+
+    import copy
+    
+    graphs = list()
+    
+    # level 1.
+
+
+    # rename all inner exits to blabla N, all outer to blabla(N-1)
+
+                         
+                  
+    
+    for l in range(1,levels):
+        mp = dict()
+        exits=list()
+        
+        for i in inner:
+            (n,T) = i
+            mp[n] = n+str(i)
+
+        for i in outer:
+            (n,T) = i
+            if l == 1:
+                #kill all outer exits except AA, ZZ
+                if n!="ZZ" and n!="AA":
+                    mp[n]=n+"1_remove"
+            else:
+                if n == "ZZ" or n == "AA":
+                    mp[n]=n+str(i)+"_remove"
+                else:
+                    mp[n]=n+str(i)
+                    
+        X = nx.relabel_nodes(G,mp, copy=True)
+        L = filter(lambda x:"_remove" in x,X)
+        map(X.remove_node, L)
+        exits.append(inner)
+        exits.append(outer)
+        graphs.append(X)
+
+    print(graphs)
+        
+    
+#----------------------------------------------
+    
+
+    
 # AA=start
 # ZZ= end
 
@@ -252,8 +323,11 @@ def main(ko):
 
     # function to properly identify the two-literal exits/teleports
     exits=exitfinder(maze)
-    print(exits)
-    print(maze)
+    (inner, outer) = mapupdown(exits)
+    #print(inner)
+    #print(outer)
+    #    print(maze)
+
 
     # we have the maze. Now extract the nodes and edges. Put them
     # in a weighted graph
@@ -270,10 +344,14 @@ def main(ko):
     # G now contains all (we hope :-)) paths between X and Y
     # now add one weight edges for the exits
 
-    for i in exits:
-        (name,X) = i
-        if name != "".join(reversed(name)): # don't join the exit to the exit
-            G.add_edge(name, "".join(reversed(name)), weight=1)
+    (maze,exits) = mkbig(G, inner, outer, 10)
+    import sys
+    sys.exit()
+    
+#    for i in exits:
+#        (name,X) = i
+#        if name != "".join(reversed(name)): # don't join the exit to the exit
+#            G.add_edge(name, "".join(reversed(name)), weight=1)
     
 def popaway(GG, what):
 
@@ -418,7 +496,7 @@ def opt(GG, whereami, distance,visited,havekeys, depth,best):
 main(None)
 
 #wrapper(main)
-print(G.edges(data=True))
+#print(G.edges(data=True))
 #print(G.nodes)
 nx.draw(G,  with_labels=True)
 #labels = nx.get_edge_attributes(G,'weight')
