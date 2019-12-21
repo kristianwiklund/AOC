@@ -139,10 +139,10 @@ def bfs(maze, locs, depth, start):
 def findroutes(maze, where):
     global G
 
-    print(where)
+#    print(where)
     (start,(x,y)) = where
     start = str(start)
-    print (start)
+#    print (start)
     # find the distance from symbol start to all other symbols
     # through a breadth first search
 
@@ -240,7 +240,7 @@ def mapupdown(exits):
     outer = []
     
     for (name,(x,y)) in exits:
-        name = "".join(sorted(name)) 
+
         if (x > 3 and x< (maxx-3)) and ( y>3 and y<maxy-3):
             # inside the donut
             inner.append((name,(x,y)))
@@ -269,39 +269,59 @@ def mkbig(G, inner, outer, levels): # returns (maze, exits)
 
 
     # rename all inner exits to blabla N, all outer to blabla(N-1)
-
-                         
-                  
+    AccG = nx.Graph()
     
     for l in range(1,levels):
         mp = dict()
         exits=list()
         
         for i in inner:
-            (n,T) = i
-            mp[n] = n+str(i)
+            (n,(x,y)) = i
+            mp[n] = n+str(l)
 
+
+        
         for i in outer:
-            (n,T) = i
+            (n,(x,y)) = i
+
             if l == 1:
                 #kill all outer exits except AA, ZZ
                 if n!="ZZ" and n!="AA":
                     mp[n]=n+"1_remove"
             else:
                 if n == "ZZ" or n == "AA":
-                    mp[n]=n+str(i)+"_remove"
+                    mp[n]=n+str(l)+"_remove"
                 else:
-                    mp[n]=n+str(i)
+                    mp[n]=n+str(l)
                     
         X = nx.relabel_nodes(G,mp, copy=True)
         L = filter(lambda x:"_remove" in x,X)
         map(X.remove_node, L)
-        exits.append(inner)
-        exits.append(outer)
-        graphs.append(X)
 
-    print(graphs)
+        AccG = nx.compose(AccG, X)
+
+
+        for i in inner:
+            if l < levels:
+                (n,(x,y)) = i
+                frm = n+str(l)
+                tom = "".join(reversed(n))+str(l+1)
+                AccG.add_edge(frm, tom, weight=1)
+#                print(frm+"->"+tom)
+            else:
+                AccG.remove_node(n+str(l))
         
+        # one big effin graph, now connect all exits
+        
+        
+    print (outer)
+
+    print (inner)
+    return AccG
+        
+    # connect all graphs
+
+
     
 #----------------------------------------------
     
@@ -343,10 +363,9 @@ def main(ko):
 
     # G now contains all (we hope :-)) paths between X and Y
     # now add one weight edges for the exits
-
-    (maze,exits) = mkbig(G, inner, outer, 10)
-    import sys
-    sys.exit()
+    print("GRAFEREN  pre: "+str(G.nodes()))
+    G = mkbig(G, inner, outer, 100)
+    print("GRAFEREN post: "+str(G.nodes()))
     
 #    for i in exits:
 #        (name,X) = i
@@ -485,7 +504,7 @@ def opt(GG, whereami, distance,visited,havekeys, depth,best):
             bestdist = newdist+neighbors[i]["weight"]
 
     if distance==0:
-        print (str(bestpath)+" = "+str(bestdist))
+#        print (str(bestpath)+" = "+str(bestdist))
         totweight=nx.subgraph(GG,bestpath).size(weight="weight")
             
     cache[whereami+alln] = (bestdist, bestpath)
