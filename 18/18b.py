@@ -50,7 +50,7 @@ def setup():
 
 
 def printmaze(maze):
-    return
+
     for (x,y) in maze.keys():
         stdscr.addstr(y+2,x+1,str(maze[x,y]))
     pass
@@ -162,7 +162,7 @@ def findroutes(maze, start):
 
     bfs(maze, locs, 0, start)
     #    time.sleep(10)
-    #time.sleep(1)
+    #    time.sleep(1)
 
     
 #----------------------------------------------
@@ -175,21 +175,41 @@ def main(ko):
     stdscr=ko
     G = nx.Graph()
     
-    maze = readmaze("input.txt")
+    maze = readmaze("smallinput4.txt")
     printmaze(maze)
     stdscr.refresh()
 
     # we have the maze. Now extract the nodes and edges. Put them
     # in a weighted graph
 
+    # find the four starting points first
+    spoints=list()
+    cnt=0
+    for pos in maze.keys():
+        if maze[pos]=="@":
+            spoints.append(pos)
+            maze[pos]="@"+str(cnt)
+            cnt=cnt+1
+            (x,y)=pos
+            stdscr.addstr(y+2,x+1,str(cnt))
+            stdscr.refresh()
+            
+    #time.sleep(4)
+    
+
     # the tricky part here is to explore _all_ relevant paths
     # let's try the dumb way first
 
-    for i in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@":
+    for i in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":
         printmaze(maze)
         stdscr.refresh()
         findroutes(maze, i)
 
+    for i in range(1,4):
+        findroutes(maze, "@"+str(i))
+        #time.sleep(5)
+
+    return maze
     # G now contains all (we hope :-)) paths between X and Y
 
 def popaway(GG, what):
@@ -333,9 +353,9 @@ def opt(GG, whereami, distance,visited,havekeys, depth,best):
     
     
 #main(1)
-wrapper(main)
-print(G.edges(data=True))
-print(G.nodes)
+print(wrapper(main))
+#print(G.edges(data=True))
+#print(G.nodes)
 nx.draw(G,  with_labels=True)
 #labels = nx.get_edge_attributes(G,'weight')
 #nx.draw_networkx_edge_labels(G,pos=nx.spring_layout(G),edge_labels=labels)
@@ -343,7 +363,7 @@ plt.savefig("maze.png")
 cnt=0
 cache=dict()
 
-pprint(opt(G, "@", 0, "","",0,666666666666))
+#pprint(opt(G, "@", 0, "","",0,666666666666))
 
 
 
