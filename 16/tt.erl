@@ -69,13 +69,6 @@ app2(Signal, Row, Acc, Mults) ->
 	    {AccP, SumP} = app2(Signal, Row+1, Acc, Mults),
 	    {[abs(Sum rem 10)|AccP], Sum+SumP};
 
-% 1,2  x 6
-%[[1,0,-1,0,1,0,-1,0,1,0,-1,0],
-% [0,1,1,0,0,-1,-1,0,0,1,1,0],
-% [0,0,1,1,1,0,0,0,-1,-1,-1,0],
-% [0,0,0,1,1,1,1,0,0,0,0,-1],
-% [0,0,0,0,1,1,1,1,1,0,0,0],
-
 	Row =< trunc((Length*Mults)/2) ->	    
 	    % do something really clever here
 	    {AccP, Sum}=app2(Signal, Row+1, Acc, Mults),
@@ -84,7 +77,7 @@ app2(Signal, Row, Acc, Mults) ->
 	
 	    Pattern = pattern(Row, Mults*Length),
 	    SumP = combinator(Pattern, lists:flatten(lists:duplicate(Mults,Signal))),
-	    {[abs(Sum rem 10)|AccP], SumP};
+	    {[abs(SumP rem 10)|AccP], SumP};
 		
 	true ->
 	    {[],0}
@@ -103,11 +96,12 @@ app2(Signal, N) ->
     app2(NS, N-1).
 
 t3() ->
-    Signal = lists:flatten(lists:duplicate(100,[1,2,3,4,5,6,7,8])),
-    io:fwrite("orig: ~p\n",[t:applypattern(Signal)]),
-    {L,_} = app2([1,2,3,4,5,6,7,8],1,[],100),
-    io:fwrite("new: ~p\n,",[lists:map(fun(X)->abs(X rem 10) end,L)]).
-
+    Signal = lists:flatten(lists:duplicate(300,[1,2,3,4,5,6,7,8])),
+    {T1,A} = timer:tc(t,applypattern,[Signal]),
+    %io:fwrite("orig: ~p\n",[t:applypattern(Signal)]),
+    {T2,{B,C}} = timer:tc(tt,app2, [[1,2,3,4,5,6,7,8],1,[],300]),
+    %io:fwrite("new: ~p\n,",[lists:map(fun(X)->abs(X rem 10) end,L)]).
+    {T1,T2,A,B,C}.
 t2() ->
     NList = lists:map(fun(X)->X-48 end,t:datan2()),
     TM3=t:applypattern(NList, 100),
