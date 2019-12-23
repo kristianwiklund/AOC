@@ -1,6 +1,6 @@
 # AOC2019
 
-My goal is to do the majority of the tasks in Erlang.
+My goal is to do the majority of the tasks in Erlang to learn Erlang. I've written less than 100 LOC erlang before this.
 
 Not using Erlang:
 * Day 6 was done in Python, I was travelling and didn't have access to an Erlang environment
