@@ -24,6 +24,32 @@ broker(C,Buffer) ->
 	{Msg, From} ->
 	    %io:fwrite("~p: ~B\n", [From, Msg]),
 	    NewBuffer = bapp(Buffer, From, Msg, C)
+    after
+	1000 ->
+	    io:fwrite("idle, sending NAT packet\n"),
+	    {X,Y} = maps:get(255, Buffer),
+
+	    Check = maps:is_key(4711, Buffer),
+	    if Check ->
+		    {XT,YT} = maps:get(4711, Buffer),
+		    if 
+			Y == YT ->
+			    io:fwrite("~B\n", [Y]),
+			    exit(normal);
+		       true ->
+			    ok
+		    end;
+	       true ->
+		    io:fwrite("No NAT available, holding off\n")
+			
+		    
+	    end,
+
+	    lists:nth(1,C) ! X,
+	    lists:nth(1,C) ! Y,	    
+	    NewBuffer = maps:put(4711, {X,Y}, Buffer)
+	   
+	    
     end,
     broker(C, NewBuffer).
 
@@ -55,9 +81,9 @@ bapp(B, F, M, C) ->
 	       true ->
 		    X = lists:nth(2,L),
 		    Y = lists:nth(3,L),
-		    io:fwrite("(~B,~B)->~B [~p]\n", [X,Y,A,L]),
-		    NB = maps:remove(F, B),
-		    exit(normal)
+		    io:fwrite("NAT: ~B,~B\n", [X,Y]),
+		    NB1 = maps:remove(F, B),
+		    NB = maps:put(255,{X,Y}, NB1)
 	    end;
 		
 	true ->
