@@ -32,6 +32,7 @@ pow(A, B, M) ->
 %% examples inv(28, 75) = 67.
 %%          inv(3533, 11200) = 6597
 %%          inv(6597, 11200) = 3533
+%     (OrigPos*Incr) rem NrCards = X.
 
 inv(A, B) ->
     case solve(A, B) of

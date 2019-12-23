@@ -89,25 +89,38 @@ gcd(A, B) ->
   
 % this is broken.
 rdwi(CurrentPos, NrCards, Incr) ->
-    CurrentPos / Incr.
+
+    WhichBlock = CurrentPos div Incr,
+    PosInBlock = CurrentPos rem Incr,
+    % PosInBlock lets us know how "far" out we are
+    % It rotates with "Offset" for each overflow
+ 
+    Offset = Incr - (NrCards rem Incr),
+						%    {WhichBlock, PosInBlock, Offset},
+    % WhichBlock is where in the series we are
+    % PosInBlock is which series we are in
+    if 
+	PosInBlock == 0 ->
+	    WhichBlock;
+       true -> 
+	    X = (CurrentPos + ((PosInBlock) * NrCards)) div Incr,
+%	    io:fwrite("~B ~B ~B ~B ~B ~B ~B\n", [CurrentPos, NrCards, Incr, PosInBlock, Offset, WhichBlock, X]),
+						%	    exit(normal),
+	    X
+    end.
     
+% 63271795966681 - too low
+% 59884079972666 - not tested, but obviously too low too...
+% 12006143697504
 % backwards cut, where did CurrentPos come from?
-rcut(CurrentPos, CutFactor, Max) when CutFactor < 0 ->
-    CPP = CurrentPos + CutFactor,
+rcut(CurrentPos, CutFactor, Max)->
+    CPP = (CurrentPos - CutFactor) rem Max,
     if CPP < 0 ->
 	    CPP+Max;
        true ->
 	    CPP
-    end;
-rcut(CurrentPos, CutFactor, _) when CutFactor == 0 ->
-    CurrentPos;
-rcut(CurrentPos, CutFactor, Max) when CutFactor > 0 ->
-    CPP = CurrentPos + CutFactor,
-    if CPP > Max ->
-	    CPP - Max;
-       true ->
-	    CPP
     end.
+
 
 rdealinto(CurrentPos, Max) ->
     % reverse
