@@ -2,7 +2,7 @@
 -import(kw,[getxy/3,setxy/4,setnth/3,mkblank/1,file2lines/1,tilecount/4]).
 
 -export([t1/0,t/0,evolve/3, mutate/1,datan/0, datan2/0,datan3/0,bdr/1,runmut/2,colsum/2,rowsum/2]).
--export([countneighbors/5]).
+-export([countneighbors/5,revolve/5]).
 
 datan() ->
     [".###.",
@@ -131,7 +131,7 @@ checkneighbor(World, X, Y, RWorld, Level, Direction) ->
     NY = Y + DY,
     if 
 	{NX, NY} == {3,3} ->% go down one level
-	    Check = map:is_key(Level-1, RWorld),	    
+	    Check = maps:is_key(Level-1, RWorld),	    
 	    if
 		not Check ->
 %		    io:fwrite("No world below ~B\n",[Level]),
@@ -216,13 +216,25 @@ revolve(World, X, Y, RWorld, Level) ->
     % basically the same as the "evolve" above, but it need to descend through the ?:s and ascend through its sides
     
     Char = getxy(World, X,Y),
-    case Char of
-	$? ->
+    if 
+	Char == $? ->
 	    Char;
 	true ->
-	    N = countneighbors(World, X, Y, RWorld, Level),
-	    T = (Char == $#),
-	    T
+	    NB = countneighbors(World, X, Y, RWorld, Level),
+	    ME = (Char == $#),
+	    % the usual rule
+
+	    if
+		(ME and (NB == 1)) ->
+						%	    io:fwrite("Stay: (~B,~B) NB:~B ME:~p\n",[X,Y,NB,ME]),
+		    35;
+		((not ME) and ((NB == 1) or (NB == 2))) ->
+						%	    io:fwrite("Grow: (~B,~B) NB:~B ME:~p\n",[X,Y,NB,ME]),
+		    35;
+		true ->
+						%	        io:fwrite(" Die: (~B,~B) NB:~B ME:~p\n",[X,Y,NB,ME]),
+		    46
+	    end
     end.
 
 
@@ -269,11 +281,13 @@ runrmut(RWorld, 0) ->
     RWorld;
 
 runrmut(RWorld, Steps) ->  
-    NRW = rmutate(RWorld),
+    NRW1 = rmutate(RWorld),
+    NRW2 = maps:put("min",maps:get("min", RWorld),NRW1),
+    NRW = maps:put("max",maps:get("max", RWorld), NRW2),
     runrmut(NRW, Steps - 1).
 
 t() ->
     W = setxy(t:datan2(), 3,3,"?"),
     RW = #{0=>W,"max"=>0, "min"=>0},
-    M=runrmut(RW,1),
+    M=runrmut(RW,4),
     M.
