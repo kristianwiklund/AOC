@@ -1,5 +1,5 @@
 -module(kw).
--export([getxy/3,setxy/4,setnth/3,mkblank/1,file2lines/1,tilecount/4,tilematch/4]).
+-export([getxy/3,setxy/4,setnth/3,mkblank/1,file2lines/1,tilecount/4,tilematch/4,dirvector/1]).
 
 
 dirvector(Dir) ->
