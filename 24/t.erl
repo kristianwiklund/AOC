@@ -123,7 +123,69 @@ rowsum(World, Row) ->
 			  end end, lists:seq(1,5)),
     lists:foldl(fun(T, Acc)->
 			T+Acc end,0,L).
-			  
+
+
+checkneighbor(World, X, Y, RWorld, Level, Direction) ->			  
+    {DX, DY} = kw:dirvector(Direction),
+    NX = X+ DX,
+    NY = Y + DY,
+    if 
+	{NX, NY} == {3,3} ->% go down one level
+	    Check = map:is_key(Level-1, RWorld),	    
+	    if
+		not Check ->
+%		    io:fwrite("No world below ~B\n",[Level]),
+		    0; % no level below -> no bacteria there
+		true ->
+		    G = maps:get(Level-1, RWorld),
+		    
+		    case Direction of 
+			"N" -> 
+			    rowsum(G,5);
+			"E" ->
+			    colsum(G,1);
+			"W" ->
+			    colsum(G,5);
+			"S" ->
+			    rowsum(G,1)
+		    end
+	    end;
+
+	((NX > 0) and (NX < 6) and (NY>0) and (NY<6)) ->
+	    T = getxy(World, NX, NY),
+	    if T==$# ->
+		    1;
+	       true ->
+		    0
+	    end;
+		
+	true -> % one level up, we are outside this thingy
+	    Check = maps:is_key(Level+1, RWorld),	    
+	    if
+		not Check ->
+%		    io:fwrite("No world above ~B\n",[Level]),
+		    0; % no level above -> no bacteria there
+		true ->
+		    G = maps:get(Level+1, RWorld),
+		    
+		    case Direction of 
+			"N" -> 
+			    T = getxy(3,2,G);
+			"E" ->
+			    T = getxy(4,3,G);
+			"W" ->
+			    T = getxy(2,3,G);
+			"S" ->
+			    T = getxy(3,4,G)
+		    end,
+		    if T==$# ->
+			    1;
+		       true ->
+			    0
+		    end
+	    end
+    end.
+
 
 countneighbors(World, X, Y, RWorld, Level) ->
     
@@ -139,12 +201,16 @@ countneighbors(World, X, Y, RWorld, Level) ->
     % collapse: {X,Y} == {3,3}
 
     % need more food error
-    ok.
+    
+    % look to the north
+
+    N = checkneighbor(World, X,Y,RWorld, Level,"N"),
+    E = checkneighbor(World, X,Y,RWorld, Level,"E"),
+    W = checkneighbor(World, X,Y,RWorld, Level,"W"),
+    S = checkneighbor(World, X,Y,RWorld, Level,"S"),
+    N+E+W+S.
 	    
     
-    
-    
-
 revolve(World, X, Y, RWorld, Level) ->
     
     % basically the same as the "evolve" above, but it need to descend through the ?:s and ascend through its sides
