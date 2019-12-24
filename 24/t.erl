@@ -170,13 +170,13 @@ checkneighbor(World, X, Y, RWorld, Level, Direction) ->
 		    
 		    case Direction of 
 			"N" -> 
-			    T = getxy(3,2,G);
+			    T = getxy(G,3,2);
 			"E" ->
-			    T = getxy(4,3,G);
+			    T = getxy(G,4,3);
 			"W" ->
-			    T = getxy(2,3,G);
+			    T = getxy(G,2,3);
 			"S" ->
-			    T = getxy(3,4,G)
+			    T = getxy(G,3,4)
 		    end,
 		    if T==$# ->
 			    1;
@@ -219,6 +219,8 @@ revolve(World, X, Y, RWorld, Level) ->
     if 
 	Char == $? ->
 	    Char;
+	{X,Y} == {3,3} ->
+	    $?;
 	true ->
 	    NB = countneighbors(World, X, Y, RWorld, Level),
 	    ME = (Char == $#),
@@ -238,7 +240,7 @@ revolve(World, X, Y, RWorld, Level) ->
     end.
 
 
-rmutate(RWorld, NW, Level) ->
+rmutate(RWorld, NW, [Level|Levels]) ->
     
     Check = maps:is_key(Level, RWorld),
     World = 
@@ -258,10 +260,15 @@ rmutate(RWorld, NW, Level) ->
     
     if 
 	TNW =/= World ->
-	    maps:put(Level, TNW, NW);
+	    FNW = maps:put(Level, TNW, NW);
 	true ->
-	    NW
-    end.
+	    FNW = NW
+    end,
+    rmutate(RWorld, FNW, Levels);
+rmutate(_,NW,_) ->
+    NW.
+
+    
     
 
 
@@ -270,8 +277,13 @@ rmutate(RWorld) ->
     
     % S are the worlds we already have
     S = lists:seq(maps:get("min", RWorld), maps:get("max", RWorld)),
-    Level = 0,
-    rmutate(RWorld, #{}, Level).
+    
+    TNW = rmutate(RWorld, #{}, S),
+    Keys = maps:keys(TNW),
+    TNW1 = maps:put("min", lists:min(Keys)-1, TNW),
+    TNW2 = maps:put("max", lists:max(Keys)+1, TNW1),
+    TNW2.
+   
     
     
 
@@ -282,12 +294,19 @@ runrmut(RWorld, 0) ->
 
 runrmut(RWorld, Steps) ->  
     NRW1 = rmutate(RWorld),
-    NRW2 = maps:put("min",maps:get("min", RWorld),NRW1),
-    NRW = maps:put("max",maps:get("max", RWorld), NRW2),
-    runrmut(NRW, Steps - 1).
+    runrmut(NRW1, Steps - 1).
 
 t() ->
-    W = setxy(t:datan2(), 3,3,"?"),
-    RW = #{0=>W,"max"=>0, "min"=>0},
-    M=runrmut(RW,4),
-    M.
+    W = setxy(t:datan(), 3,3,"?"),
+    RW = #{0=>W,"max"=>1, "min"=>-1},
+    M=runrmut(RW,200),
+    AW = lists:flatten(maps:values(M)),
+    C= lists:foldl(fun(X,Acc)->
+			if X==$# ->
+				Acc+1;
+			   true ->
+				Acc
+			end 
+		   end, 0 , AW),
+    C.
+    
