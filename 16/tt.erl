@@ -22,8 +22,19 @@ shortpattern(N, Length) ->
     BasePattern = lists:flatten(lists:map(fun(X)->
 						  lists:duplicate(N, X) end, pattern(1))),
     Instances = (Length div length(BasePattern)),
-    RepeatedPattern = lists:flatten(lists:duplicate(Instances, BasePattern)),
-    lists:append(FirstPattern,lists:reverse(lists:nthtail(length(RepeatedPattern)-Length-1, lists:droplast(lists:reverse(RepeatedPattern))))).
+    io:fwrite("B: ~B\n", [Instances]),
+    if
+	Instances>0 ->
+	    RepeatedPattern = lists:flatten(lists:duplicate(Instances, BasePattern)),
+	    lists:append(FirstPattern,
+			 lists:reverse(
+			   lists:nthtail(
+			     length(RepeatedPattern)-Length-1, 
+			     lists:droplast(
+			       lists:reverse(RepeatedPattern)))));
+	true ->
+	    FirstPattern
+    end.
 
 % the message is 631 long which means that the repeated pattern is like 100000000 characters long
 % but since the sum is a sum of things, we don't have to calc all of it
@@ -84,9 +95,11 @@ app2(Signal, Row, Acc, Mults) ->
 	    {AccP, Sum}=app2(Signal, Row+1, Acc, Mults),
 						% only run as many as we need to run
 						% row N starts with (N-1) zeros, so lets cut those off first
-	
+	    
+	    io:fwrite("Mults: ~B\n",[Mults]),
 	    Pattern = shortpattern(Row, Mults*Length),
-	    SumP = combinator(Pattern, lists:flatten(lists:duplicate(Mults,Signal))),
+	    {_,GROK} = lists:split(length(Pattern),lists:flatten(lists:duplicate(Mults,Signal))),
+	    SumP = combinator(Pattern, GROK),
 	    {[abs(SumP rem 10)|AccP], SumP};
 		
 	true ->
