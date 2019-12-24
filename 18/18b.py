@@ -9,10 +9,6 @@ from pprint import pprint
 # then call the subgraph thing thingy when we go for a new step
 # breadth first -> graphs -> breadth first
 
-
-
-# 6483 too high
-# 867 too low
 def readmaze(fn):
 
     maze = dict()
@@ -51,9 +47,10 @@ def setup():
 
 def printmaze(maze):
 
-    for (x,y) in maze.keys():
-        stdscr.addstr(y+2,x+1,str(maze[x,y]))
-    pass
+    if stdscr:
+        for (x,y) in maze.keys():
+            stdscr.addstr(y+2,x+1,str(maze[x,y]))
+        pass
 
 #----------------------------------------------
 
@@ -106,36 +103,42 @@ def bfs(maze, locs, depth, start):
 
     for (x,y) in newDict.keys():
 
-        stdscr.addstr(1,0, "Probing ("+str(x)+","+str(y)+") - depth "+str(depth)+" - "+str(len(newDict)) + " locs")
+        if stdscr:
+            stdscr.addstr(1,0, "Probing ("+str(x)+","+str(y)+") - depth "+str(depth)+" - "+str(len(newDict)) + " locs")
 
-        #stdscr.addstr(y+2,x+1,"X")
-        stdscr.addstr(2,20,str(n(x,y))+" "+str(e(x,y))+" "+str(s(x,y))+" "+str(w(x,y)))
+            #stdscr.addstr(y+2,x+1,"X")
+            stdscr.addstr(2,20,str(n(x,y))+" "+str(e(x,y))+" "+str(s(x,y))+" "+str(w(x,y)))
         
         if uno(maze,locs,n(x,y)):
             locs[n(x,y)]=depth+1
         else:
-            stdscr.addstr(2,0, "NF ")
+            if stdscr:
+                stdscr.addstr(2,0, "NF ")
             checknadd(maze,n(x,y),depth+1,start)
             
         if uno(maze,locs,e(x,y)):
             locs[e(x,y)]=depth+1
         else:
-            stdscr.addstr(2,4, "EF ")
+            if stdscr:
+                stdscr.addstr(2,4, "EF ")
             checknadd(maze,e(x,y),depth+1,start)
                 
         if uno(maze,locs,w(x,y)):
             locs[w(x,y)]=depth+1
         else:
-            stdscr.addstr(2,8, "WF ")
+            if stdscr:
+                stdscr.addstr(2,8, "WF ")
             checknadd(maze,w(x,y),depth+1,start)
             
         if uno(maze,locs,s(x,y)):
             locs[s(x,y)]=depth+1
         else:
-            stdscr.addstr(2,12, "SF ")
+            if stdscr:
+                stdscr.addstr(2,12, "SF ")
             checknadd(maze,s(x,y),depth+1,start)
-            
-    stdscr.refresh()
+
+    if stdscr:
+        stdscr.refresh()
 
     #time.sleep(3)
     bfs(maze, locs, depth+1, start)
@@ -152,9 +155,10 @@ def findroutes(maze, start):
     
     (x,y) = (list(maze.keys())[list(maze.values()).index(start)])
 
-    
-    stdscr.addstr(0,0, "Starting search at "+start+"=("+str(x)+","+str(y)+")")
-    stdscr.refresh()
+
+    if stdscr:
+        stdscr.addstr(0,0, "Starting search at "+start+"=("+str(x)+","+str(y)+")")
+        stdscr.refresh()
 
     locs = dict() # empty tracker of locations
     locs[(x,y)]=0 # seed with starting point -     EnQueue( m.StartNode )
@@ -175,9 +179,11 @@ def main(ko):
     stdscr=ko
     G = nx.Graph()
     
-    maze = readmaze("smallinput4.txt")
+    #maze = readmaze("smallinput4.txt")
+    maze = readmaze("input2.txt")
     printmaze(maze)
-    stdscr.refresh()
+    if stdscr:
+        stdscr.refresh()
 
     # we have the maze. Now extract the nodes and edges. Put them
     # in a weighted graph
@@ -189,25 +195,29 @@ def main(ko):
         if maze[pos]=="@":
             spoints.append(pos)
             maze[pos]="@"+str(cnt)
-            cnt=cnt+1
             (x,y)=pos
-            stdscr.addstr(y+2,x+1,str(cnt))
-            stdscr.refresh()
+            if stdscr:
+                stdscr.addstr(y+2,x+1,str(cnt))
+                stdscr.refresh()
+            cnt=cnt+1
             
-    #time.sleep(4)
+    time.sleep(10)
     
 
     # the tricky part here is to explore _all_ relevant paths
     # let's try the dumb way first
 
-    for i in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":
-        printmaze(maze)
-        stdscr.refresh()
-        findroutes(maze, i)
-
-    for i in range(1,4):
+    for i in range(0,4):
         findroutes(maze, "@"+str(i))
         #time.sleep(5)
+    
+    for i in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        printmaze(maze)
+        if stdscr:
+            stdscr.refresh()
+        findroutes(maze, i)
+
+
 
     return maze
     # G now contains all (we hope :-)) paths between X and Y
@@ -352,8 +362,10 @@ def opt(GG, whereami, distance,visited,havekeys, depth,best):
             
     
     
-#main(1)
-print(wrapper(main))
+main(None)
+#wrapper(main)
+import pygraphviz
+from networkx.drawing.nx_agraph import write_dot
 #print(G.edges(data=True))
 #print(G.nodes)
 nx.draw(G,  with_labels=True)
@@ -362,8 +374,18 @@ nx.draw(G,  with_labels=True)
 plt.savefig("maze.png")
 cnt=0
 cache=dict()
+write_dot(G, "maze.dot")
 
-#pprint(opt(G, "@", 0, "","",0,666666666666))
+
+# cut the graph into the four distinct different graphs
+
+graphs = list()
+for i in range(0,4):
+    graphs.append(nx.node_connected_component(G,"@"+str(i)))
+
+pprint(graphs)
+    
+
 
 
 
