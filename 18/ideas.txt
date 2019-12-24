@@ -1,6 +1,0 @@
-this can be viewed as the precedence-constrained travelling salesman problem.
-
-if we extract the nodes (letters, keys) and the paths between them. Then we know that
-
-k must be visited before K (where k is the key and K the door)
-
