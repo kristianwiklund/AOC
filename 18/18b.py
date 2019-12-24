@@ -368,22 +368,23 @@ import pygraphviz
 from networkx.drawing.nx_agraph import write_dot
 #print(G.edges(data=True))
 #print(G.nodes)
-nx.draw(G,  with_labels=True)
+
 #labels = nx.get_edge_attributes(G,'weight')
 #nx.draw_networkx_edge_labels(G,pos=nx.spring_layout(G),edge_labels=labels)
-plt.savefig("maze.png")
+
 cnt=0
 cache=dict()
 write_dot(G, "maze.dot")
 
+nx.draw_spring(G,  with_labels=True)
+plt.savefig("maze_nwx.png")
 
 # cut the graph into the four distinct different graphs
 
 graphs = list()
 for i in range(0,4):
-    graphs.append(nx.node_connected_component(G,"@"+str(i)))
-
-pprint(graphs)
+    graphs.append(nx.subgraph(G,nx.node_connected_component(G,"@"+str(i))))
+    
     
 
 
