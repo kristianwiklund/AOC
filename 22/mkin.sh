@@ -16,7 +16,7 @@ echo "-export([rinput/1])". >>rinput.erl
 echo "rinput(D1)->" >> rinput.erl
 
 awk -f rawk.awk <  $1.tmp | grep D >> rinput.erl
-rm $1.tmp
+
 
 erlc rinput.erl
 

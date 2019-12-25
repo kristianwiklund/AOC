@@ -1,6 +1,7 @@
 -module(t).
--export([t/0,t1/0,dealinto/1, cut/2, dealwithincrement/2]).
--export([rdwi/3,dwi/3, gcd/2, rcut/3, rdealinto/2,bignum/0]).
+-export([t/1,t1/0,dealinto/1, cut/2, dealwithincrement/2]).
+-export([dwi/3, gcd/2, bignum/0]).
+-export([mcut/2, mdwi/2, mrdealinto/1]).
 dealinto(Deck) ->
 	lists:reverse(Deck).
 
@@ -67,6 +68,7 @@ t1() ->
 % this is a prime
 bignum() ->
     119315717514047.
+%    10007.
 
 % %[0,1, 2,   3,4, 5,   6,7, 8,   9,10,11,   12,13,14,  15,16],3).
 dwi(OrigPos, NrCards, Incr) ->
@@ -85,48 +87,57 @@ gcd(A, B) ->
 %	    throw(error)
 %    end.
 
-   
-  
-% this is broken.
-rdwi(CurrentPos, NrCards, Incr) ->
 
-    WhichBlock = CurrentPos div Incr,
-    PosInBlock = CurrentPos rem Incr,
-    % PosInBlock lets us know how "far" out we are
-    % It rotates with "Offset" for each overflow
- 
-    Offset = Incr - (NrCards rem Incr),
-						%    {WhichBlock, PosInBlock, Offset},
-    % WhichBlock is where in the series we are
-    % PosInBlock is which series we are in
+mcut({Sum,Mul,P}, Cut) ->
+    
+    X={(Sum-Cut), Mul, (P-Cut) rem t:bignum()},
+    %io:fwrite("~p\n", [X]),
+    X.
+
+mdwi({Sum, Mul,P}, Inc) ->
+    X={Sum*Inc, Mul*Inc, (P*Inc) rem t:bignum()},
+    %io:fwrite("~p\n", [X]),
+    X.
+
+mrdealinto({Sum, Mul,P}) ->
+    X={t:bignum()-Sum-1, -Mul, t:bignum()-P-1}, 
+    %io:fwrite("~p\n", [X]),
+    X.
+
+rewot(Wot,S,M) ->
+    A = (Wot - S) rem t:bignum(),
+    B = M rem t:bignum(),
+    Inv = lin:inv(B, t:bignum()),
+    F = (Inv*A) rem t:bignum(),
+    
+
+    {F,t:bignum()+F}.
+    
+
+t(P)->    
+    X=tinput:tinput({0,1,P}),
+    %io:fwrite("~p\n",[X]),
+    {S,M,Wot} = X,
+    Test = Wot =/= ((S+M*P) rem t:bignum()),
     if 
-	PosInBlock == 0 ->
-	    WhichBlock;
-       true -> 
-	    X = (CurrentPos + ((PosInBlock) * NrCards)) div Incr,
-%	    io:fwrite("~B ~B ~B ~B ~B ~B ~B\n", [CurrentPos, NrCards, Incr, PosInBlock, Offset, WhichBlock, X]),
-						%	    exit(normal),
-	    X
-    end.
-    
-% 63271795966681 - too low
-% 59884079972666 - not tested, but obviously too low too...
-% 12006143697504
-% backwards cut, where did CurrentPos come from?
-rcut(CurrentPos, CutFactor, Max)->
-    CPP = (CurrentPos - CutFactor) rem Max,
-    if CPP < 0 ->
-	    CPP+Max;
-       true ->
-	    CPP
-    end.
+	Test ->
+	    io:fwrite("ERROR: ~B ~B\n",[Wot,(S+M*P) rem t:bignum()]);
+	true->
+	    ok
+    end,
 
-
-rdealinto(CurrentPos, Max) ->
-    % reverse
-    Max-CurrentPos.
+    Y=rewot(Wot, S, M),
+    K=rewot(2020, S, M),
     
 
-t()->    
-    ok.
+    io:fwrite("Wot: ~B, P: ~B Y: ~p K: ~p\n",[Wot, P,Y, K]).
+
+
+    % solve for (A*C mod B = 1
+    % (M*X+S) mod B = Wor
+    %  MX mod B = Wot-S mod B
+    
+						% 
+			 
+    
 
