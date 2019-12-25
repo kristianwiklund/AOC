@@ -179,8 +179,8 @@ def main(ko):
     stdscr=ko
     G = nx.Graph()
     
-    #maze = readmaze("smallinput4.txt")
-    maze = readmaze("input2.txt")
+    maze = readmaze("smallinput4.txt")
+    #maze = readmaze("input2.txt")
     printmaze(maze)
     if stdscr:
         stdscr.refresh()
@@ -224,9 +224,14 @@ def main(ko):
 
 def popaway(GG, what):
 
-    GGG = GG
+
+    if not GG.has_node(what):
+        return GG
+    
     import copy
-    GGG = copy.deepcopy(GG)
+    GG = copy.deepcopy(GG)
+    GGG = nx.Graph(GG)
+
     GGG.remove_node(what)
     
     # remove what from GG, keep connections to neighbors
@@ -267,13 +272,54 @@ def popaway(GG, what):
 
 # find the way out...
 
-def findtheway(graphs, currentgraph):
+def findtheway(graphs, currentnodes):
 
     # four graphs. find options
 
-    
-    
+    ngb = [None,None,None,None]
 
+    for i in range(0,4):
+        ngb[i]=list(graphs[i].neighbors(currentnodes[i]))
+        ngb[i] = list(filter(lambda x: x.islower(), ngb[i]))
+        print(list(ngb[i]))
+
+    if ngb == [[],[],[],[]]:
+        return (0, "")
+    
+    # these are the items that are next in line in each graph that we can move to
+    # iterate over those items
+
+    mcost = 666666666666666666
+    mpath = []
+    
+    for i in range(0,4):
+        for j in ngb[i]:
+            print("trying "+currentnodes[i]+"->"+j)
+
+            tmplist = list(graphs)
+            tmplist[i] = popaway(tmplist[i],currentnodes[i])
+            tmpcurrent = list(currentnodes)
+            tmpcurrent[i] = j
+
+            # here we have popped the lowercase one. We also need to pop any matching UPPERCASE ones
+            # (unlocking the doors)
+
+            for x in range(0,4):
+                XG = tmplist[x]
+                if XG.has_node(j.upper()):
+                    tmplist[x] = popaway(tmplist[x], j.upper())
+            
+
+            (dist, path) = findtheway(tmplist, tmpcurrent)
+
+
+            if dist+graphs[i][currentnodes[i]][j]["weight"] < mcost:
+                mcost = dist+graphs[i][currentnodes[i]][j]["weight"]
+                mpath = currentnodes[i] + path
+
+    return (mcost, mpath)
+            
+    
     
     
 main(None)
@@ -300,7 +346,7 @@ for i in range(0,4):
     graphs.append(nx.subgraph(G,nx.node_connected_component(G,"@"+str(i))))
     
     
-findtheway(graphs)
+print(findtheway(graphs,["@0","@1","@2","@3"]))
 
 
 
