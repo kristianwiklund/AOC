@@ -265,101 +265,15 @@ def popaway(GG, what):
     return (GGG)
     
 
-# this function starts at G, explores the neighbors of G, and finds the cheapest path out
-def opt(GG, whereami, distance,visited,havekeys, depth,best):
-    global cache
-    global cnt
-#    print(whereami,end="")
-#    print("Arriving at "+whereami+"\n")
-    neighbors=GG[whereami]
+# find the way out...
 
-    #if distance>=best:
-    #    return(distance,whereami)
-    
-    if not neighbors:
-#        print (str(cnt)+": all visited \n"+str(best))
-        return(0,whereami)
+def findtheway(graphs, currentgraph):
 
-    if not whereami:
-        return(0, "")
-
-    bestdist=66666666666
-    bestpath=[]
-
-    b=GG.nodes()
-    alln="".join(b)
+    # four graphs. find options
 
     
-    if ((whereami+alln) in cache.keys()):
-        #cnt=cnt+1
-        #        
-       # if (cnt % 10000) == 0:
-#            print (str(cnt)+" "+str(depth))
-#            print ("cache hit: "+str(cnt)+" "+whereami+alln+" "+str(cache[whereami+alln])+"\n")
-        #    print ("Standing at "+whereami+" rem: "+alln + "dist "+str(distance)+"\n")
-        return cache[whereami+alln]
-
-    
-    import copy 
-
-    GGG = popaway(GG, whereami)
-
     
 
-
-
-
-
-    #cnt=cnt+1
-
-
-    #keylist=[a for (a,b) in sorted(GG[whereami].items(), key=lambda edge: edge[1]['weight'])]
-    #    print(keylist)
-
-    keylist=GG.neighbors(whereami)
-    for i in keylist:
-
-        
-        # don't go in circles (yet) - this doesnt work, we need to collapse the nodes...
-
-
-
-        # if we don't have the key, we don't go there
-        if i.isupper():
-            if not (i.lower() in havekeys):
-                continue
-            else:
-                pass
-
-
-        if i.islower(): # key
-            temphavekeys=havekeys+i
-            if GGG.has_node(i.upper()):
-                PGG = copy.deepcopy(GGG)
-                PGG = popaway(PGG, i.upper())
-                #print ("Unlocked door by removing "+i.upper()) # should possibly be replaced by a node removal...
-            else:
-                temphavekeys=havekeys
-                PGG = GGG
-        else:
-            temphavekeys=havekeys
-            PGG = GGG
-        
-        # remove the node we are at, and only keep the nodes that we are not at
-
-            
-        (newdist, newpath) = opt(PGG, i, distance+neighbors[i]["weight"], visited+whereami,temphavekeys,depth+1,min(best,bestdist))
-        if (newdist+neighbors[i]["weight"]) < bestdist:
-            bestpath = whereami+newpath
-            bestdist = newdist+neighbors[i]["weight"]
-
-    if distance==0:
-        print (str(bestpath)+" = "+str(bestdist))
-        totweight=nx.subgraph(GG,bestpath).size(weight="weight")
-            
-    cache[whereami+alln] = (bestdist, bestpath)
-    return (bestdist, bestpath)
-            
     
     
 main(None)
@@ -386,7 +300,7 @@ for i in range(0,4):
     graphs.append(nx.subgraph(G,nx.node_connected_component(G,"@"+str(i))))
     
     
-
+findtheway(graphs)
 
 
 
