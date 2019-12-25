@@ -179,8 +179,8 @@ def main(ko):
     stdscr=ko
     G = nx.Graph()
     
-    maze = readmaze("smallinput4.txt")
-    #maze = readmaze("input2.txt")
+    #maze = readmaze("smallinput4.txt")
+    maze = readmaze("input2.txt")
     printmaze(maze)
     if stdscr:
         stdscr.refresh()
@@ -274,6 +274,8 @@ def popaway(GG, what):
 
 def findtheway(graphs, currentnodes):
 
+    global cache
+    
     # four graphs. find options
 
     ngb = [None,None,None,None]
@@ -281,10 +283,18 @@ def findtheway(graphs, currentnodes):
     for i in range(0,4):
         ngb[i]=list(graphs[i].neighbors(currentnodes[i]))
         ngb[i] = list(filter(lambda x: x.islower(), ngb[i]))
-        print(list(ngb[i]))
+        #        print(list(ngb[i]))
 
     if ngb == [[],[],[],[]]:
         return (0, "")
+
+    flatten = lambda l: [item for sublist in l for item in sublist] # https://stackoverflow.com/questions/952914/how-to-make-a-flat-list-out-of-list-of-lists
+    fingerprint = "".join(currentnodes)+"".join(flatten(ngb))
+
+    if fingerprint in cache.keys():
+        return cache[fingerprint]
+
+    print(str(ngb))
     
     # these are the items that are next in line in each graph that we can move to
     # iterate over those items
@@ -317,6 +327,7 @@ def findtheway(graphs, currentnodes):
                 mcost = dist+graphs[i][currentnodes[i]][j]["weight"]
                 mpath = currentnodes[i] + path
 
+    cache[fingerprint] = (mcost, mpath)
     return (mcost, mpath)
             
     
@@ -345,7 +356,8 @@ graphs = list()
 for i in range(0,4):
     graphs.append(nx.subgraph(G,nx.node_connected_component(G,"@"+str(i))))
     
-    
+
+cache = dict()
 print(findtheway(graphs,["@0","@1","@2","@3"]))
 
 
