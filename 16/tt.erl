@@ -16,12 +16,13 @@ pattern(N, Length) ->
     lists:reverse(lists:nthtail(length(RepeatedPattern)-Length-1, lists:droplast(lists:reverse(RepeatedPattern)))).
 
 shortpattern(N, Length) ->
+    io:fwrite("ShortPattern Length: ~B\n", [Length]),
     % starts with "Row-1" zeros, we don't want those
     FirstPattern = lists:flatten(lists:map(fun(X)->
 						  lists:duplicate(N, X) end, [1,0,-1])),
     BasePattern = lists:flatten(lists:map(fun(X)->
 						  lists:duplicate(N, X) end, pattern(1))),
-    Instances = (Length div length(BasePattern)),
+    Instances = ((Length-N) div length(BasePattern)),
     io:fwrite("B: ~B\n", [Instances]),
     if
 	Instances>0 ->
@@ -29,11 +30,13 @@ shortpattern(N, Length) ->
 	    lists:append(FirstPattern,
 			 lists:reverse(
 			   lists:nthtail(
-			     length(RepeatedPattern)-Length-1, 
+			     Length-length(RepeatedPattern)-1, 
 			     lists:droplast(
 			       lists:reverse(RepeatedPattern)))));
 	true ->
-	    FirstPattern
+	    {PPP,_} = lists:split(Length,FirstPattern),
+	    io:fwrite("FP Length: ~B\n", [length(PPP)]),
+	    PPP
     end.
 
 % the message is 631 long which means that the repeated pattern is like 100000000 characters long
@@ -98,8 +101,10 @@ app2(Signal, Row, Acc, Mults) ->
 	    
 	    io:fwrite("Mults: ~B\n",[Mults]),
 	    Pattern = shortpattern(Row, Mults*Length),
-	    {_,GROK} = lists:split(length(Pattern),lists:flatten(lists:duplicate(Mults,Signal))),
-	    SumP = combinator(Pattern, GROK),
+	    Bop = lists:flatten(lists:duplicate(Mults,Signal)),
+	    io:fwrite("PatL: ~B, SigL: ~B\n", [length(Pattern), length(Bop)]),
+	    {_,GROK} = lists:split(length(Pattern),lists:reverse(Bop)),
+	    SumP = combinator(Pattern, lists:reverse(GROK)),
 	    {[abs(SumP rem 10)|AccP], SumP};
 		
 	true ->
