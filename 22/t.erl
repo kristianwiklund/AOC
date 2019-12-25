@@ -113,12 +113,36 @@ rewot(Wot,S,M) ->
 
     {F,t:bignum()+F}.
     
+mdiv(A,B,N) ->
+    A1 = A rem N,
+    Inv = lin:inv(B, N),
+    case Inv of
+	no_inverse ->
+	    -1;
+	_ ->
+	    A1*Inv rem N
+    end.
+
+iterations() ->
+    101741582076661.
 
 t(P)->    
     X=tinput:tinput({0,1,P}),
     %io:fwrite("~p\n",[X]),
-    {S,M,Wot} = X,
-    Test = Wot =/= ((S+M*P) rem t:bignum()),
+    {TS,TM,Wot} = X,
+
+    M = lin:pow(TM,iterations(),bignum()), % OK
+    SSS = mdiv(M-1,TM-1,t:bignum()),
+    S = (TS*SSS) rem bignum(),
+    
+    
+		    
+    
+    io:fwrite("~B,~B ~B,~B\n",[TM,M, TS, S]),
+    
+    
+
+    Test = (iterations()==1) and (Wot =/= ((S+M*P) rem t:bignum())),
     if 
 	Test ->
 	    io:fwrite("ERROR: ~B ~B\n",[Wot,(S+M*P) rem t:bignum()]);
@@ -130,8 +154,10 @@ t(P)->
     K=rewot(2020, S, M),
     
 
-    io:fwrite("Wot: ~B, P: ~B Y: ~p K: ~p\n",[Wot, P,Y, K]).
-
+    io:fwrite("Wot: ~B, P: ~B Y: ~p K: ~p\n",[Wot, P,Y, K]),
+    io:fwrite("Banana: ~B\n", 
+	      [mdiv(t:bignum()+2020-S, M, t:bignum())]).    
+    
 
     % solve for (A*C mod B = 1
     % (M*X+S) mod B = Wor
