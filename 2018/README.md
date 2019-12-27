@@ -7,4 +7,6 @@ AOC 2018, done after the fact.
 * 3 - c
 * 4 - shell script
 * 5 - shell script
+* 7 - python
+* 8 - erlang
 
