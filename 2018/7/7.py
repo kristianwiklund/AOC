@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 
 G = nx.DiGraph()
 
-with open ("shortinput.txt") as fd:
-#with open ("input.txt") as fd:
+#with open ("shortinput.txt") as fd:
+with open ("input.txt") as fd:
 
     for  line in fd:
         x = line.split(" ")
@@ -22,12 +22,13 @@ print("7A :"+"".join(helalistan))
 #ACHOQRXSEKUGMYIWDZLNBFTJVP
 
 time=0
-workers = [0,0]
-doing = [None, None]
+workers = [0,0,0,0,0,0,0,0,0,0]
+doing = [None, None,None,None,None,None,None,None,None]
+
 
 while list(G.nodes()) != []:
 
-    for i in range(0,2):
+    for i in range(0,6):
 
         if workers[i] <= 0:
             # finish what was done, then pull something
@@ -43,7 +44,7 @@ while list(G.nodes()) != []:
                     if G.has_node(j) and list(G.predecessors(j)) == []:
                         print ("Worker "+str(i)+" pulls node "+j)
                         doing[i] = j
-                        workers[i] = ord(j)-65
+                        workers[i] = 60+ord(j)-65
                         break
             
         else:
