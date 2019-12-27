@@ -33,7 +33,7 @@ while list(G.nodes()) != []:
         if workers[i] <= 0:
             # finish what was done, then pull something
             if doing[i]:
-                print ("Worker "+str(i)+" is done with "+doing[i])
+#                print ("Worker "+str(i)+" is done with "+doing[i])
                 G.remove_node(doing[i])
                 doing[i] = None
                 
@@ -42,7 +42,7 @@ while list(G.nodes()) != []:
                 if not j in doing:
                     #print ("Nobody is working on "+j)
                     if G.has_node(j) and list(G.predecessors(j)) == []:
-                        print ("Worker "+str(i)+" pulls node "+j)
+ #                       print ("Worker "+str(i)+" pulls node "+j)
                         doing[i] = j
                         workers[i] = 60+ord(j)-65
                         break
@@ -50,11 +50,11 @@ while list(G.nodes()) != []:
         else:
             workers[i] = workers[i] - 1
 
-    print("Tick: "+str(time) + " working on "+str(doing))
+  #  print("Tick: "+str(time) + " working on "+str(doing))
     time=time+1
 
 
-print(time-1)
+print("Total time for assembly: "+str(time-1))
 
     
     
