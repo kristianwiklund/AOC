@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INPUT=smallinput.txt
+INPUT=input.txt
 
 mkheader() {
 
@@ -21,6 +21,16 @@ char data[MAXY+1][MAXX+1];" >> 6.h
 }
 
 mkheader 2
+rm -f 6
+make 6
+./6 > out.tmp
+awk -vFS="" '{for(i=1;i<=NF;i++)w[$i]++}END{for(i in w) print i,w[i]}' out.tmp > 6a1.tmp
 
-#awk -vFS="" '{for(i=1;i<=NF;i++)w[$i]++}END{for(i in w) print i,w[i]}'
+mkheader 10
+rm -f 6
+make 6
+./6 > out.tmp
+awk -vFS="" '{for(i=1;i<=NF;i++)w[$i]++}END{for(i in w) print i,w[i]}' out.tmp > 6a2.tmp
+
+fgrep -f 6a1.tmp 6a2.tmp | sort -n -k 2
 
