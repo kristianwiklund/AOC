@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 G = nx.DiGraph()
 
-with open ("input.txt") as fd:
+with open ("shortinput.txt") as fd:
 
     for  line in fd:
         x = line.split(" ")
@@ -13,4 +13,30 @@ with open ("input.txt") as fd:
 
 nx.draw(G,  with_labels=True)
 plt.savefig("maze.png")
-print("".join(list(nx.lexicographical_topological_sort(G))))
+print("7A :"+"".join(list(nx.lexicographical_topological_sort(G))))
+
+# ---------------------
+
+#ACHOQRXSEKUGMYIWDZLNBFTJVP
+
+def canwe (G, node, done):
+
+    # try pulling the current node
+    # to be able to do that, all predecessors to the node must be in the "done" set
+
+    pre = G.predecessors(node)
+
+    if set(pre) > set(done):
+        print("cannot pull "+current+" due to preconditions")
+        return False
+
+    # do the work
+
+    return True
+
+
+def work(G):
+
+    for i in G:
+
+
