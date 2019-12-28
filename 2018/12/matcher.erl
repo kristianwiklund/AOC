@@ -1,5 +1,5 @@
 -module(matcher).
--export([match/1,match/2]).
+-export([match/1]).
 % ._.##
 match([A,B,C,D,E|STR], Acc) when {$.,$.,$#,$#,$T} == {A,C,D,E,$T} ->
 REM = [B,C,D,E|STR],
@@ -31,5 +31,4 @@ match(REM,"#"++Acc);
 match([_|STR],Acc) ->
 match(STR,"."++Acc);
 match(_,Acc) -> Acc.
-match(S) -> X=lists:reverse(match(lists:flatten(io_lib:format(".....~s.....",[S])),"..")),
-	    string:trim(X,both,".").
+match(S) -> lists:reverse(match(lists:flatten(io_lib:format(".....~s.....",[S])),"..")).

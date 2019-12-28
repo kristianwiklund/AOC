@@ -1,8 +1,7 @@
 -module(t).
--export([t/0,tt/1, foo/0]).
+-export([t/0,tt/1, foo/0,t2/0]).
 
-t() ->
-    ITERS=20,
+t(ITERS) ->
     {Q,_} = lists:mapfoldl(fun(_,X)->
 				   A=matcher:match(X),{A,A} end, "##.##.#.#...#......#..#.###..##...##.#####..#..###.########.##.....#...#...##....##.#...#.###...#.##", lists:seq(1,ITERS)),
     P = lists:nth(ITERS,Q),
@@ -17,7 +16,8 @@ t() ->
     lists:foldl(fun(X,A)->X+A end,0,U).
 	
 
-    
+t()->    
+    t(20).
     
 tt(ITERS) ->
     {Q,_} = lists:mapfoldl(fun(_,X)->
@@ -25,15 +25,19 @@ tt(ITERS) ->
     P = lists:nth(ITERS,Q).
 
 foo(N, Acc) ->	
-    X = tt(N),
+    X = string:trim(tt(N),both,"."),
     Test = maps:is_key(X, Acc),
     if 
 	Test ->
-	    io:fwrite("Match at ~B\n", [N]),
-	    exit(normal);
+	    io:fwrite("Match at ~B, previous was ~B\n", [N,maps:get(X,Acc)]);
        true ->
-	    foo(N+1,maps:put(X, "1", Acc))
+	    foo(N+1,maps:put(X, N, Acc))
     end.
 
 foo() ->
-    foo(100,#{}).
+    A = lists:seq(185,200),
+    B = lists:map(fun(X)->t(X) end, A).
+
+t2()->
+    (50000000000-200)*96+t(200).
+
