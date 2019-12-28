@@ -9,4 +9,6 @@ AOC 2018, done after the fact.
 * 5 - shell script
 * 7 - python
 * 8 - erlang
+* 10 - erlang
+* 12 - erlang with code generation
 
