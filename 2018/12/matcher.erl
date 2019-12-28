@@ -35,4 +35,4 @@ match(REM,"#"++Acc);
 match([_|STR],Acc) ->
 match(STR,"."++Acc);
 match(_,Acc) -> Acc.
-match(S) -> lists:reverse(match(lists:flatten(io_lib:format(".....~s.....",[S])),".")).
+match(S) -> lists:reverse(match(lists:flatten(io_lib:format(".....~s.....",[S])),"..")).

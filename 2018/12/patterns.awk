@@ -26,6 +26,6 @@ BEGIN {
 END {print "match([_|STR],Acc) ->";
 	print "match(STR,\".\"++Acc);"
 	print "match(_,Acc) -> Acc.";
-	print "match(S) -> lists:reverse(match(lists:flatten(io_lib:format(\".....~s.....\",[S])),\".\"))."
+	print "match(S) -> lists:reverse(match(lists:flatten(io_lib:format(\".....~s.....\",[S])),\"..\"))."
 }
 
