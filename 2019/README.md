@@ -8,3 +8,5 @@ Not using Erlang:
 * Day 15 task 2 was done in C. I got tired of coding and the solution was obvious. 
 * Day 18 - python. was probably marginally easier. abusing globals
 * Day 20 - reusing the code from day 18
+
+Need "cecho" https://github.com/mazenharake/cecho for graphics, in those parts that use graphics. This lib need to be located in parallel to this repo. (However, the include paths are wrong at the moment due to the move to a 2019 subdir)
