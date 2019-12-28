@@ -4,7 +4,7 @@
 t() ->
     ITERS=20,
     {Q,_} = lists:mapfoldl(fun(_,X)->
-				   A=matcher:match(X),{A,A} end, "#..#.#..##......###...###", lists:seq(1,ITERS)),
+				   A=matcher:match(X),{A,A} end, "##.##.#.#...#......#..#.###..##...##.#####..#..###.########.##.....#...#...##....##.#...#.###...#.##", lists:seq(1,ITERS)),
     P = lists:nth(ITERS,Q),
     {U,_}=lists:mapfoldl(fun(X,Acc)->
 			if X==$# ->
