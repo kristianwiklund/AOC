@@ -7,8 +7,9 @@ while True:
     m = hashlib.md5()
     m.update(pre+str(banana))
 
-    if(m.hexdigest().startswith("00000")):
-        print (banana)
+    x = m.hexdigest()
+    if(x.startswith("000000")):
+        print (str(banana)+" "+x)
         sys.exit()
     
     banana = banana + 1
