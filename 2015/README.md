@@ -7,3 +7,4 @@ Language choices:
 * 5 - grep. 
 * 7 - python. networkx
 * 9 - python. networkx
+* 10 - erlang. list manipulation
