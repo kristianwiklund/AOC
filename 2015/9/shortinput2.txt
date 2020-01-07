@@ -1,0 +1,10 @@
+A to B = 12
+A to C = 10
+A to D = 19
+A to E = 8
+B to C = 3
+B to D = 7
+B to E = 2
+C to D = 6
+C to E = 20
+D to E = 4

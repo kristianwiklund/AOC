@@ -5,3 +5,5 @@ Language choices:
 * 1 - sed + bc + nc
 * 4 - python, for access to md5 library 
 * 5 - grep. 
+* 7 - python. networkx
+* 9 - python. networkx
