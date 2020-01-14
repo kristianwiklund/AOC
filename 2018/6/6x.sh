@@ -1,3 +1,3 @@
 #!/bin/bash
 
-awk -f 6.awk < smallinput.txt
+awk -f 6.awk < $1

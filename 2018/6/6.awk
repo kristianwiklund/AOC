@@ -49,7 +49,7 @@ END {
 	mkm[i] =  mkm["MaxX"i]  &&  mkm["MinX"i]  && mkm["MaxY"i] && mkm["MinY"i]
 	
 	if  (mkm[i]) {
-	    print i,"is not infinite"
+	    print i":"
 	    
 	}
 	
