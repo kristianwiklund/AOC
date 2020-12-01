@@ -1,2 +1,2 @@
-1: bash
+1: bash scripts
 
