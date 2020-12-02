@@ -2,5 +2,6 @@ I will use languages in this order of preference: bash scripts (with support fro
 
 Language per day
 ================
-1: bash scripts
+1: bash 
+2: bash
 
