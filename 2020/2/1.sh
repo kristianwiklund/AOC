@@ -1,9 +1,4 @@
-#!/bin/sh
-
-# process one line at a time
-# $1 is the number of chars allowed (range)
-# $2 is the char plus a :
-# $3 is the password
+#!/bin/bash
 
 function x {
     IFS=- read -a L <<< $1
