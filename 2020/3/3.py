@@ -4,9 +4,8 @@ def check(dx,dy):
     f=open("input","r")
     l=f.readlines()
     l=[l.strip('\n\r') for l in l]
-    #print(l)
-    dx=3
-    dy=1
+
+
     x=0
     y=0
 
@@ -22,6 +21,7 @@ def check(dx,dy):
         y+=dy
 
     return (c)
-        
-c=check(3,1)
-print(c)
+
+print("1: "+str( check(3,1)))
+print("2: "+str(check(1,1)*check(3,1)*check(5,1)*check(7,1)*check(1,2)))
+
