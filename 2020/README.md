@@ -2,7 +2,7 @@ I intend to do whatever can be done in bash/shell scripts, supplemented by pytho
 
 Language per day
 ================
-1) shell script 
+1) shell script  (and a later solution in erlang)
 2) shell script
 3) python (and also later done with shell script)
 4) shell script
