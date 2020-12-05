@@ -6,4 +6,5 @@ Language per day
 2) shell script
 3) python
 4) shell script
-5) Erlang
+5) Erlang (and a one-liner in bash after I woke up and realize what the algorithm actually was :-))
+
