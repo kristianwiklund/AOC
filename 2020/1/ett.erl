@@ -7,11 +7,11 @@ a() ->
 			 V == 2020
 		 end,
 		 lists:flatten(lists:map(fun(X)->
-				   lists:map(
-				     fun(Y) ->
-					     {X+Y,X,Y} 
-				     end,
-				     input:long())
-			   end,
+						 lists:map(
+						   fun(Y) ->
+							   {X+Y,X,Y} 
+						   end,
+						   input:long())
+					 end,
 					 input:long()))),
     A*B.
