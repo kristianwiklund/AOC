@@ -1,4 +1,4 @@
-I will use languages in this order of preference: bash scripts (with support from cli utilities), python, C, erlang, with adjustments for things that are obviously easier for me in certain languages (pattern matching, big integers -> erlang, graphs -> python, C -> horrible globals, and so on)
+I intend to do whatever can be done in bash/shell scripts, supplemented by python, C, erlang, for things that are obviously easier for me in certain languages (pattern matching, big integers -> erlang, graphs -> python, C -> horrible globals, and so on)
 
 Language per day
 ================
