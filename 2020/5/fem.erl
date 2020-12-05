@@ -1,5 +1,6 @@
 -module(fem).
 -export([one/1]).
+-export([two/1]).
 -export([rc/3]).
 -export([calc/1]).
 
@@ -35,6 +36,19 @@ one(_,Acc) ->
 one(X) ->
     [{_,_,Id}|_] = lists:reverse(lists:keysort(3,one(X,[]))),
     Id.
+
+two(X) ->
+    L1=lists:keysort(3,one(X,[])),
+    L2=lists:map(fun({_,_,Id}) ->
+			 Id
+		 end, L1),
+    {Min,Max}={lists:min(L2),lists:max(L2)},
+    R2=sets:from_list(lists:seq(Min,Max)),
+    R1=sets:from_list(L2),
+    sets:to_list(sets:subtract(R2,R1)).
+    
+
+
     
 
     
