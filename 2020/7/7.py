@@ -40,6 +40,22 @@ def bop(G, l):
         s=s.union(x)
            
     return (s)
+
+def bap(G, n, l):
+
+    t = l
+    s = 0
+
+    if len(l) == 0:
+        return 1
+    for i in l:
+        w = G.edges[n, i]["weight"]
+
+        x = bap(G,i, list(G.successors(i)))
+#        print(n+"->"+str(w)+"->"+i+" = "+str(x))
+        s=s+w*x
+           
+    return (s+1)
         
 with open ("input") as fd:
     
@@ -49,15 +65,18 @@ with open ("input") as fd:
 
 
     if "shiny gold" in G:
-        print ("Found shiny gold!")
 
         n = bop(G, list(G.predecessors("shiny gold")))
-        print(len(n))
+        print("A="+str(len(n)))
         Y = G.subgraph(list(n)+["shiny gold"])
 #        print(list(Y))
         nx.draw(Y,  with_labels=True)
         plt.savefig("bags.png")
         
-        
+        # -----
 
-                                            
+        m = bap(G, "shiny gold", list(G.successors("shiny gold")))
+        print("B="+str(m-1))
+
+
+
