@@ -29,14 +29,15 @@ function b() {
 	grep -v "[0-9]$" < tmp4 | grep -v ")$"  > out
 	
 #	egrep "[0-9]$" < tmp4  | sed 's/^\(.*\) contains*/\1 (1+/' | sed 's/$/)/' >> out
-	egrep "[0-9])*$" < tmp4  | sed 's/^\(.*\) contains*/\1 (1+/' | sed 's/$/)/' >> out
+	egrep "[0-9])*$" < tmp4  | sed 's/^\(.*\) contains* \(.*\)$/\1 (1+\2)/' >> out
 
 
-	Y=`grep "^shiny gold" result`
-	X=`grep "^shiny gold" result | sed 's/bags//' | grep -v bag`
-	echo $Y	
+	Y=`grep "^shiny gold" out`
+	X=`grep "^shiny gold" out | sed 's/bags//' | grep -v bag`
+
 	if [ "a$X" != "a" ]; then
-	    echo $X
+	    val=`echo $X| cut -d ' ' -f 3-|bc -l`
+	    expr $val - 1
 	    exit
 	fi
     done
