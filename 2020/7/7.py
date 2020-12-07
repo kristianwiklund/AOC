@@ -69,8 +69,11 @@ with open ("input") as fd:
         n = bop(G, list(G.predecessors("shiny gold")))
         print("A="+str(len(n)))
         Y = G.subgraph(list(n)+["shiny gold"])
-#        print(list(Y))
-        nx.draw(Y,  with_labels=True)
+        #        print(list(Y))
+        #        pos = nx.circular_layout(Y, k=0.2, iterations=100)
+        #        pos = nx.circular_layout(Y)
+        pos = nx.kamada_kawai_layout(Y)
+        nx.draw_networkx(Y, pos, node_size=30, font_size=5, with_labels=True)
         plt.savefig("bags.png")
         
         # -----
