@@ -1,11 +1,12 @@
 
 	*)
 	    echo "Terminated"
-	    exit
+	    exit 0
 	    ;;
-	esac;
-    MemMap[$PC]=1
-    let PC++
+	  esac;
+ 
+     let PC++
+
     printf "| %8s | %8d | %8d |\n" "$I" "$OPC" "$ACC"
     
 
@@ -20,10 +21,11 @@ function run() {
     while [ -z ${MemMap[$PC]}  ]; do
 
 	cpu
-
-	
 	
     done
+    echo "Crash"
+    echo "PC: $PC - ${MemMap[$PC]} "
+    exit 1
     
 }
 
