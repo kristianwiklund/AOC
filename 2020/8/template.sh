@@ -8,8 +8,7 @@ declare MemMap
 
 function cpu() {
 
-    echo "| $PC | $ACC"
-    
+    let OPC=$PC
     case $PC in
 
 	#KODDEN

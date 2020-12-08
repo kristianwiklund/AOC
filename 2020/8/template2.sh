@@ -1,11 +1,14 @@
 
 	*)
-	    echo "Segmentation fault"
+	    echo "Terminated"
 	    exit
 	    ;;
 	esac;
     MemMap[$PC]=1
     let PC++
+    printf "| %8s | %8d | %8d |\n" "$I" "$OPC" "$ACC"
+    
+
 }
 
 function run() {

@@ -1,7 +1,9 @@
 # first part of case statement
 function pre() {
     print (IC")");
-    IC=IC+1;
+    print ("I=\""$0"\"");
+    IC=IC+1;	  
+
 }
 function post() {
     print (";;");
