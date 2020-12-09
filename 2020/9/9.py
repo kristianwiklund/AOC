@@ -6,8 +6,9 @@ preamble=25
 def check(x, stack):
 
     p = range(0,len(stack))
-    t = sum([[(stack[x]+stack[y]) for x in p if x!=y] for y in p],[])
-
+    t = [[(stack[x]+stack[y]) for x in p if x!=y] for y in p]
+    t = [i for s in t for i in s]
+    
     return (x in t)
 
 def ingest(i, stack, mymax, helalistan):
@@ -36,7 +37,7 @@ def fulcheck(talet, hl):
             
     l = hl[a[0]:a[1]]
     
-    print(min(l)+max(l))
+    print("B:"+str(min(l)+max(l)))
     
 # ---
 fd = open('input', 'r')
@@ -45,7 +46,7 @@ fd = open('input', 'r')
 stack = list()
 hl = list() # hela listan
 
-# get the first five
+# get the first (twenty-)five
 for i in range(0,preamble):
     x = readint(fd)
     ingest(x, stack, preamble, hl)
@@ -55,16 +56,12 @@ for i in range(0,preamble):
 
 while True:
 
-    try:
-        x = readint(fd)
-    except:
-        sys.exit()
+    x = readint(fd)
 
     if (not check(x, stack)):
         print("Wrong number: "+str(x))
 
         li = fulcheck(x, hl)
-        print(li)
         sys.exit()
     
     ingest(x, stack, preamble, hl)
