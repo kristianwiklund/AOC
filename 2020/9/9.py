@@ -10,33 +10,46 @@ def check(x, stack):
 
     return (x in t)
 
-def ingest(i, stack, mymax):
+def ingest(i, stack, mymax, helalistan):
 
     stack.append(i)
+    helalistan.append(i)
     
     if(len(stack) > mymax):
         stack.pop(0)
 
-    return(stack)
 
 def readint(fd):
     l = fd.readline()
     l.strip("\n\r ")
 
     return(int(l))
+
+# find a sequence in hl that sum up to x
+def fulcheck(talet, hl):
+    r = range(0, len(hl))
+
+    u = [[(x,y,sum(hl[x:y])) for x in r if x<y] for y in r]
+    u = [i for s in u for i in s]
+
+    a = [[x,y] for x,y,s in u if s==talet][0]
+            
+    l = hl[a[0]:a[1]]
+    
+    print(min(l)+max(l))
     
 # ---
 fd = open('input', 'r')
 
 
 stack = list()
+hl = list() # hela listan
 
 # get the first five
 for i in range(0,preamble):
     x = readint(fd)
-    ingest(x, stack, preamble)
+    ingest(x, stack, preamble, hl)
 
-print (stack)
 
 # then go on working
 
@@ -49,6 +62,9 @@ while True:
 
     if (not check(x, stack)):
         print("Wrong number: "+str(x))
+
+        li = fulcheck(x, hl)
+        print(li)
         sys.exit()
     
-    ingest(x, stack, preamble)
+    ingest(x, stack, preamble, hl)
