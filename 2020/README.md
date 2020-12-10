@@ -11,3 +11,4 @@ Language per day
 7) python (and shell. Easier for #1, a bit more complex for #2)
 8) bash
 9) python
+10) bash (part 1), python (part 2)
