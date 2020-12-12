@@ -88,7 +88,7 @@ int main() {
      p = bapp(which);
      
      //     puts("------");
-     printf("%d: %d\n", which, p);
+     //     printf("%d: %d\n", which, p);
      which=1-which;
    } while(p>0);
 
@@ -104,9 +104,9 @@ int main() {
       
       if (c[y][x]=='#')
 	p++;
-      printf("%c",c[y][x]);
+      //      printf("%c",c[y][x]);
     }
-    puts("");
+    //puts("");
   }
   
       printf("%d occupied seats\n", p);
