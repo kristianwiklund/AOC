@@ -13,3 +13,4 @@ Language per day
 9) python
 10) bash (part 1), python (part 2)
 11) C 
+12) shell script
