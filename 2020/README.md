@@ -14,3 +14,4 @@ Language per day
 10) bash (part 1), python (part 2)
 11) C 
 12) (mostly) awk
+13) shell
