@@ -17,19 +17,10 @@ class Mem(dict):
 
 
 class Mem2(dict):
-    thekeepmask=0b111111111111111111111111111111111111
-    thesetmask = 0
-    thewildcardmask = ""
+    themask = "111111111111111111111111111111111111"
 
     def setmask(self, mask):
-        
-        #        print(mask)
-        b = int(mask.replace("X","1"),2)
-        self.thekeepmask =   (~b) + 0b111111111111111111111111111111111111
-        self.thesetmask = int(mask.replace("X","0"),2)
-        #        self.tsmask=mask
         self.themask = mask
-        #print(self.thewildcardmask)
 
     def recurse(self, s):
 
@@ -49,14 +40,8 @@ class Mem2(dict):
         return (l)
         
     def __setitem__(self, key, value):
-        # wildcard match what already is in the memory
-        # replace (fold) those into a single line
-        
-        #fkey = key & self.thekeepmask
-        #fkey = fkey | self.thesetmask
-
         bopp = str(bin(key))[2:].zfill(36)
-        #print("bopp:" +bopp)
+
         k=list()
         for i in range(0,36):
             if self.themask[i] == 'X' or self.themask[i] == '1':
@@ -66,7 +51,7 @@ class Mem2(dict):
         
 
         k= str("".join(k))
-        #print(k)
+
         lists=self.recurse(k)
         
         for i in lists:
