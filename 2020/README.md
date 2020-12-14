@@ -15,3 +15,4 @@ Language per day
 11) C 
 12) (mostly) awk
 13) shell
+14) python supported by shell
