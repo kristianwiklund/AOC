@@ -57,6 +57,3 @@ class Mem2(dict):
         for i in lists:
             super(Mem2, self).__setitem__(i, value)
 
-def sumzor(mem):
-
-    return (sum(mem.values()))
