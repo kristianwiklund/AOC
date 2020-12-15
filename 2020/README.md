@@ -16,4 +16,4 @@ Language per day
 12) (mostly) awk
 13) shell
 14) python supported by shell
-15) erlang, because S-tefan didn't get it right
+15) erlang, because S-tefan didn't get it right, and python to check the erlang solution
