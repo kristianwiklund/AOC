@@ -55,7 +55,7 @@ sayh(N, L, T) ->
     NM = maps:put(N,NewTurns,L),
     {V,NM}.
 
-say2(N,L,3000000)->
+say2(N,L,30000000)->
     N;
 say2(N,L,T) ->
     {V,NL}=sayh(N,L,T),

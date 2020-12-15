@@ -6,7 +6,7 @@ def input():
 
 
 def input2():
-    return     [3,1,2]
+    return     [0,3,6]
 
 def mkim(l):
 
@@ -15,26 +15,25 @@ def mkim(l):
 def sayh(number, mydict, turn):
 
     if number in mydict:
-        mylist = [turn,mydict[number][0]]
+        mylist = [turn]+mydict[number]
     else: 
         mylist = [turn,turn]
-        
-    mydict[number] = mylist
 
     thesum = mylist[0]-mylist[1]
+    mydict[number] = mylist[0:2]
+#    print(mylist)
     return thesum
     
 
 def say2(number, mydict, turns):
 
-    for i in range(turns,2020):
+    for i in range(turns,30000000):
         number = sayh(number, mydict, i)
-        
     return(number)
         
 def ta2():
-    x= mkim(input2())
+    x= mkim(input())
 
-    return say2(0, x,4)
+    return say2(0, x,7)
 
 print (ta2())
