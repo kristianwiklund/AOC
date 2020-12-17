@@ -1,5 +1,3 @@
-I intend to do whatever can be done in bash/shell scripts, supplemented by python, C, erlang, for things that are obviously easier for me in certain languages (pattern matching, big integers -> erlang, graphs -> python, C -> horrible globals, and so on)
-
 Language per day
 ================
 1) shell script  (and a later solution in erlang)
@@ -18,3 +16,4 @@ Language per day
 14) python supported by shell
 15) erlang, because S-tefan didn't get it right, and python to check the erlang solution
 16) python + awk + bash
+17) python
