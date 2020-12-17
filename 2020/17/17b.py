@@ -9,11 +9,12 @@ def parsinator(x):
 
     return (s,0,0,0,0,len(x)-1,len(x[i])-1,0,0)
 
+banana = [(a,b,c,d) for a in [-1,0,1] for b in [-1,0,1] for c in [-1,0,1] for d in [-1,0,1] if (a,b,c,d)!=(0,0,0,0)]
     
 def count(s,x,y,z,w):
     
-    nb = [(a+x,b+y,c+z,d+w) for a in [-1,0,1] for b in [-1,0,1] for c in [-1,0,1] for d in [-1,0,1] if (a,b,c,d)!=(0,0,0,0) and (a+x,b+y,c+z,d+w) in s ]
-
+    #nb = [(a+x,b+y,c+z,d+w) for a in [-1,0,1] for b in [-1,0,1] for c in [-1,0,1] for d in [-1,0,1] if (a,b,c,d)!=(0,0,0,0) and (a+x,b+y,c+z,d+w) in s ]
+    nb = [(t[0]+x,t[1]+y,t[2]+z,t[3]+w) for t in banana if (t[0]+x,t[1]+y,t[2]+z,t[3]+w) in s ]
 
     return len(nb)
 
@@ -55,6 +56,7 @@ def sim(space):
     return (ns,minx,miny,minz,minw,maxx,maxy,maxz,maxw)
 
 def draw(space):
+    return
     (s,minx,miny,minz,minw,maxx,maxy,maxz,maxw) = space
 
     for w in range(minw,maxw+1):

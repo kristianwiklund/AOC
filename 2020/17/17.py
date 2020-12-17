@@ -51,6 +51,7 @@ def sim(space):
     return (ns,minx,miny,minz,maxx,maxy,maxz)
 
 def draw(space):
+    return
     (s,minx,miny,minz,maxx,maxy,maxz) = space
 
     for z in range(minz,maxz+1):
