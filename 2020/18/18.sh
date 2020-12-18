@@ -27,7 +27,7 @@ function cs() {
 # idea: break the string at () then run each part as above
 #read -a X < <(echo "1 + (2 * 3) + (4 * (5 + 6))"|rev|tr -d ' '|tr '()' '  ' )
 
-
+# this almost work, but it doesn't descend properly if we have ((
 function c {
 
  read -a X < <(echo "$@"|tr '(' '\n'  | tac | tr -d ') '|tr '\n' ' '  )
