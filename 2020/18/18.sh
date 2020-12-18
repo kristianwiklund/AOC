@@ -15,9 +15,9 @@
 
 function cs() {
     # simple fulkod without () +
-    T=$1
-    EXP=`echo $T|tr  '[0-9]' ' '`
-    NUM=`echo $T|tr  '+*' '  '|rev`
+    T="$1"
+    EXP=`echo "$T"|tr  '[0-9]' ' '`
+    NUM=`echo "$T"|tr  '+*' '  '|rev`
     echo "$NUM $EXP"
 }
 
@@ -30,11 +30,12 @@ function cs() {
 # this almost work, but it doesn't descend properly if we have ((
 function c {
 
- read -a X < <(echo "$@"|tr '(' '\n'  | tac | tr -d ') '|tr '\n' ' '  )
- echo ${X[@]}
- (for i in `seq 0 ${#X[@]}`; do
-      cs `echo ${X[$i]}`
-  done; echo "p")
+    read -a X < <(echo "$@"|tr '()' '\n\n'  | tac | tr -d ') '|tr '\n' ' '  )
+    echo "${X[@]}"| tr ' ' '\n'
+    echo "----"
+    (for i in `seq 0 "${#X[@]}"`; do
+	 cs "`echo "${X[$i]}"`"
+     done; echo "p")| dc
 }
 
 #c "1 + (2 * 3) + (4 * (5 + 6))"
