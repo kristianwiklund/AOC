@@ -17,3 +17,4 @@ Language per day
 15) erlang, because S-tefan didn't get it right, and python to check the erlang solution
 16) python + awk + bash
 17) python
+18) 
