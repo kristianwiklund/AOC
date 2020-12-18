@@ -7,8 +7,15 @@
 #dinput = [0,1,2,3]
 
 x=-1
-kinput= [19,x,x,x,x,x,x,x,x,41,x,x,x,x,x,x,x,x,x,523,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,17,13,x,x,x,x,x,x,x,x,x,x,29,x,853,x,x,x,x,x,37,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,23]
+#kinput= [19,x,x,x,x,x,x,x,x,41,x,x,x,x,x,x,x,x,x,523,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,17,13,x,x,x,x,x,x,x,x,x,x,29,x,853,x,x,x,x,x,37,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,23]
 #kinput = [67,7,x,59,61]
+kinput = [67,7] # 335
+kinput = [335,59] # 9380
+kinput = [9380,61] # 450240
+kinput = [67,7,59,61] # 754018
+
+
+
 t = zip(kinput, range(0,len(kinput)))
 t = filter(lambda x:x[0]>1,t)
 cinput = list()
@@ -26,6 +33,8 @@ for i in cinput[1:]:
 print("max",lcm,lcm//cinput[0])
 
 # lcm is the maximum possible number to hit if there are no requirements on staggering
+
+# brute force. which will take about 48 years or so...
 
 found = False
 for i in range(lcm//cinput[0],1,-1):
