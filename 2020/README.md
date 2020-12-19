@@ -18,4 +18,4 @@ Language per day
 16) python + awk + bash
 17) python
 18) C (bison/lex - based on the bison calculator example). combined with a shell script to sum using dc.  
-19) script
+19) part 1 - script, part 2 - script with grammar generator for antlr (which also solves part 1)
