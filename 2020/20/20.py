@@ -166,7 +166,7 @@ def draw(paper):
             print("")
         print("")
         
-draw(paper)
+#draw(paper)
 
 
 # the next problem is to find out if we are oriented correct.
@@ -178,25 +178,45 @@ draw(paper)
 # so, what points to the right?
 # the first edge does, that's what points to the right
 
+def rpic90(A):
+
+    NA=list()
+#    print("---------")
+#    pprint(A)
+    
+    for y in range(0,10):
+        s = ""
+        for x in range(0,10):
+            s=s+A[x][y]
+        NA.append(s[::-1])
+
+        #    pprint(NA)
+        #    print("---------")
+    return(NA)
+
+
 def rot90(node):
-    print("rot90")
+    #print("rot90")
     #    return (myid, (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A))
     (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A) = node
+    #    print(A)
+    A = rpic90(A)
     return (myid, left ,right,bottom,top,rleft, rright, rbottom, rtop,A)
 
 def rot180(n):
-    print("rot180:")
+    #print("rot180:")
     return rot90(rot90(n))
 
     
 def rot270(n):
-    print("rot270:")
+    #print("rot270:")
     return rot90(rot90(rot90(n)))
 
+draw(paper)
 
 p = list(nx.shortest_path(G,edge[0],edge[1]))[1]
 p = int(p.replace("E",""))
-print (str(edge[0])+"-"+str(edge[1])+" Aligning to "+str(p))
+#print (str(edge[0])+"-"+str(edge[1])+" Aligning to "+str(p))
 
 success=False
 for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x)]:
@@ -213,7 +233,7 @@ if not success:
 def rightalignzor(fromn, ton, pics, G):
     p = list(nx.shortest_path(G,fromn,ton))[1]
     p = int(p.replace("E",""))
-    print (str(fromn)+"-"+str(ton)+" Aligning to "+str(p))
+    #print (str(fromn)+"-"+str(ton)+" Aligning to "+str(p))
 
     success=False
     for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x)]:
@@ -231,5 +251,5 @@ def rightalignzor(fromn, ton, pics, G):
 
 rightalignzor("1951","2729", pics, G)
 rightalignzor("2729","2971", pics, G)
-draw(paper)
-    
+#draw(paper)
+
