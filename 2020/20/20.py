@@ -1,8 +1,17 @@
 #!/usr/bin/python3
 
+# solution:
+# dump everything into a graph
+# plot it
+# look at the corners. done
+
 import copy
 import math
 import sys
+import networkx as nx
+import matplotlib.pyplot as plt
+
+G = nx.Graph()
 
 from pprint import pprint
 
@@ -53,129 +62,16 @@ def getpix(fname):
 
         return pics
 
+pics = getpix("input")
+print (pics)
 
+for i in pics:
+    for j in pics[i]:
+        G.add_edge("N"+str(i)+"N","E"+str(j)+"E")
+        #        print(str(i)+"--"+str(j)+":"+str(pics[i]))
 
-
-def fliphoriz(tile):
-
-    (picid, top,bottom,left,right,rtop,rbottom,rleft,rright) = tile
-
-    return (picid, rtop, rbottom, right, left, top, bottom, rright, rleft)
-
-def flipvert(tile):
-
-    (picid, top,bottom,left,right,rtop,rbottom,rleft,rright) = tile
-
-    return (picid, top, bottom, rleft, rright, rtop, rbottom, left, right)
-
-def rot90(tile):
-    (picid, top,bottom,left,right,rtop,rbottom,rleft,rright) = tile
-
-    return (picid, left, right, rtop,rbottom,rleft,rright, top ,bottom)
-
-def rot180(tile):
-
-    return(rot90(rot90(tile)))
-
-def rot270(tile):
-
-    return(rot90(rot180(tile)))
-
-
-
-def ismatch(ta, tb):
-    #(myid, top,bottom,left,right,rtop,rbottom,rleft,rright) = tile
-    
-    return (ta[1]==tb[2] or ta[2] == tb[1] or ta[3] == tb[4] or ta[4] == tb[3])
-
-def tlist(tile):
-
-    return [tile, rot90(tile), rot180(tile), rot270(tile), flipvert(tile), fliphoriz(tile)]
-
-def matches(tile, hl):
-
-    if len(hl) == 0:
-        return []
-
-    ml = list()
-    
-    for i in hl:
-
-        ri = tlist(hl[i])
-
-        for j in ri:
-
-            if ismatch(tile, j):
-                ml.append(j[0])
-
-    return (ml)
-
-
-def fit(mat, x, y, psize, ml):
-
-    # out of bounds
-    if x < 0 or y < 0 or x>=psize or y>=psize:
-        return []
-
-    # check all populated boxen around this box
-
-    pbox = [mat[(x,y)] for x in range(0,psize) for y in range(0,psize) if (x,y) in mat]
-    print ("All placed around ("+str(x)+","+str(y)+") are "+str(pbox))
-
-    
-    
-
-    
-    
-
-def populatematrix(mat,x,y,pic, hl, ml, unused, psize):
-
-    print("Placing "+str(pic)+" at "+str(x)+","+str(y))
-    mat[(x,y)] = pic
-    unused.remove(pic)
-    pprint(mat)
-    print ("Potential matches: "+str(ml[pic]))
-
-    bv = 0
-    bm = 0
-
-    # for each box that isn't populated in the list below,
-    # find one that might fit, and put it there. Then descend on that box. 
-    for dx,dy in [(-1,0),(1,0),(0,1),(0,-1)]:
-        tmat = copy.copy(mat)
-        # only look at unpopulated
-        if not (x+dx,y+dx) in tmat:
-            candidates = fit(tmat, x+dx,y+dy, psize, ml)
-        
-        
-        
-                  
-# ----- "main" ------
-hl = getpix("input.short")
-#print (hl)
-
-ml = dict()
-
-# find matching tiles for all tiles
-for i in hl:
-    # hl is now a dict
-    x = copy.copy(hl)
-    del x[i]
-    p = matches(hl[i],x)
-    ml[i]=(len(p),p)
-
-
-mlkeys=ml.keys()
-mlkeys = sorted(mlkeys, key=lambda x:-ml[x][0])
-#pprint (mlkeys)
-
-psize = int(math.sqrt(len(ml)))
-middle= psize // 2 + 1
-print ("PSize: "+str(psize)+" x "+str(psize) + ", c = ("+str(middle)+", "+str(middle)+")")
-
-mat = dict()
-
-populatematrix(mat, middle, middle, mlkeys[0], hl, ml, mlkeys, psize)
-
-
+pos = nx.kamada_kawai_layout(G)
+nlist = [x for x in G.nodes() if "N" in x]
+nx.draw_networkx(G, pos, node_size=30, font_size=3, with_labels=True, nodelist=nlist)
+plt.savefig("pix.pdf")
     
