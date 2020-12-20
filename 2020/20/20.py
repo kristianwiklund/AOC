@@ -66,9 +66,11 @@ pics = getpix("input.short")
 #print (pics)
 
 for i in pics:
+
     for j in pics[i]:
-        G.add_edge(str(i),"E"+str(j)+"E")
-        #        print(str(i)+"--"+str(j)+":"+str(pics[i]))
+        if not type(j) is list:
+            G.add_edge(str(i),"E"+str(j)+"E")
+            #            print(str(i)+"--"+str(j)+":"+str(pics[i]))
 
 pos = nx.kamada_kawai_layout(G)
 #nlist = [x for x in G.nodes() if "N" in x]
@@ -155,12 +157,17 @@ for i in range(0, len(edge)):
 
 def draw(paper):
     for i in range(0, len(paper)):
+        for x in range(0,len(paper[i])):
+            print("{node:^10}".format(node=paper[i][x]),end=' ')
+        print("")
         for x in range(0,10):
             for j in range(0, len(paper[i])):
-                print (pics[paper[i][j]][9][x],end='')
+                print (pics[paper[i][j]][9][x],end=' ')
             print("")
-
+        print("")
+        
 draw(paper)
+
 
 # the next problem is to find out if we are oriented correct.
 
@@ -170,5 +177,59 @@ draw(paper)
 
 # so, what points to the right?
 # the first edge does, that's what points to the right
-p = list(nx.shortest_path(G,edge[i],edge2[i]))
-print(p)
+
+def rot90(node):
+    print("rot90")
+    #    return (myid, (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A))
+    (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A) = node
+    return (myid, left ,right,bottom,top,rleft, rright, rbottom, rtop,A)
+
+def rot180(n):
+    print("rot180:")
+    return rot90(rot90(n))
+
+    
+def rot270(n):
+    print("rot270:")
+    return rot90(rot90(rot90(n)))
+
+
+p = list(nx.shortest_path(G,edge[0],edge[1]))[1]
+p = int(p.replace("E",""))
+print (str(edge[0])+"-"+str(edge[1])+" Aligning to "+str(p))
+
+success=False
+for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x)]:
+
+    pics[edge[0]] = i(pics[edge[0]])
+
+    if pics[edge[0]][4] == p or pics[edge[0]][8] == p:
+        success=True
+        break
+
+if not success:
+    print("bad error fail")
+
+def rightalignzor(fromn, ton, pics, G):
+    p = list(nx.shortest_path(G,fromn,ton))[1]
+    p = int(p.replace("E",""))
+    print (str(fromn)+"-"+str(ton)+" Aligning to "+str(p))
+
+    success=False
+    for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x)]:
+
+        ap = i(pics[ton])
+
+        if ap[4] == p or ap[8] == p:
+            success=True
+            pics[ton]=ap
+            break
+
+    if not success:
+        print("bad error fail!")
+    
+
+rightalignzor("1951","2729", pics, G)
+rightalignzor("2729","2971", pics, G)
+draw(paper)
+    
