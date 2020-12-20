@@ -25,8 +25,8 @@ def readone(f):
     A = list()
     # then read the 10 lines
     for i in range(0,10):
-        A.append(f.readline().strip('\n\r').replace("#","1").replace(".","0"))
-
+        A.append(f.readline().strip('\n\r').replace("#","1").replace(".","0"))[::-1]
+    A.reverse()
 
     # process a signature for each tile
 
