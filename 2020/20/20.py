@@ -62,8 +62,8 @@ def getpix(fname):
 
         return pics
 
-pics = getpix("input")
-print (pics)
+pics = getpix("input.short")
+#print (pics)
 
 for i in pics:
     for j in pics[i]:
@@ -71,7 +71,41 @@ for i in pics:
         #        print(str(i)+"--"+str(j)+":"+str(pics[i]))
 
 pos = nx.kamada_kawai_layout(G)
-nlist = [x for x in G.nodes() if "N" in x]
-nx.draw_networkx(G, pos, node_size=30, font_size=3, with_labels=True, nodelist=nlist)
+#nlist = [x for x in G.nodes() if "N" in x]
+#nx.draw_networkx(G, pos, node_size=30, font_size=3, with_labels=True, nodelist=nlist)
+#plt.savefig("pix.pdf")
+
+# the corners of the plotted graph contains the nodes of interest.
+# now, what properties do they have?!
+# -> they are the only nodes for which only two adjacent edges are connected.
+
+# hence, start by removing all "E" nodes.
+
+elist = [x for x in G.nodes() if "E" in x]
+#pprint(elist)
+
+H = copy.copy(G)
+
+for i in elist:
+    p = G.neighbors(i)
+    p = list(p)
+    # dump everything not connected to at least one node
+    if(len(p)<2):
+        G.remove_node(i)
+        # else reconnect and remove
+    else:
+        #        print(i,p)
+
+        for j in p:
+            for k in p:
+                #       print(j)
+                #print(k)
+                if k!=j:
+                    G.add_edge(k,j)
+        G.remove_node(i)
+
+nx.draw_networkx(G, pos, node_size=30, font_size=3, with_labels=True)
 plt.savefig("pix.pdf")
-    
+
+corners = [x for x in G.nodes() if len(list(G.neighbors(x)))==2]
+print("Corners:"+str(corners))
