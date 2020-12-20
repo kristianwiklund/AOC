@@ -87,11 +87,11 @@ elist = [x for x in G.nodes() if "E" in x]
 H = copy.copy(G)
 
 for i in elist:
-    p = G.neighbors(i)
+    p = H.neighbors(i)
     p = list(p)
     # dump everything not connected to at least one node
     if(len(p)<2):
-        G.remove_node(i)
+        H.remove_node(i)
         # else reconnect and remove
     else:
         #        print(i,p)
@@ -101,11 +101,12 @@ for i in elist:
                 #       print(j)
                 #print(k)
                 if k!=j:
-                    G.add_edge(k,j)
-        G.remove_node(i)
+                    H.add_edge(k,j)
+        H.remove_node(i)
 
-nx.draw_networkx(G, pos, node_size=30, font_size=3, with_labels=True)
+nx.draw_networkx(H, pos, node_size=30, font_size=3, with_labels=True)
 plt.savefig("pix.pdf")
 
-corners = [x for x in G.nodes() if len(list(G.neighbors(x)))==2]
+corners = [x for x in H.nodes() if len(list(H.neighbors(x)))==2]
 print("Corners:"+str(corners))
+
