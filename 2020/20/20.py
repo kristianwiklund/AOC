@@ -5,6 +5,9 @@
 # plot it
 # look at the corners. done
 
+# part 2: todo:
+# order the nodes. Then look at the edges again, don't use the numbers
+
 import copy
 import math
 import sys
