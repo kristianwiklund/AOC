@@ -37,7 +37,7 @@ def readone(f):
     # and discard final empty line
     f.readline()
     
-    return (myid, (top,bottom,left,right,rtop,rbottom,rleft,rright))
+    return (myid, (myid, top,bottom,left,right,rtop,rbottom,rleft,rright))
 
 def getpix(fname):
     with open(fname,"r") as fd:
@@ -46,7 +46,7 @@ def getpix(fname):
         try:
             while True:
                 t = readone(fd)
-                pprint(t)
+                #pprint(t)
                 pics[t[0]] = t[1]
         except:
             pass
@@ -58,20 +58,20 @@ def getpix(fname):
 
 def fliphoriz(tile):
 
-    (myid, top,bottom,left,right,rtop,rbottom,rleft,rright) = tile
+    (picid, top,bottom,left,right,rtop,rbottom,rleft,rright) = tile
 
-    return (myid, rtop, rbottom, right, left, top, bottom, rright, rleft)
+    return (picid, rtop, rbottom, right, left, top, bottom, rright, rleft)
 
 def flipvert(tile):
 
-    (myid, top,bottom,left,right,rtop,rbottom,rleft,rright) = tile
+    (picid, top,bottom,left,right,rtop,rbottom,rleft,rright) = tile
 
-    return (myid, top, bottom, rleft, rright, rtop, rbottom, left, right)
+    return (picid, top, bottom, rleft, rright, rtop, rbottom, left, right)
 
 def rot90(tile):
-    (myid, top,bottom,left,right,rtop,rbottom,rleft,rright) = tile
+    (picid, top,bottom,left,right,rtop,rbottom,rleft,rright) = tile
 
-    return (myid, left, right, rtop,rbottom,rleft,rright, top ,bottom)
+    return (picid, left, right, rtop,rbottom,rleft,rright, top ,bottom)
 
 def rot180(tile):
 
@@ -81,20 +81,16 @@ def rot270(tile):
 
     return(rot90(rot180(tile)))
 
-hl = getpix("input.short")
-print (hl)
-sys.exit()
-#print(hl[0])
-#print(rot90(rot270(hl[0])))
 
-def tlist(tile):
-
-    return [tile, rot90(tile), rot180(tile), rot270(tile), flipvert(tile), fliphoriz(tile)]
 
 def ismatch(ta, tb):
     #(myid, top,bottom,left,right,rtop,rbottom,rleft,rright) = tile
     
     return (ta[1]==tb[2] or ta[2] == tb[1] or ta[3] == tb[4] or ta[4] == tb[3])
+
+def tlist(tile):
+
+    return [tile, rot90(tile), rot180(tile), rot270(tile), flipvert(tile), fliphoriz(tile)]
 
 def matches(tile, hl):
 
@@ -105,37 +101,81 @@ def matches(tile, hl):
     
     for i in hl:
 
-        ri = tlist(i)
+        ri = tlist(hl[i])
 
         for j in ri:
 
             if ismatch(tile, j):
-                ml.append(j)
+                ml.append(j[0])
 
     return (ml)
 
 
+def fit(mat, x, y, psize, ml):
 
-print(hl[0])
-ml = list()
+    # out of bounds
+    if x < 0 or y < 0 or x>=psize or y>=psize:
+        return []
 
-for i in hl:
-    x = copy.copy(hl)
-    x.remove(i)
-    p = matches(i,x)
-    ml.append((i,len(p),p))
+    # check all populated boxen around this box
+
+    pbox = [mat[(x,y)] for x in range(0,psize) for y in range(0,psize) if (x,y) in mat]
+    print ("All placed around ("+str(x)+","+str(y)+") are "+str(pbox))
+
+    
     
 
-ml = sorted(ml, key=lambda x:-x[1])
-#pprint (ml)
+    
+    
+
+def populatematrix(mat,x,y,pic, hl, ml, unused, psize):
+
+    print("Placing "+str(pic)+" at "+str(x)+","+str(y))
+    mat[(x,y)] = pic
+    unused.remove(pic)
+    pprint(mat)
+    print ("Potential matches: "+str(ml[pic]))
+
+    bv = 0
+    bm = 0
+
+    # for each box that isn't populated in the list below,
+    # find one that might fit, and put it there. Then descend on that box. 
+    for dx,dy in [(-1,0),(1,0),(0,1),(0,-1)]:
+        tmat = copy.copy(mat)
+        # only look at unpopulated
+        if not (x+dx,y+dx) in tmat:
+            candidates = fit(tmat, x+dx,y+dy, psize, ml)
+        
+        
+        
+                  
+# ----- "main" ------
+hl = getpix("input.short")
+#print (hl)
+
+ml = dict()
+
+# find matching tiles for all tiles
+for i in hl:
+    # hl is now a dict
+    x = copy.copy(hl)
+    del x[i]
+    p = matches(hl[i],x)
+    ml[i]=(len(p),p)
+
+
+mlkeys=ml.keys()
+mlkeys = sorted(mlkeys, key=lambda x:-ml[x][0])
+#pprint (mlkeys)
 
 psize = int(math.sqrt(len(ml)))
 middle= psize // 2 + 1
 print ("PSize: "+str(psize)+" x "+str(psize) + ", c = ("+str(middle)+", "+str(middle)+")")
 
-print(ml[0][0])
+mat = dict()
 
-populatematrix(middle, middle, ml[0][0])
+populatematrix(mat, middle, middle, mlkeys[0], hl, ml, mlkeys, psize)
 
 
     
