@@ -42,7 +42,7 @@ def readone(f):
     rbottom = int(A[9][::-1],2)
     rleft = int(ll[::-1],2)
     rright = int(lr[::-1],2)
-    
+
     # and discard final empty line
     f.readline()
     
@@ -73,7 +73,7 @@ for i in pics:
 pos = nx.kamada_kawai_layout(G)
 #nlist = [x for x in G.nodes() if "N" in x]
 #nx.draw_networkx(G, pos, node_size=30, font_size=3, with_labels=True, nodelist=nlist)
-#plt.savefig("pix.pdf")
+#plt.savefig("pix2.pdf")
 
 # the corners of the plotted graph contains the nodes of interest.
 # now, what properties do they have?!
@@ -84,7 +84,7 @@ pos = nx.kamada_kawai_layout(G)
 elist = [x for x in G.nodes() if "E" in x]
 #pprint(elist)
 
-H = copy.copy(G)
+H = copy.deepcopy(G)
 
 for i in elist:
     p = H.neighbors(i)
@@ -104,7 +104,7 @@ for i in elist:
                     H.add_edge(k,j)
         H.remove_node(i)
 
-nx.draw_networkx(H, pos, node_size=30, font_size=3, with_labels=True)
+nx.draw_networkx(G, pos, node_size=30, font_size=3, with_labels=True)
 plt.savefig("pix.pdf")
 
 corners = [x for x in H.nodes() if len(list(H.neighbors(x)))==2]
@@ -152,11 +152,6 @@ for i in range(0, len(edge)):
     p = list(nx.shortest_path(H,edge[i],edge2[i]))
     paper.append(p)
 
-pprint(paper)
-
-# the next problem is to find out if we are oriented correct.
-# this we do by moving line by line in paper and rotating to match
-# we have this information in G
 
 def draw(paper):
     for i in range(0, len(paper)):
@@ -166,3 +161,14 @@ def draw(paper):
             print("")
 
 draw(paper)
+
+# the next problem is to find out if we are oriented correct.
+
+# start by orienting the first line (edge) in the correct direction
+# what we need is to move the first one to point with the edge to the right,
+# then we zip up the rest
+
+# so, what points to the right?
+# the first edge does, that's what points to the right
+p = list(nx.shortest_path(G,edge[i],edge2[i]))
+print(p)
