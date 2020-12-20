@@ -25,7 +25,7 @@ def readone(f):
     A = list()
     # then read the 10 lines
     for i in range(0,10):
-        A.append(f.readline().strip('\n\r').replace("#","1").replace(".","0"))[::-1]
+        A.append(f.readline().strip('\n\r').replace("#","1").replace(".","0")[::-1])
     A.reverse()
 
     # process a signature for each tile
@@ -171,12 +171,12 @@ def draw(paper):
 
 # the next problem is to find out if we are oriented correct.
 
-# start by orienting the first line (edge) in the correct direction
-# what we need is to move the first one to point with the edge to the right,
+# start by orienting the first line (edge) in the correct direction (top to bottom)
+# what we need is to move the first one to align with the node behind it
 # then we zip up the rest
 
-# so, what points to the right?
-# the first edge does, that's what points to the right
+# so, what points to the bottom?
+# the first edge does, that's what points to the bottom
 
 def rpic90(A):
 
@@ -196,7 +196,7 @@ def rpic90(A):
 
 
 def rot90(node):
-    print("rot90")
+    #    print("rot90")
     #    return (myid, (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A))
     (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A) = node
     #    print(A)
@@ -204,12 +204,12 @@ def rot90(node):
     return (myid, left ,right,bottom,top,rleft, rright, rbottom, rtop,A)
 
 def rot180(n):
-    print("rot180:")
+    #    print("rot180:")
     return rot90(rot90(n))
 
     
 def rot270(n):
-    print("rot270:")
+    #    print("rot270:")
     return rot90(rot90(rot90(n)))
 
 draw(paper)
@@ -218,19 +218,30 @@ p = list(nx.shortest_path(G,edge[0],edge[1]))[1]
 p = int(p.replace("E",""))
 print (str(edge[0])+"-"+str(edge[1])+" Aligning to "+str(p))
 
+def norot(n):
+    #print("norot")
+    return n
+
+print ("(myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A)")
+print(pics[edge[0]])
+
+
 success=False
-for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x)]:
-
-    pics[edge[0]] = i(pics[edge[0]])
-
-    if pics[edge[0]][4] == p or pics[edge[0]][8] == p:
+for i in [lambda x:norot(x), lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x)]:
+#    return (myid, (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A))
+    ap = i(pics[edge[0]])
+    if ap[2] == p or ap[6] == p:
         success=True
+        pics[edge[0]]=ap
+        print ("(myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A)")
+        print(ap)
+                
         break
 
 if not success:
     print("bad error fail")
 
-def rightalignzor(fromn, ton, pics, G):
+def topalignzor(fromn, ton, pics, G):
     p = list(nx.shortest_path(G,fromn,ton))[1]
     p = int(p.replace("E",""))
     print (str(fromn)+"-"+str(ton)+" Aligning to "+str(p))
@@ -240,16 +251,51 @@ def rightalignzor(fromn, ton, pics, G):
 
         ap = i(pics[ton])
 
-        if ap[4] == p or ap[8] == p:
+        if ap[1] == p or ap[5] == p:
             success=True
             pics[ton]=ap
-            break
+            return
 
-    if not success:
-        print("bad error fail!")
-    
+    print("bad error fail!")
 
-rightalignzor("1951","2729", pics, G)
-rightalignzor("2729","2971", pics, G)
+
+def rightalignzor(fromn, ton, pics, G):
+    p = list(nx.shortest_path(G,fromn,ton))[1]
+    p = int(p.replace("E",""))
+    print (str(fromn)+"-"+str(ton)+" Aligning to "+str(p),end='')
+
+    success=False
+    for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x)]:
+
+        ap = i(pics[ton])
+
+        if ap[4] == p or ap[4] == p:
+            success=True
+            print (" updating "+str(ton))
+            pics[ton]=ap
+            return
+
+    print("bad error fail!")
+
+#draw(pics)
+for i in range(1,len(edge)):
+    topalignzor(edge[i-1],edge[i],pics,G)
+#topalignzor("1951","2729", pics, G)
+#topalignzor("2729","2971", pics, G)
+
+# then go node by node between the two master edges and align those as well
+
+for i in range(0, int(math.sqrt(len(pics)))):
+
+    l = list(nx.shortest_path(H, edge[i], edge2[i]))
+
+    for j in range(1, len(l)):
+        rightalignzor(l[j-1],l[j],pics,G)
+
+
 draw(paper)
+
+
+
+
 
