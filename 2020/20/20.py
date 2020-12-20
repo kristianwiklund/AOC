@@ -20,7 +20,7 @@ def readone(f):
 
     h = f.readline()
     h = h.strip('\n\r:')
-    myid = int(h.split()[1])
+    myid = str(h.split()[1])
 
     A = list()
     # then read the 10 lines
@@ -46,7 +46,7 @@ def readone(f):
     # and discard final empty line
     f.readline()
     
-    return (myid, (myid, top,bottom,left,right,rtop,rbottom,rleft,rright))
+    return (myid, (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A))
 
 def getpix(fname):
     with open(fname,"r") as fd:
@@ -67,7 +67,7 @@ pics = getpix("input.short")
 
 for i in pics:
     for j in pics[i]:
-        G.add_edge("N"+str(i)+"N","E"+str(j)+"E")
+        G.add_edge(str(i),"E"+str(j)+"E")
         #        print(str(i)+"--"+str(j)+":"+str(pics[i]))
 
 pos = nx.kamada_kawai_layout(G)
@@ -154,3 +154,15 @@ for i in range(0, len(edge)):
 
 pprint(paper)
 
+# the next problem is to find out if we are oriented correct.
+# this we do by moving line by line in paper and rotating to match
+# we have this information in G
+
+def draw(paper):
+    for i in range(0, len(paper)):
+        for x in range(0,10):
+            for j in range(0, len(paper[i])):
+                print (pics[paper[i][j]][9][x],end='')
+            print("")
+
+draw(paper)
