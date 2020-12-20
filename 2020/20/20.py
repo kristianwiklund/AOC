@@ -110,3 +110,47 @@ plt.savefig("pix.pdf")
 corners = [x for x in H.nodes() if len(list(H.neighbors(x)))==2]
 print("Corners:"+str(corners))
 
+# part 2 - find the sea monsters...
+# there are no diagonals in the graph.
+# do a chomp line by line to draw the area
+
+# first find an edge between two corners
+
+corners2 = copy.copy(corners)
+corners2.remove(corners[0])
+
+edges = [x for x in corners2 if len(list(nx.shortest_path(H,corners[0],x)))==int(math.sqrt(len(pics)))]
+
+edge = list(nx.shortest_path(H,corners[0],edges[0]))
+
+#print(corners[0],edge,edges[0])
+
+# this edge is by definition horizontal and on the top, and starts at 0,0 and this is where we anchor everything
+
+# now we can find the bottom edge by using the second node in "edges", and the node NOT included in (edges+corners[0])
+corners3=copy.copy(corners)
+corners3.remove(corners[0])
+corners3.remove(edges[0])
+#print(corners3)
+edge2 = list(nx.shortest_path(H,corners3[0],corners3[1]))
+#print(corners3[0],edge2,corners3[1])
+
+# now we have two opposing edges. We need to order them to make sure that we do not get it the wrong way.
+# this we do by checking the distance between the two first nodes in each edge
+
+#print(edge,edge2)
+
+if (len(list(nx.shortest_path(H,edge[0],edge2[0])))!=int(math.sqrt(len(pics)))):
+    edge2.reverse()
+
+# finally, move from top to bottom and draw the matrix
+
+paper = list()
+
+for i in range(0, len(edge)):
+
+    p = list(nx.shortest_path(H,edge[i],edge2[i]))
+    paper.append(p)
+
+pprint(paper)
+
