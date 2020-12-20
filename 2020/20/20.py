@@ -2,6 +2,7 @@
 
 import copy
 import math
+import sys
 
 from pprint import pprint
 
@@ -36,7 +37,24 @@ def readone(f):
     # and discard final empty line
     f.readline()
     
-    return (myid, top,bottom,left,right,rtop,rbottom,rleft,rright)
+    return (myid, (top,bottom,left,right,rtop,rbottom,rleft,rright))
+
+def getpix(fname):
+    with open(fname,"r") as fd:
+        pics = dict()
+        
+        try:
+            while True:
+                t = readone(fd)
+                pprint(t)
+                pics[t[0]] = t[1]
+        except:
+            pass
+
+        return pics
+
+
+
 
 def fliphoriz(tile):
 
@@ -63,20 +81,9 @@ def rot270(tile):
 
     return(rot90(rot180(tile)))
 
-def getpix(fname):
-    with open(fname,"r") as fd:
-        pics = list()
-        try:
-            while True:
-                pics.append(readone(fd))
-        except:
-            pass
-
-        return pics
-
-
 hl = getpix("input.short")
-
+print (hl)
+sys.exit()
 #print(hl[0])
 #print(rot90(rot270(hl[0])))
 
