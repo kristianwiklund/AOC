@@ -25,7 +25,7 @@ def readone(f):
     A = list()
     # then read the 10 lines
     for i in range(0,10):
-        A.append(f.readline().strip('\n\r').replace("#","1").replace(".","0")[::-1])
+        A.append(f.readline().strip('\n\r').replace("#","1").replace(".","0"))
     A.reverse()
 
     # process a signature for each tile
@@ -62,7 +62,7 @@ def getpix(fname):
 
         return pics
 
-pics = getpix("input.short")
+pics = getpix("input")
 #print (pics)
 
 for i in pics:
@@ -225,16 +225,28 @@ def norot(n):
 print ("(myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A)")
 print(pics[edge[0]])
 
+def vflip(n):
+    (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A) = node
+    #    print(A)
+    A.reverse()
+    return (myid, rbottom,rtop,left,right,top,bottom,rleft,rright,A)
+
+def hflip(n):
+    (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,B) =  node
+    #    print(A)
+    B = list()
+    for i in A:
+        B.append(A[i][::-1])
+    return (myid, rbottom,rtop,left,right,top,bottom,rleft,rright,B)
+
 
 success=False
-for i in [lambda x:norot(x), lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x)]:
+for i in [lambda x:norot(x), lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x), lambda x:vflip(x), lambda x:hflip(x)]:
 #    return (myid, (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A))
     ap = i(pics[edge[0]])
     if ap[2] == p or ap[6] == p:
         success=True
         pics[edge[0]]=ap
-        print ("(myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A)")
-        print(ap)
                 
         break
 
@@ -244,15 +256,13 @@ if not success:
 def topalignzor(fromn, ton, pics, G):
     p = list(nx.shortest_path(G,fromn,ton))[1]
     p = int(p.replace("E",""))
-    print (str(fromn)+"-"+str(ton)+" Aligning to "+str(p))
 
-    success=False
-    for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x)]:
+    for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x), lambda x:vflip(x), lambda x:hflip(x)]:
 
         ap = i(pics[ton])
 
         if ap[1] == p or ap[5] == p:
-            success=True
+            print (str(fromn)+"-"+str(ton)+" Aligning to "+str(p))                
             pics[ton]=ap
             return
 
@@ -262,16 +272,15 @@ def topalignzor(fromn, ton, pics, G):
 def rightalignzor(fromn, ton, pics, G):
     p = list(nx.shortest_path(G,fromn,ton))[1]
     p = int(p.replace("E",""))
-    print (str(fromn)+"-"+str(ton)+" Aligning to "+str(p),end='')
 
     success=False
-    for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x)]:
+    for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x), lambda x:vflip(x)]:
 
         ap = i(pics[ton])
 
-        if ap[4] == p or ap[4] == p:
-            success=True
-            print (" updating "+str(ton))
+        if ap[4] == p or ap[8] == p:
+            print (str(fromn)+"-"+str(ton)+" Aligning "+str(ton)+" to "+str(p))
+                
             pics[ton]=ap
             return
 
