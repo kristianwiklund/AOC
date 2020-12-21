@@ -3,11 +3,10 @@
 import sys
 from pprint import pprint
 
+foods = dict()
 allergens=dict()
-foods=set([])
-thelist=list()
 
-def readone(line,foods,allergens,thelist):
+def readone(line,foods,allergens):
 
     line=line.strip("\n)")
     t=line.split("(")
@@ -17,50 +16,39 @@ def readone(line,foods,allergens,thelist):
 
     a=a.strip(" ").split(" ")
 
-    a=set(a)
-
     b=b.split(" ")
 
+    # now move over all the foods and all the allergens
+    # if a food tagged with allergen A appear in a list that is not tagged with A, then that food cannot have allergen A
 
-    #print(b)
+    for i in a:
+        if i in foods:
+            x = foods[i] | set(b)        # then add potential allergens
+            foods[i] = x
+        else:
+            foods[i] = set(b)
 
-    foods=a|foods
 
-    thelist.append(a)
     for i in b:
         if i in allergens:
-            # remove previously tagged items NOT in the new list
-            a=allergens[i] & a
-            # then add potentially new items
-            #a=allergens[i] | a
-        allergens[i]=a
+            x = allergens[i] | set(a)
+            allergens[i] = x
+        else:
+            allergens[i] = set(a)
 
-    return foods,allergens,thelist
-    
+    return (foods,allergens)
+
+
+# -- "main" --
+
 line=sys.stdin.readline()
 while line:
-    foods,allergens,thelist=readone(line,foods,allergens,thelist)
+
+    (foods,allergens)=readone(line,foods,allergens)
     line=sys.stdin.readline()
 
-aa=set()
+pprint(foods)
+pprint(allergens)
 
-# sum all with allergens in them
-for i in allergens:
-    aa=aa|allergens[i]
-
-print(allergens)
-    
-bb=foods-aa
-print("okay food:", len(bb))
-print(" bad food:", len(aa))
-print("     food:", len(foods))
-#print(thelist)
-c=0
-for i in thelist:
-    #    print(len(i),len(i&aa))
-    c=c+len(i&bb)
-
-print(c)
-# 2535 too high
-# 760 too low
-# 41 too low
+for i in foods:
+    print (len(foods[i]),i)
