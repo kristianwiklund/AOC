@@ -337,7 +337,63 @@ def fingerprint(A):
 
     return (top,right,bottom,left)
 
-    
+def fptopmatch(s, node):
+
+    fp = fingerprint(pics[node][9])
+
+    print(fp)
+
+    if s in fp:
+        i = fp.index(s)
+        print("Match "+str(i))
+
+        if i==2:
+            return # already good
+        
+        
+    if s[::-1] in fp:
+        i = fp.index(s[::-1])
+        print("Reverse match "+str(i))
+
+        
+    return (fp)
+
+def fprightmatch(s, node):
+
+    fp = fingerprint(pics[node][9])
+
+    print(fp)
+
+    if s in fp:
+        i = fp.index(s)
+        print("Match "+str(i))
+
+        if i==1:
+            return (fp)# already good
+        
+        
+    if s[::-1] in fp:
+        i = fp.index(s[::-1])
+        print("Reverse match "+str(i))
+
+        if i==1:
+            pics[node] = vflip(pics[node])
+        elif i==3:
+            pics[node] = rot180(pics[node])
+    return (fp)
+
+
+for i in range(0,int(math.sqrt(len(pics)))):
+    for j in range(1,int(math.sqrt(len(pics)))):
+        A = pics[paper[i][j-1]][9]
+        fp = "".join([x[9] for x in A])
+        fprightmatch(fp, paper[i][j])
+
+#print(fprightmatch("0100111110","2311")) # good match
+#print(fprightmatch("1001101000","3079")) # bad match, need flipping
+#print(fprightmatch("0101011100","2473")) 
+
+draw(paper)
 
 
 
