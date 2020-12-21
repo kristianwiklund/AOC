@@ -4,9 +4,8 @@ import sys
 from pprint import pprint
 
 foods = dict()
-allergens=dict()
 
-def readone(line,foods,allergens):
+def readone(line,foods):
 
     line=line.strip("\n)")
     t=line.split("(")
@@ -18,37 +17,23 @@ def readone(line,foods,allergens):
 
     b=b.split(" ")
 
-    # now move over all the foods and all the allergens
-    # if a food tagged with allergen A appear in a list that is not tagged with A, then that food cannot have allergen A
-
+    
     for i in a:
-        if i in foods:
-            x = foods[i] | set(b)        # then add potential allergens
-            foods[i] = x
-        else:
-            foods[i] = set(b)
-
-
-    for i in b:
-        if i in allergens:
-            x = allergens[i] | set(a)
-            allergens[i] = x
-        else:
-            allergens[i] = set(a)
-
-    return (foods,allergens)
-
+        if not i in foods:
+            foods[i] = set()
+        foods[i]|=set(b)
+    
+    return foods
 
 # -- "main" --
 
 line=sys.stdin.readline()
 while line:
 
-    (foods,allergens)=readone(line,foods,allergens)
+    foods=readone(line,foods)
     line=sys.stdin.readline()
 
+print("-")
 pprint(foods)
-pprint(allergens)
+print("-")
 
-for i in foods:
-    print (len(foods[i]),i)
