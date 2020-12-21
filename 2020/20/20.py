@@ -66,6 +66,7 @@ def getpix(fname):
         return pics
 
 pics = getpix("input")
+
 #print (pics)
 
 for i in pics:
