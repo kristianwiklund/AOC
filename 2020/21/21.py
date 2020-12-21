@@ -6,10 +6,10 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 foods = dict()
-
+allergens=dict()
 G = nx.DiGraph()
 
-def readone(G,line,foods):
+def readone(G,line,foods, allergens):
 
     line=line.strip("\n)")
     t=line.split("(")
@@ -26,20 +26,28 @@ def readone(G,line,foods):
         if not i in foods:
             foods[i] = list()
         foods[i].append(set(b)) # all potential allergenes for this food
+    
         for j in b:
             #           print(str(i)+"->"+str(j))
             G.add_edge(i,j)
-    return foods
+
+    for i in b:
+        if not b in allergens:
+            allergens[i] = list()
+        allergens.append(set(a))
+        
+    return (foods,allergens)
 
 # -- "main" --
 
 line=sys.stdin.readline()
 while line:
 
-    foods=readone(G,line,foods)
+    (foods,allergens)=readone(G,line,foods,allergens)
     line=sys.stdin.readline()
 
 print (foods)
+print allergens()
 
 # find foods that are present in all lines for a specific allergene and nowhere else
 
