@@ -65,7 +65,7 @@ def getpix(fname):
 
         return pics
 
-pics = getpix("input.short")
+pics = getpix("input")
 
 #print (pics)
 
@@ -345,18 +345,20 @@ def fptopmatch(s, node):
 
     if s in fp:
         i = fp.index(s)
-        print("Match "+str(i))
+        print("Match "+s+" "+node+"="+str(i))
 
         if i==2:
             return # already good
         
+        raise UnhandledMatch
+
         
     if s[::-1] in fp:
         i = fp.index(s[::-1])
         print("Reverse match "+str(i))
 
         
-    return (fp)
+        raise UnhandledMatch
 
 def fprightmatch(s, node):
 
@@ -366,10 +368,12 @@ def fprightmatch(s, node):
 
     if s in fp:
         i = fp.index(s)
-        print("Match "+str(i))
 
+        print("Match "+s+" "+node+"="+str(i))
         if i==1:
             return (fp)# already good
+
+        raise UnhandledMatch
         
         
     if s[::-1] in fp:
@@ -378,10 +382,15 @@ def fprightmatch(s, node):
 
         if i==1:
             pics[node] = vflip(pics[node])
+            return (fp)
         elif i==3:
             pics[node] = rot180(pics[node])
-    return (fp)
+            return (fp)
 
+        raise UnhandledMatch
+
+fprightmatch("0101101100", "3863")
+    
 
 for i in range(0,int(math.sqrt(len(pics)))):
     for j in range(1,int(math.sqrt(len(pics)))):
