@@ -25,7 +25,7 @@ def readone(G,line,foods):
     for i in a:
         if not i in foods:
             foods[i] = list()
-        foods[i].append(set(b))
+        foods[i].append(set(b)) # all potential allergenes for this food
         for j in b:
             #           print(str(i)+"->"+str(j))
             G.add_edge(i,j)
@@ -39,32 +39,45 @@ while line:
     foods=readone(G,line,foods)
     line=sys.stdin.readline()
 
-#print("-")
-#pprint(foods)
-#print("-")
+print (foods)
 
-# we now have a list of foods with associated potential allergies.
-# find the easy ones first
+# find foods that are present in all lines for a specific allergene and nowhere else
 
-def findfood(foods, nr):
-    bop = dict()
-    bap = dict()
+al = set()
 
-    for i in foods:
-        u= [x for x in foods[i] if len(x)==nr]
-        if len(u):
-            bop[i]=u
+for i in foods:
+    print(i)
+    for j in foods[i]:
+        al|=j
 
-            p= set()
-            for x in u:
-                p|=x
-                bap[i]=p
+print(al)
+print(list(foods.keys()))
 
-                #    return(bap)
-    return({x:bap[x] for x in bap if len(bap[x])==nr})
+uses = dict()
+for i in foods:
+    uses[i] = dict()
+    for k in al:
+        #        print(k, i, foods[i])
+        uses[i][k]= len(list(filter(lambda x:k in x, foods[i])))
+        
+        #uses[i][k] = [len(x) for x in foods[i] if k in foods[i]]
 
-print(findfood(foods,1))
-#print(G.nodes())
-pos = nx.circular_layout(G)
-nx.draw_networkx(G, pos, node_size=30, font_size=3, with_labels=True)
-plt.savefig("pix.pdf")
+print (uses)
+
+aluses=dict()
+                 
+for i in al:
+    s=0
+    #print("\n"+str(i))
+    for j in uses:
+        #print(uses[j])
+        if i in uses[j]:
+            #print(j, i, uses[j][i])
+            s=s+uses[j][i]
+    aluses[i] = s
+        
+print(aluses)
+
+
+
+

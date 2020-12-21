@@ -65,7 +65,7 @@ def getpix(fname):
 
         return pics
 
-pics = getpix("input")
+pics = getpix("input.short")
 
 #print (pics)
 
@@ -229,18 +229,18 @@ def norot(n):
 print ("(myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A)")
 print(pics[edge[0]])
 
-def vflip(n):
+def vflip(node):
     (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A) = node
     #    print(A)
     A.reverse()
     return (myid, rbottom,rtop,left,right,top,bottom,rleft,rright,A)
 
-def hflip(n):
-    (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,B) =  node
+def hflip(node):
+    (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A) =  node
     #    print(A)
     B = list()
     for i in A:
-        B.append(A[i][::-1])
+        B.append(i[::-1])
     return (myid, rbottom,rtop,left,right,top,bottom,rleft,rright,B)
 
 
@@ -265,10 +265,18 @@ def topalignzor(fromn, ton, pics, G):
 
         ap = i(pics[ton])
 
-        if ap[1] == p or ap[5] == p:
+
+        if ap[1] == p:
             print (str(fromn)+"-"+str(ton)+" Aligning to "+str(p))                
             pics[ton]=ap
             return
+
+        if ap[5] == p:
+            print (str(fromn)+"-"+str(ton)+" Aligning to R"+str(p))                
+            pics[ton]=vflip(ap)
+            return
+
+        
 
     print("bad error fail!")
 
@@ -276,16 +284,22 @@ def topalignzor(fromn, ton, pics, G):
 def rightalignzor(fromn, ton, pics, G):
     p = list(nx.shortest_path(G,fromn,ton))[1]
     p = int(p.replace("E",""))
-
+    
     success=False
     for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x), lambda x:vflip(x)]:
 
         ap = i(pics[ton])
-
-        if ap[4] == p or ap[8] == p:
+        
+        if ap[4] == p:
             print (str(fromn)+"-"+str(ton)+" Aligning "+str(ton)+" to "+str(p))
                 
             pics[ton]=ap
+            return
+
+        if ap[8] == p:
+            print (str(fromn)+"-"+str(ton)+" Aligning "+str(ton)+" to R"+str(p))
+            
+            pics[ton]=hflip(ap)
             return
 
     print("bad error fail!")
@@ -307,6 +321,23 @@ for i in range(0, int(math.sqrt(len(pics)))):
 
 
 draw(paper)
+
+# sort of okay but not right
+# need a second round of alignment
+
+def fingerprint(A):
+
+    ll = "".join([x[9] for x in A])
+    lr = "".join([x[0] for x in A]) 
+    
+    top = A[0]
+    bottom = A[9]
+    left = ll
+    right = lr
+
+    return (top,right,bottom,left)
+
+    
 
 
 
