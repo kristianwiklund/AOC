@@ -65,7 +65,7 @@ def getpix(fname):
 
         return pics
 
-pics = getpix("input")
+pics = getpix("input.short")
 
 #print (pics)
 
@@ -163,7 +163,7 @@ def draw2(paper):
     for i in range(0, len(paper)):
         for x in range(1,9):
             for j in range(0, len(paper[i])):
-                print (pics[paper[i][j]][9][x][1:8],end='')
+                print (pics[paper[i][j]][9][x][1:9],end='')
             print("")
     
 
@@ -201,9 +201,9 @@ def rpic90(A):
 #    print("---------")
 #    pprint(A)
     
-    for y in range(0,10):
+    for y in range(0,len(A)):
         s = ""
-        for x in range(0,10):
+        for x in range(0,len(A)):
             s=s+A[x][y]
         NA.append(s[::-1])
 
@@ -470,6 +470,7 @@ for y in range(0,len(paper)):
     for x in range(0,len(paper)):
         alignzor(paper,pics,x,y)
 
+print("--- sea ---")
 draw(paper,merge=True)
 
         
