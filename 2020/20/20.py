@@ -65,7 +65,7 @@ def getpix(fname):
 
         return pics
 
-pics = getpix("input.short")
+pics = getpix(sys.argv[1])
 
 #print (pics)
 
@@ -386,6 +386,8 @@ def matchup(paper, pics, parent, child):
             pics[child] = rot270(pics[child])
         elif i==3:
             pics[child] = hflip(rot90(pics[child]))
+        elif i==2:
+            pics[child] = vflip(pics[child])
         else:
             draw(paper)
             print("Matching top",parent,child)
@@ -441,6 +443,8 @@ def matchleft(paper, pics, parent, child):
             pics[child] = rot180(pics[child])
         elif ri == 0:
             pics[child] = rot270(pics[child])
+        elif ri == 2:
+            pics[child] = vflip(rot90(pics[child]))
         else:
             draw(paper)
             print("Matching side",parent,child)

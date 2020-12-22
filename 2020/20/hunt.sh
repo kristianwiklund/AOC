@@ -14,14 +14,16 @@ MAX=`tail -1 sea | wc -c`
 M1="#(."
 M2=")#(....)##(....)##(....)###("
 M3=".)#(..)#(..)#(..)#(..)#(..)#"
-M2x=`printf %32s $M2 | tr ' ' '.'` #24 + number of (
-M3x=`printf %32s $M3 | tr ' ' '.'` #21 +number of ( 
+M2x=`printf %104s $M2 | tr ' ' '.'` #24 + number of (
+M3x=`printf %104s $M3 | tr ' ' '.'` #21 +number of ( 
 
-cat searotrev | tr -d "\n" > flat
+cat sea | tr -d "\n" > flat
 BOP="($M1$M2x$M3x)"
-echo $BOP
+#echo $BOP
 # without monster
 
 # the sed fails since it has more than 9 backrefernces
-cat flat | ./notsed.py "$BOP" | sed -E "s/(.{24})/\1\n/g" 
+cat flat | ./notsed.py "$BOP" | sed -E "s/(.{96})/\1\n/g" 
 cat flat | ./notsed.py "$BOP" | sed 's/\(.\)/\1\n/g' | sort | uniq -c
+
+# 2443 is too high
