@@ -71,21 +71,29 @@ paddy()
 
 G="1"
 #echo $IT
+
+
 rm -f tmp5
 for i in $OT; do
     grep "^[01]* $G[01]*$" esp.result | grep -v "^[.] " > tmp4
     # feature here, it uses signed.. which borks.
-    # we do bit-wise and of very big things here
-    
-    (echo "obase=2";echo $((`cat tmp4  | cut -d ' ' -f 1 | sed 's/^/2#0/' | tr '\n' '&'|sed 's/&$//'`)))| bc | paddy $ITC >> tmp5
+    #(echo "obase=2";echo $((`cat tmp4  | cut -d ' ' -f 1 | sed 's/^/2#0/' | tr '\n' '&'|sed 's/&$//'`)))| bc | paddy $ITC >> tmp5
+
+    # use a small helper to bitwise and tmp5 and send it to tmp5
+
+    ./bwa.py tmp4 >> tmp5
+    #    cat tmp4
+    #    cat tmp5
+    #    echo "---"
     G=".$G"
 done
-echo $OT
+#echo $OT
 
 # bitwise or on all lines in tmp5
 
-(echo "obase=2";echo $((`cat tmp5 | sed 's/^/2#0/' | tr '\n' '|'|sed 's/|$//'`))) | bc | paddy $ITC | sed 's/\(.\)/\1 /g' > tmp6
-(echo "obase=2";echo $((`cat tmp5 | sed 's/^/2#0/' | tr '\n' '|'|sed 's/|$//'`))) | bc | paddy $ITC
+#(echo "obase=2";echo $((`cat tmp5 | sed 's/^/2#0/' | tr '\n' '|'|sed 's/|$//'`))) | bc | paddy $ITC | sed 's/\(.\)/\1 /g' > tmp6
+#(echo "obase=2";echo $((`cat tmp5 | sed 's/^/2#0/' | tr '\n' '|'|sed 's/|$//'`))) | bc | paddy $ITC
+./bwo.py tmp5 | sed 's/\(.\)/\1 /g' > tmp6
 read -a A < tmp6
 #echo ${A[@]}
 
@@ -101,6 +109,3 @@ cat $1 | tr ' ' '\n'  > tmp8
 
 grep -f tmp7 tmp8  | wc -l
 
-# 2425 is not correct
-# 2576 is not correct
-# 2282 is the correct answer
