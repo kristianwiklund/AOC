@@ -103,7 +103,9 @@ c=0
 	echo $i
     fi
     let c++
- done) | sed 's/^/^/' | sed 's/$/$/' > tmp7
+ done) > tmp9
+
+cat tmp9| sed 's/^/^/' | sed 's/$/$/' > tmp7
 
 cat $1 | tr ' ' '\n'  > tmp8
 
