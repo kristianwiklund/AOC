@@ -162,7 +162,7 @@ for i in range(0, len(edge)):
 def draw2(paper):
     for i in range(0, len(paper)):
         for x in range(0,10):
-            for j in range(0, len(paper[i])):
+            for j in range(1, len(paper[i]-1)):
                 print (pics[paper[i][j]][9][x],end='')
             print("")
     
