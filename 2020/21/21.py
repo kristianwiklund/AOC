@@ -103,6 +103,10 @@ for i in al:
         
 print(aluses)
 
+pos = nx.circular_layout(G)
+nx.draw_networkx(G, pos, node_size=30, font_size=3, with_labels=True)
+plt.savefig("pix2.pdf")
+
 
 
 
