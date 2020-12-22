@@ -161,9 +161,9 @@ for i in range(0, len(edge)):
 
 def draw2(paper):
     for i in range(0, len(paper)):
-        for x in range(0,10):
-            for j in range(1, len(paper[i]-1)):
-                print (pics[paper[i][j]][9][x],end='')
+        for x in range(1,9):
+            for j in range(0, len(paper[i])):
+                print (pics[paper[i][j]][9][x][1:8],end='')
             print("")
     
 
