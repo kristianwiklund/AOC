@@ -65,7 +65,7 @@ def getpix(fname):
 
         return pics
 
-pics = getpix("input.short")
+pics = getpix("input")
 
 #print (pics)
 
@@ -229,7 +229,7 @@ def rot270(n):
     #    print("rot270:")
     return rot90(rot90(rot90(n)))
 
-draw(paper)
+#draw(paper)
 
 p = list(nx.shortest_path(G,edge[0],edge[1]))[1]
 p = int(p.replace("E",""))
@@ -317,23 +317,23 @@ def rightalignzor(fromn, ton, pics, G):
 
     print("bad error fail!")
 
+# skip the graph based alignment for now
 #draw(pics)
-for i in range(1,len(edge)):
-    topalignzor(edge[i-1],edge[i],pics,G)
+#for i in range(1,len(edge)):
+#    topalignzor(edge[i-1],edge[i],pics,G)
 #topalignzor("1951","2729", pics, G)
 #topalignzor("2729","2971", pics, G)
 
 # then go node by node between the two master edges and align those as well
 
-for i in range(0, int(math.sqrt(len(pics)))):
+#for i in range(0, int(math.sqrt(len(pics)))):
+#
+#    l = list(nx.shortest_path(H, edge[i], edge2[i]))
+#
+#    for j in range(1, len(l)):
+#        rightalignzor(l[j-1],l[j],pics,G)
 
-    l = list(nx.shortest_path(H, edge[i], edge2[i]))
-
-    for j in range(1, len(l)):
-        rightalignzor(l[j-1],l[j],pics,G)
-
-
-draw(paper)
+#draw(paper)
 
 #####################################################
 
@@ -354,7 +354,7 @@ def fingerprint(A):
     return (top,right,bottom,left)
 
 
-def fpmatch(pics, what, who):
+def fpmatch(paper, pics, what, who):
 
     fp = fingerprint(pics[who][9])
     
@@ -365,70 +365,119 @@ def fpmatch(pics, what, who):
         ri = fp.index(what[::-1])
         i=None
     else:
-        print (who, what, fp)
+        #draw(paper)
+        #print (who, what, fp)
         raise RuntimeError # meaning that we didn't find any match at all, which we should since the tiles are basic ordered
 
     return(i,ri)
 
-def matchup(pics, parent, child):
+def matchup(paper, pics, parent, child):
 
     # get the bottom of the parent
     what = fingerprint(pics[parent][9])[2]
 
-    (i,ri) = fpmatch(pics, what, child)
-    print (i,ri)
+    (i,ri) = fpmatch(paper, pics, what, child)
     if i==0:
-        return # already matched
+        return # already matched    
 
 
+    if i is not None:
+        if i==1:
+            pics[child] = rot270(pics[child])
+        elif i==3:
+            pics[child] = hflip(rot90(pics[child]))
+        else:
+            draw(paper)
+            print("Matching top",parent,child)
+            print (i,ri)
+            sys.exit()
+
+        
     if ri is not None:
         if ri == 2:
-            print ("rot")
             pics[child] = rot180(pics[child])
-    
+        elif ri==0:
+            pics[child] = hflip(pics[child])
+        elif ri==1:
+            pics[child] = hflip(rot270(pics[child]))
+        elif ri==3:
+            pics[child] = rot90(pics[child])
+        else:
+            draw(paper)
+            print("Matching top",parent,child)
+            print (i,ri)
+            sys.exit()
             
     
-def matchleft(pics, parent, child):
+def matchleft(paper, pics, parent, child):
 
     # get the right side of the parent
     what = fingerprint(pics[parent][9])[1]
     
-    (i,ri) = fpmatch(pics, what, child)
-    print (i,ri)
+    (i,ri) = fpmatch(paper, pics, what, child)
+
     if i==3:
         return # already matched
-
+    
     if i is not None:
         if i == 0:
+            pics[child] = rot270(pics[child])
+        elif i==2:
             pics[child] = rot90(pics[child])
-
+        elif i == 3:
+            pics[child] = rot180(pics[child])
+        elif i==1:
+            pics[child] = hflip(pics[child])
+        else:
+            draw(paper)
+            print("Matching side",parent,child)
+            print (i,ri)
+            sys.exit()
+            
     if ri is not None:
         if ri == 3:
             pics[child] = vflip(pics[child])
-
-
-    print ("ronk")
+        elif ri ==1:
+            pics[child] = rot180(pics[child])
+        elif ri == 0:
+            pics[child] = rot270(pics[child])
+        else:
+            draw(paper)
+            print("Matching side",parent,child)
+            print (i,ri)
+            sys.exit()
 
 def alignzor(paper, pics, x,y):
     # investigate alignment in two directions: up and to the right
 
-    if y-1>-1:
+    if y-1 > -1:
         abovetile=paper[y-1][x]
-        print("Matching above",abovetile,paper[y][x])
-        matchup(pics, abovetile, paper[y][x])
+        matchup(paper, pics, abovetile, paper[y][x])
 
 
     if x-1>-1:
         lefttile=paper[y][x-1]
-        print("Matching side",lefttile,paper[y][x])
-        matchleft(pics, lefttile, paper[y][x])
+        matchleft(paper, pics, lefttile, paper[y][x])
 
+# first try the first tile
+try:
+    alignzor(paper,pics,1,0)
+except:
+    print("flipping first tile")
+    pics[paper[0][0]] = hflip(pics[paper[0][0]])
+    
+for y in range(0,len(paper)):
+    for x in range(0,len(paper)):
+        alignzor(paper,pics,x,y)
 
-alignzor(paper,pics, 2,0)
-draw(paper)
-alignzor(paper,pics, 2,1)
-draw(paper)
 draw(paper,merge=True)
+
+        
+#alignzor(paper,pics, 2,0)
+#draw(paper)
+#alignzor(paper,pics, 2,1)
+#draw(paper)
+#draw(paper,merge=True)
 
 
 
