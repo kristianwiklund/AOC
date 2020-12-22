@@ -56,57 +56,10 @@ def readone(G,line,foods, allergens):
 
 line=sys.stdin.readline()
 while line:
-
     (foods,allergens)=readone(G,line,foods,allergens)
     line=sys.stdin.readline()
 
-print (foods)
-#print (foodc)
-#print (allergens)
-#print(allerc)
-# find foods that are present in all lines for a specific allergene and nowhere else
-
-al = set()
-
-for i in foods:
- #   print(i)
-    for j in foods[i]:
-        al|=j
-
-#print(al)
-#pprint(list(foods.keys()))
-
-uses = dict()
-for i in foods:
-    uses[i] = dict()
-    uses[i]["allergy"] = dict()
-    for k in al:
-        #        print(k, i, foods[i])
-        uses[i]["allergy"][k]= len(list(filter(lambda x:k in x, foods[i])))
-    uses[i]["recipes"]= len(foods[i])
-        
-        #uses[i][k] = [len(x) for x in foods[i] if k in foods[i]]
-
-pprint (uses)
-
-aluses=dict()
-                 
-for i in al:
-    s=0
-    #print("\n"+str(i))
-    for j in uses:
-        #print(uses[j])
-        if i in uses[j]["allergy"]:
-            #print(j, i, uses[j][i])
-            s=s+uses[j]["allergy"][i]
-    aluses[i] = s
-        
-print(aluses)
-
-pos = nx.circular_layout(G)
-nx.draw_networkx(G, pos, node_size=30, font_size=3, with_labels=True)
-plt.savefig("pix2.pdf")
-
+print (allergens)
 
 
 
