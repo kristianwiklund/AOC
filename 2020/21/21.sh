@@ -15,7 +15,7 @@ function l() {
     line=$1
     
     for i in $IT; do
-	if [[ $line == *$i* ]] ; then
+	if [[ $line == *"$i "* ]] ; then
 	    echo -n "1"
 	else
 	    echo -n "0"
@@ -24,7 +24,7 @@ function l() {
 
     echo -n " "
     for i in $OT; do
-	if [[ $line == *$i* ]] ; then
+	if [[ $line == *" $i"* ]] ; then
 	    echo -n "1"
 	else
 	    echo -n "-"
@@ -70,7 +70,7 @@ paddy()
 }
 
 G="1"
-echo $IT
+#echo $IT
 rm -f tmp5
 for i in $OT; do
     #echo $G
@@ -95,6 +95,8 @@ c=0
 
 cat $1 | tr ' ' '\n'  > tmp8
 
-grep -f tmp7 tmp8 | wc -l
+grep -f tmp7 tmp8 
 
 # 2425 is not correct
+# 2576 is not correct
+# 2282 is the correct answer
