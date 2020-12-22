@@ -80,7 +80,7 @@ for i in $OT; do
     #(echo "obase=2";echo $((`cat tmp4  | cut -d ' ' -f 1 | sed 's/^/2#0/' | tr '\n' '&'|sed 's/&$//'`)))| bc | paddy $ITC >> tmp5
 
     # use a small helper to bitwise and tmp5 and send it to tmp5
-
+    
     ./bwa.py tmp4 >> tmp5
     #    cat tmp4
     #    cat tmp5

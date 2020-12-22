@@ -65,7 +65,7 @@ def getpix(fname):
 
         return pics
 
-pics = getpix("input")
+pics = getpix("input.short")
 
 #print (pics)
 
@@ -159,7 +159,20 @@ for i in range(0, len(edge)):
     paper.append(p)
 
 
-def draw(paper):
+def draw2(paper):
+    for i in range(0, len(paper)):
+        for x in range(0,10):
+            for j in range(0, len(paper[i])):
+                print (pics[paper[i][j]][9][x],end='')
+            print("")
+    
+
+def draw(paper, merge=False):
+
+    if merge:
+        draw2(paper)
+        return
+    
     for i in range(0, len(paper)):
         for x in range(0,len(paper[i])):
             print("{node:^10}".format(node=paper[i][x]),end=' ')
@@ -322,6 +335,9 @@ for i in range(0, int(math.sqrt(len(pics)))):
 
 draw(paper)
 
+#####################################################
+
+
 # sort of okay but not right
 # need a second round of alignment
 
@@ -332,77 +348,87 @@ def fingerprint(A):
     
     top = A[0]
     bottom = A[9]
-    left = ll
-    right = lr
+    right = ll
+    left = lr
 
     return (top,right,bottom,left)
 
-def fptopmatch(s, node):
 
-    fp = fingerprint(pics[node][9])
+def fpmatch(pics, what, who):
 
-    print(fp)
-
-    if s in fp:
-        i = fp.index(s)
-        print("Match "+s+" "+node+"="+str(i))
-
-        if i==2:
-            return # already good
-        
-        raise UnhandledMatch
-
-        
-    if s[::-1] in fp:
-        i = fp.index(s[::-1])
-        print("Reverse match "+str(i))
-
-        
-        raise UnhandledMatch
-
-def fprightmatch(s, node):
-
-    fp = fingerprint(pics[node][9])
-
-    print(fp)
-
-    if s in fp:
-        i = fp.index(s)
-
-        print("Match "+s+" "+node+"="+str(i))
-        if i==1:
-            return (fp)# already good
-
-        raise UnhandledMatch
-        
-        
-    if s[::-1] in fp:
-        i = fp.index(s[::-1])
-        print("Reverse match "+str(i))
-
-        if i==1:
-            pics[node] = vflip(pics[node])
-            return (fp)
-        elif i==3:
-            pics[node] = rot180(pics[node])
-            return (fp)
-
-        raise UnhandledMatch
-
-fprightmatch("0101101100", "3863")
+    fp = fingerprint(pics[who][9])
     
+    if what in fp:
+        i = fp.index(what)
+        ri=None
+    elif what[::-1] in fp:
+        ri = fp.index(what[::-1])
+        i=None
+    else:
+        print (who, what, fp)
+        raise RuntimeError # meaning that we didn't find any match at all, which we should since the tiles are basic ordered
 
-for i in range(0,int(math.sqrt(len(pics)))):
-    for j in range(1,int(math.sqrt(len(pics)))):
-        A = pics[paper[i][j-1]][9]
-        fp = "".join([x[9] for x in A])
-        fprightmatch(fp, paper[i][j])
+    return(i,ri)
 
-#print(fprightmatch("0100111110","2311")) # good match
-#print(fprightmatch("1001101000","3079")) # bad match, need flipping
-#print(fprightmatch("0101011100","2473")) 
+def matchup(pics, parent, child):
 
+    # get the bottom of the parent
+    what = fingerprint(pics[parent][9])[2]
+
+    (i,ri) = fpmatch(pics, what, child)
+    print (i,ri)
+    if i==0:
+        return # already matched
+
+
+    if ri is not None:
+        if ri == 2:
+            print ("rot")
+            pics[child] = rot180(pics[child])
+    
+            
+    
+def matchleft(pics, parent, child):
+
+    # get the right side of the parent
+    what = fingerprint(pics[parent][9])[1]
+    
+    (i,ri) = fpmatch(pics, what, child)
+    print (i,ri)
+    if i==3:
+        return # already matched
+
+    if i is not None:
+        if i == 0:
+            pics[child] = rot90(pics[child])
+
+    if ri is not None:
+        if ri == 3:
+            pics[child] = vflip(pics[child])
+
+
+    print ("ronk")
+
+def alignzor(paper, pics, x,y):
+    # investigate alignment in two directions: up and to the right
+
+    if y-1>-1:
+        abovetile=paper[y-1][x]
+        print("Matching above",abovetile,paper[y][x])
+        matchup(pics, abovetile, paper[y][x])
+
+
+    if x-1>-1:
+        lefttile=paper[y][x-1]
+        print("Matching side",lefttile,paper[y][x])
+        matchleft(pics, lefttile, paper[y][x])
+
+
+alignzor(paper,pics, 2,0)
 draw(paper)
+alignzor(paper,pics, 2,1)
+draw(paper)
+draw(paper,merge=True)
 
 
 
