@@ -5,6 +5,10 @@ sed -e '1,/--- sea ---/ d' | tr '01' ' #' > sea
 cat sea | rev > searev
 ./rot.py < sea > searot
 cat searot | rev > searotrev
+./rot.py < searev > searevrot
+cat searot | ./rot.py > searotrot
+cat searotrot | ./rot.py > searotrotrot
+cat searotrot | rev > searotrotrev
 
 # searotrev is the match in the example btw
 
@@ -17,7 +21,7 @@ M3=".)#(..)#(..)#(..)#(..)#(..)#"
 M2x=`printf %104s $M2 | tr ' ' '.'` #24 + number of (
 M3x=`printf %104s $M3 | tr ' ' '.'` #21 +number of ( 
 
-cat sea | tr -d "\n" > flat
+cat searotrotrot | tr -d "\n" > flat
 BOP="($M1$M2x$M3x)"
 #echo $BOP
 # without monster
