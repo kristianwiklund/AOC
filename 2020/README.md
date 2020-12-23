@@ -19,6 +19,6 @@ Language per day
 17) python
 18) C (bison/lex - based on the bison calculator example). combined with a shell script to sum using dc.  
 19) part 1 - script, part 2 - script with grammar generator for antlr (which also solves part 1)
-20) python
+20) python + shell (probably the ugliest solution this year...)
 21) shell (augmented with two simple python scripts). Also, requires the espresso boolean minimizer command line tool from pyeda
 22) erlang

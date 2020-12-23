@@ -257,6 +257,7 @@ def hflip(node):
     return (myid, rbottom,rtop,left,right,top,bottom,rleft,rright,B)
 
 
+# line up the first tile
 success=False
 for i in [lambda x:norot(x), lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x), lambda x:vflip(x), lambda x:hflip(x)]:
 #    return (myid, (myid, top,bottom,left,right,rtop,rbottom,rleft,rright,A))
@@ -270,76 +271,7 @@ for i in [lambda x:norot(x), lambda x:rot90(x), lambda x:rot180(x), lambda x:rot
 if not success:
     print("bad error fail")
 
-def topalignzor(fromn, ton, pics, G):
-    p = list(nx.shortest_path(G,fromn,ton))[1]
-    p = int(p.replace("E",""))
 
-    for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x), lambda x:vflip(x), lambda x:hflip(x)]:
-
-        ap = i(pics[ton])
-
-
-        if ap[1] == p:
-            print (str(fromn)+"-"+str(ton)+" Aligning to "+str(p))                
-            pics[ton]=ap
-            return
-
-        if ap[5] == p:
-            print (str(fromn)+"-"+str(ton)+" Aligning to R"+str(p))                
-            pics[ton]=vflip(ap)
-            return
-
-        
-
-    print("bad error fail!")
-
-
-def rightalignzor(fromn, ton, pics, G):
-    p = list(nx.shortest_path(G,fromn,ton))[1]
-    p = int(p.replace("E",""))
-    
-    success=False
-    for i in [lambda x:x, lambda x:rot90(x), lambda x:rot180(x), lambda x:rot270(x), lambda x:vflip(x)]:
-
-        ap = i(pics[ton])
-        
-        if ap[4] == p:
-            print (str(fromn)+"-"+str(ton)+" Aligning "+str(ton)+" to "+str(p))
-                
-            pics[ton]=ap
-            return
-
-        if ap[8] == p:
-            print (str(fromn)+"-"+str(ton)+" Aligning "+str(ton)+" to R"+str(p))
-            
-            pics[ton]=hflip(ap)
-            return
-
-    print("bad error fail!")
-
-# skip the graph based alignment for now
-#draw(pics)
-#for i in range(1,len(edge)):
-#    topalignzor(edge[i-1],edge[i],pics,G)
-#topalignzor("1951","2729", pics, G)
-#topalignzor("2729","2971", pics, G)
-
-# then go node by node between the two master edges and align those as well
-
-#for i in range(0, int(math.sqrt(len(pics)))):
-#
-#    l = list(nx.shortest_path(H, edge[i], edge2[i]))
-#
-#    for j in range(1, len(l)):
-#        rightalignzor(l[j-1],l[j],pics,G)
-
-#draw(paper)
-
-#####################################################
-
-
-# sort of okay but not right
-# need a second round of alignment
 
 def fingerprint(A):
 
