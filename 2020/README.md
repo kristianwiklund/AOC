@@ -22,3 +22,4 @@ Language per day
 20) python + shell (probably the ugliest solution this year...)
 21) shell (augmented with two simple python scripts). Also, requires the espresso boolean minimizer command line tool from pyeda
 22) erlang
+23) erlang
