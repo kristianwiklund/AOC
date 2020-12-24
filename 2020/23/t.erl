@@ -6,7 +6,7 @@
 % removing unnecessary calls to length: 18754332
 % removing max/min:10493432
 
-chopout(L, I) ->
+chopout(L, I, Len, CSize) ->
     {L1,L2} = lists:split(I, L),
     L2Len = length(L2),
     {L1P,L2P} = if
@@ -36,7 +36,7 @@ insert(Circle, Pile, Where) ->
     I = string:str(Circle, [Where]),
     {L1,L2} = lists:split(I, Circle),
     
-    Pile++(L2++L1). % putting the pile in the front is a 50% speedup
+    Pile++(L2++L1). % putting the pile in the front and not in the back is a 50% speedup
 
 newcup(Circle, Cup, LC) ->
     X = string:str(Circle, [Cup]),
@@ -50,15 +50,15 @@ newcup(Circle, Cup, LC) ->
 %% change to not cut paste insert, do cut insert in the same move(?)
 
     
-move (Circle, Cup, 0, _) ->
+move (Circle, Cup, 0, _, _) ->
     I = string:str(Circle,[1]),
     {L1,L2} = lists:split(I, Circle),
     L = L2++L1,
     {Cup, L};
-move (L, Cup, MaxMoves, Len) ->
+move (L, Cup, MaxMoves, Len, CSize) ->
     I = string:str(L, [Cup]),
 % these three can 
-    {Circle, Pile} = chopout(L, I),
+    {Circle, Pile} = chopout(L, I, Len, CSize),
     InsertCup = findinsertcup(Cup-1, Pile, Circle),
     T2 = insert(Circle, Pile, InsertCup),
 % be combined for speedup

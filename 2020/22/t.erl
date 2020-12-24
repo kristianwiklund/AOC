@@ -1,5 +1,5 @@
 -module(t).
--export([draw/1,score/1,t/0,game/4]).
+-export([draw/1,score/1,t/0,game/4,tt/0]).
 
 % part 1
 
@@ -78,5 +78,8 @@ game(Deck, Rounds, GameID, RoundID) ->
 	end,
     NewState.
 
+tt()->
+    {Who,{P1,P2}} = game(i:input(),#{},1,1),
+    {Who,max(score(P1),score(P2))}.
 
 	
