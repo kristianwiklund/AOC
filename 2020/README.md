@@ -23,3 +23,4 @@ Language per day
 21) shell (augmented with two simple python scripts). Also, requires the espresso boolean minimizer command line tool from pyeda
 22) erlang
 23) erlang
+24) python
