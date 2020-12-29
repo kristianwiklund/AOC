@@ -4,12 +4,12 @@
 
 cat $1 | cut -d"(" -f 1 | tr ' ' '\n' | sort -u | grep -v '^$' > tmp
 ITC=`wc -l tmp|cut -d ' ' -f1`
-IT=`cat tmp | tr '\n' ' '`
+IT=`cat tmp | sort | tr '\n' ' '`
 
 cat $1 | cut -d "(" -f2 | tr -d ")," | sed 's/contains //' |  tr ' ' '\n' | sort -u | grep -v '^$' > tmp2
 
 OTC=`wc -l tmp2|cut -d ' ' -f1`
-OT=`cat tmp2 | tr '\n' ' '`
+OT=`cat tmp2 | sort | tr '\n' ' '`
 
 function l() {
     line=$1

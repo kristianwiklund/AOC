@@ -1,0 +1,2 @@
+-module(t).
+-export([t/0]).
