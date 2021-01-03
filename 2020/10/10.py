@@ -32,9 +32,9 @@ while len(hl):
         #print(str(p)+"-->"+str(hl2[0])+" = "+str((hl2[0]-p)))
         hl2.pop(0)
 
-pos = nx.kamada_kawai_layout(G)
-nx.draw_networkx(G, pos=pos, node_size=10, font_size=4, with_labels=True)
-plt.savefig("bags.pdf",format="pdf")
+#pos = nx.kamada_kawai_layout(G)
+#nx.draw_networkx(G, pos=pos, node_size=10, font_size=4, with_labels=True)
+#plt.savefig("bags.pdf",format="pdf")
 
 s = 1
 

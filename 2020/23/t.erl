@@ -1,5 +1,5 @@
 -module(t).
--export([move/4,chopout/2, findinsertcup/3, newcup/3,tt/0,t/0,t2/1]).
+-export([move/5,chopout/4, findinsertcup/3, newcup/3,tt/0,t/0,t2/1]).
 
 % original: 53350253
 % putting pile first: 20429870 (see comment below)
@@ -7,6 +7,7 @@
 % removing max/min:10493432
 
 chopout(L, I, Len, CSize) ->
+%    io:fwrite("~p: ~p ~n",[I, CSize]),
     {L1,L2} = lists:split(I, L),
     L2Len = length(L2),
     {L1P,L2P} = if
@@ -63,21 +64,21 @@ move (L, Cup, MaxMoves, Len, CSize) ->
     T2 = insert(Circle, Pile, InsertCup),
 % be combined for speedup
     NewCup = newcup(T2, Cup, Len),
-    move(T2, NewCup, MaxMoves-1, Len).
+    move(T2, NewCup, MaxMoves-1, Len, CSize).
 
 
 t() ->
-    move(i:d(),1,100,length(i:d())).
+    move(i:d(),1,100,length(i:d()),length(i:d())).
 
 tt() ->
-    move(i:s(),3,100, length(i:s())).
+    move(i:s(),3,100, length(i:s()),length(i:s())).
 
 t2(MAX) ->
-    Len=1000000,
+    Len=1000,
     CSize=1000,
     L = i:s(),
     M = lists:max(i:s())+1,
-    P = lists:seq(M,CSize),
+    P = lists:seq(M,Len),
     {Time,R} = timer:tc(t,move, [L++P, 1, MAX, Len, CSize]),
     {Time,R}.
 
