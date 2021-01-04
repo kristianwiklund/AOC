@@ -9,6 +9,7 @@ Language choices:
 * 5 - grep.
 * 6 - bash/awk/sed
 * 7 - python. networkx
+* 8 - bash
 * 9 - python. networkx
 * 10 - erlang. list manipulation
 * 11 - erlang (it has a bug, but it doesn't matter...)
