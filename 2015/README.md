@@ -6,7 +6,8 @@ Language choices:
 * 2 - tr, awk, dc
 * 3 - sed, tr, bash
 * 4 - python, for access to md5 library 
-* 5 - grep. 
+* 5 - grep.
+* 6 - bash/awk/sed
 * 7 - python. networkx
 * 9 - python. networkx
 * 10 - erlang. list manipulation
