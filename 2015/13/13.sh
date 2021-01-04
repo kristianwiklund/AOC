@@ -12,4 +12,10 @@ read N < <(cat $1| cut -d' ' -f1|sort -u| wc -l)
 echo "def corr(): " >> bop.py
 echo " return ($MIN*$N)" >> bop.py
 
+echo -n "Answer: "
 ./13.py
+
+
+
+
+

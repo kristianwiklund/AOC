@@ -21,7 +21,7 @@ def score(G, P):
         n = P.pop(0)
         w = w + G[n][p]["weight"]
         w = w + G[p][n]["weight"]
-#        print(n,p, G[n][p]["weight"]+bop.corr()/4, G[p][n]["weight"]+bop.corr())
+        #        print(n,p, G[n][p]["weight"], G[p][n]["weight"])
         p=n
     return (w,u)
 
@@ -32,6 +32,8 @@ for x in cp:
 #print(gl)
 gl=sorted(gl, key=lambda x: -x[0])
 print(gl[0])
+
+
 
 
 
