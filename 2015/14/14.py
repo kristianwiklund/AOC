@@ -17,11 +17,14 @@ with open(sys.argv[1],"r") as fd:
     lines = fd.readlines()
     h = dict()
     a = dict()
+    sc = dict()
+    
     for line in lines:
         (hest,l) = decode(line.strip("\n\r"))
         h[hest] = l
         a[hest] = 0
-
+        sc[hest] = 0
+        
     for i in range(0, int(sys.argv[2])):
 
         for hest in h:
@@ -29,5 +32,11 @@ with open(sys.argv[1],"r") as fd:
             h[hest].append(s)
             a[hest] += s
 
-    print(a)
+        m = max(list(a.values()))
+        who = [x for x in a if a[x]==m]
+
+        for i in who:
+            sc[i] += 1
             
+    print(sc[sorted(sc,key=sc.get).pop()])
+
