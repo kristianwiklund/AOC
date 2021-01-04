@@ -13,3 +13,4 @@ Language choices:
 * 9 - python. networkx
 * 10 - erlang. list manipulation
 * 11 - erlang (it has a bug, but it doesn't matter...)
+* 12 - shell (part a)
