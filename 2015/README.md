@@ -14,3 +14,4 @@ Language choices:
 * 10 - erlang. list manipulation
 * 11 - erlang (it has a bug, but it doesn't matter...)
 * 12 - shell (part a), shell+python (part a reused for the calculation, python to do the thing)
+* 13 - python (with code generation in shell)
