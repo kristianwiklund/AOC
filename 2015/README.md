@@ -16,5 +16,5 @@ Language choices:
 * 12 - shell (part a), shell+python (part a reused for the calculation, python to do the thing)
 * 13 - python (with code generation in shell)
 * 14 - awk (part a), python (part b)
-* 15
+* 15 - python. (Might add a part a in bash "later")
 * 16 - sh
