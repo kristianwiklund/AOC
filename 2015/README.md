@@ -18,3 +18,4 @@ Language choices:
 * 14 - awk (part a), python (part b)
 * 15 - python. (Might add a part a in bash "later")
 * 16 - sh
+* 17 - python
