@@ -7,3 +7,6 @@ echo "};" >> input.h
 S=`wc -l < $1`
 echo "#define XMAX $S" >> input.h
 echo "#define YMAX $S" >> input.h
+
+make
+./life

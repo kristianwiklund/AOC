@@ -68,6 +68,15 @@ void run(int which) {
 
 }
 
+int count(char **M) {
+  int c=0;
+  for (int y=0;y<YMAX;y++)
+    for(int x=0;x<XMAX;x++)
+      c+=(M[y][x]=='#')?1:0;
+
+  return (c);
+}
+
 int main() {
   
   char **b,**a,**c;
@@ -87,10 +96,46 @@ int main() {
   matrix[1] = (void *)b;
   matrix[0] = (void *)a;
 
-  for(i=0;i<4;i++)
+  // then simulate 
+  for(i=0;i<100;i++)
     run(i%2);
-  print(matrix[i%2]);
+  //  print(matrix[i%2]);
+
+  printf("Answer to part 1: %d\n", count(matrix[i%2]));
+
+  // -- reset and rerun for part 2
+
+  c= (void *)input;
+  a = calloc(sizeof(char *), YMAX);
+  b = calloc(sizeof(char *), YMAX);
   
+  for (int y=0;y<YMAX;y++) {
+    b[y] = strdup(c[y]);
+    a[y] = strdup(c[y]);
+  }
+  matrix[1] = (void *)b;
+  matrix[0] = (void *)a;
+
+  for(i=0;i<100;i++) {
+    c = matrix[i%2];
+    c[0][0]='#';
+    c[0][XMAX-1]='#';
+    c[YMAX-1][0]='#';
+    c[YMAX-1][XMAX-1]='#';
+    
+    run(i%2);
+  }
+  
+  c = matrix[i%2];
+  c[0][0]='#';
+  c[0][XMAX-1]='#';
+  c[YMAX-1][0]='#';
+  c[YMAX-1][XMAX-1]='#';
+  
+  //print(matrix[i%2]);
+
+  printf("Answer to part 2: %d\n", count(matrix[i%2]));
+
   
 }
 
