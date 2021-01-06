@@ -19,3 +19,4 @@ Language choices:
 * 15 - python. (Might add a part a in bash "later")
 * 16 - sh
 * 17 - python
+* 18 - c (in the shape of a relatively generic game of life solver)
