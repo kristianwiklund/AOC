@@ -1,0 +1,1 @@
+For 1a, you have to manually add the first digit to the end of the input. I was too lazy to do that automatically.
