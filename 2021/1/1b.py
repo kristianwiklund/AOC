@@ -3,7 +3,6 @@
 import fileinput
 import rolling
 
-t=False
 l=list()
 
 for line in fileinput.input():
