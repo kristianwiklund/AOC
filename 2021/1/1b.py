@@ -5,7 +5,7 @@ import rolling
 
 t=False
 l=list()
-c=0
+
 for line in fileinput.input():
     l.append(int(line))
 
