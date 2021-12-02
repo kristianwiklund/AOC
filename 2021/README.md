@@ -1,2 +1,2 @@
 1: python
-2: (a) shell
+2: shell (sed + bc)
