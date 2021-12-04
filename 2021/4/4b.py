@@ -38,4 +38,4 @@ for i in randoms:
 
 print ("board ",t," is the board")
 s = boards[t].score()
-print(int(i),s,int(i)*s)
+print("Score: ",int(i)*s)
