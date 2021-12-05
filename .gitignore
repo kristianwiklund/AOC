@@ -21,3 +21,6 @@ _checkouts/
 
 *.tmp
 tmp
+
+__pycache__
+.DS_Store
