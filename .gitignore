@@ -18,9 +18,10 @@ _checkouts/
 
 # emacs
 *~
-
+\#*\#
 *.tmp
 tmp
 
 __pycache__
+*.DS_Store*
 .DS_Store
