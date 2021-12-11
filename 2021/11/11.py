@@ -60,6 +60,7 @@ for i in range(100):
         all=i
     
 print("Answer 1:",flashes)
+i+=1
 
 if not a:
     while True:
@@ -70,5 +71,5 @@ if not a:
             break
         i+=1
 
-print("Answer 2:",all+2)
+print("Answer 2:",all+1)
 
