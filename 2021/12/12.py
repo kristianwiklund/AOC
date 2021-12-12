@@ -1,13 +1,8 @@
 #!/usr/bin/python3
 
-#import networkx as nx
 import g as nx
 import sys
 from pprint import pprint
-#import vmprof
-
-#fd = open("apa.prof","w+b")
-#vmprof.enable(fd.fileno())
 
 f = [t.strip().split("-") for t in sys.stdin]
 G = nx.Graph()
