@@ -26,7 +26,7 @@ def visit(G, n, V, twice):
     S = set(G.neighbors(n))-V
 
     P = []
-    for i in S:
+    for i in G.neighbors(n):
         if not i in V:
             Z = visit(G,i,VV, twice)
 
