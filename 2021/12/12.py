@@ -2,14 +2,14 @@
 
 import g as nx
 import sys
-from pprint import pprint
+#from pprint import pprint
 
 f = [t.strip().split("-") for t in sys.stdin]
 G = nx.Graph()
 
 for l in f:
     G.add_edge(l[0],l[1])
-        
+
 def visit(G, n, V, twice):
     
     VV = V if n[0].isupper() else V|set([n])
