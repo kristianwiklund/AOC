@@ -18,9 +18,7 @@ for l in f:
 def visit(G, n, V, twice):
     
     VV = V if n[0].isupper() else V|set([n])
-    
     P = 0
-
     for i in G.neighbors(n):
         
         if i == "end":
