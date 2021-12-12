@@ -21,8 +21,6 @@ def visit(G, n, V):
     if n=="end":
         return []
 
-    if n in V:
-        return []
 
     VV = V if n.isupper() else V|set([n])
     
