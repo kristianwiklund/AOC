@@ -18,25 +18,27 @@ nx.draw(G,with_labels=True)
 plt.savefig("nw.png")
         
 def visit(G, n, V, twice):
+    
     if n=="end":
         return []
 
     VV = V if n.isupper() else V|set([n])
     
-    S = set(G.neighbors(n))-V
-
     P = []
+
     for i in G.neighbors(n):
-        if not i in V:
+        if (not i in V):
             Z = visit(G,i,VV, twice)
-
-            if not Z:
-                P.append([i])
-            else:
-                for x in Z:
-                    Y = [i] + x
-                    P.append(Y)
-
+        elif (not i=="start") and not twice:
+            Z = visit(G,i,VV, True)
+        else:
+            Z = None
+        if not Z:
+            P.append([i])
+        else:
+            for x in Z:
+                Y = [i] + x
+                P.append(Y)
     return (P)
 
 P=[]
