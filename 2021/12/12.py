@@ -9,7 +9,8 @@ for l in f:
 
 def visit(G, n, V, twice):
 
-    VV = V if n[0].isupper() else V|set([n])
+    VV = V if n[0].isupper() else V|{n}
+        
     P = 0
     for i in G.neighbors(n):
         
@@ -25,7 +26,7 @@ def visit(G, n, V, twice):
 def bolibompa(twice):
     
     c=0
-    Q=set(["start"])
+    Q={"start"}
     for i in G.neighbors("start"):
         T = visit(G, i, Q, twice)
         c+=T

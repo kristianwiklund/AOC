@@ -5,12 +5,12 @@ class Graph:
         if a in self.nodes:
             self.nodes[a].add(b)
         else:
-            self.nodes[a] = set([b])
+            self.nodes[a] = {b}
 
         if b in self.nodes:
             self.nodes[b].add(a)
         else:
-            self.nodes[b] = set([a])
+            self.nodes[b] = {a}
 
     def neighbors(self, a):
 
