@@ -12,26 +12,28 @@ for l in f:
         
 def visit(G, n, V, twice):
     
-    if n=="end":
-        return []
-
-    VV = V if n.isupper() else V|set([n])
+    VV = V if n[0].isupper() else V|set([n])
     
     P = []
 
     for i in G.neighbors(n):
+
+        if n=="end":
+            continue
+
         if (not i in V):
             Z = visit(G,i,VV, twice)
-        elif (not i=="start") and not twice:
+        elif (i!="start") and not twice:
             Z = visit(G,i,VV, True)
+
         else:
             Z = None
+            
         if not Z:
             P.append([i])
         else:
             for x in Z:
-                Y = [i] + x
-                P.append(Y)
+                P.append([i]+x)
     return (P)
 
 def bolibompa(twice):
