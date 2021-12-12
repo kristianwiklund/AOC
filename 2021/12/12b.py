@@ -2,7 +2,7 @@
 
 import networkx as nx
 import sys
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from pprint import pprint
 
 f = [t.strip().split("-") for t in sys.stdin]
@@ -14,8 +14,8 @@ for l in f:
 def fop(x):
     return x.isupper() or x=="end"
 
-nx.draw(G,with_labels=True)
-plt.savefig("nw.png")
+#nx.draw(G,with_labels=True)
+#plt.savefig("nw.png")
         
 def visit(G, n, V, twice):
     
@@ -41,12 +41,17 @@ def visit(G, n, V, twice):
                 P.append(Y)
     return (P)
 
-P=[]
-for i in G.neighbors("start"):
-    T = visit(G, i, set(["start"]), False)
-    for x in T:
-        Y = ["start",i] + x
-        if "end" in Y:
-            P.append(Y)
+def bolibompa(twice):
     
-print(len(P))
+    P=[]
+    for i in G.neighbors("start"):
+        T = visit(G, i, set(["start"]), twice)
+        for x in T:
+            Y = ["start",i] + x
+            if "end" in Y:
+                P.append(Y)
+    
+    return len(P)
+
+print("Answer 1:",bolibompa(True))
+print("Answer 2:",bolibompa(False))
