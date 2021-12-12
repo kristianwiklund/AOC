@@ -14,25 +14,8 @@ for l in f:
 def fop(x):
     return x.isupper() or x=="end"
 
-# remove nodes that cannot be visited at all
-
-remove = []
-for i in G:
-    if i == "end" or i == "start":
-        continue
-    N = nx.neighbors(G,i)
-
-    F = list(filter(fop,N))
-    if not len(F):
-        remove.append(i)
-
 nx.draw(G,with_labels=True)
 plt.savefig("nw.png")
-
-        
-for x in remove:
-    G.remove_node(x)
-
         
 # cleaned up network, now traverse
 
@@ -47,7 +30,7 @@ def visit(G, n, V):
     VV = V if n.isupper() else V|set([n])
     
     S = set(G.neighbors(n))-V
-    #print("Node",n,V,S)
+#    print("Node",n,VV,S)
     P = []
     for i in S:
         if not i in V:
@@ -61,8 +44,8 @@ def visit(G, n, V):
                 for x in Z:
                     Y = [i] + x
                     P.append(Y)
-        else:
-            print("not doing",n,"->",i)
+ #       else:
+ #           print("not doing",n,"->",i)
     return (P)
 
 P=[]
@@ -70,7 +53,7 @@ for i in G.neighbors("start"):
     T = visit(G, i, set(["start"]))
     for x in T:
         Y = ["start",i] + x
-        P.append(Y)
+        if "end" in Y:
+            P.append(Y)
     
-pprint(P)
 print(len(P))
