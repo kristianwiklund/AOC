@@ -17,10 +17,9 @@ def fop(x):
 nx.draw(G,with_labels=True)
 plt.savefig("nw.png")
         
-def visit(G, n, V):
+def visit(G, n, V, twice):
     if n=="end":
         return []
-
 
     VV = V if n.isupper() else V|set([n])
     
@@ -29,7 +28,7 @@ def visit(G, n, V):
     P = []
     for i in S:
         if not i in V:
-            Z = visit(G,i,VV)
+            Z = visit(G,i,VV, twice)
 
             if not Z:
                 P.append([i])
@@ -42,7 +41,7 @@ def visit(G, n, V):
 
 P=[]
 for i in G.neighbors("start"):
-    T = visit(G, i, set(["start"]))
+    T = visit(G, i, set(["start"]), False)
     for x in T:
         Y = ["start",i] + x
         if "end" in Y:
