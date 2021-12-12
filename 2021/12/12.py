@@ -2,7 +2,6 @@
 
 import networkx as nx
 import sys
-#import matplotlib.pyplot as plt
 from pprint import pprint
 
 f = [t.strip().split("-") for t in sys.stdin]
@@ -10,12 +9,6 @@ G = nx.Graph()
 
 for l in f:
     G.add_edge(l[0],l[1])
-
-def fop(x):
-    return x.isupper() or x=="end"
-
-#nx.draw(G,with_labels=True)
-#plt.savefig("nw.png")
         
 def visit(G, n, V, twice):
     
