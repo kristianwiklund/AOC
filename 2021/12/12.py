@@ -17,26 +17,21 @@ def fop(x):
 nx.draw(G,with_labels=True)
 plt.savefig("nw.png")
         
-# cleaned up network, now traverse
-
 def visit(G, n, V):
     if n=="end":
         return []
 
     if n in V:
-        print (n, " already visited")
         return []
 
     VV = V if n.isupper() else V|set([n])
     
     S = set(G.neighbors(n))-V
-#    print("Node",n,VV,S)
+
     P = []
     for i in S:
         if not i in V:
             Z = visit(G,i,VV)
-            #for x in Z:
-            #    P.append(x)
 
             if not Z:
                 P.append([i])
@@ -44,8 +39,7 @@ def visit(G, n, V):
                 for x in Z:
                     Y = [i] + x
                     P.append(Y)
- #       else:
- #           print("not doing",n,"->",i)
+
     return (P)
 
 P=[]
