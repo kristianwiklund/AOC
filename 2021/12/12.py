@@ -21,33 +21,33 @@ def visit(G, n, V, twice):
     
     P = []
 
-    if n=="end":
-        return [["end"]]
-    
     for i in G.neighbors(n):
 
-        if (not i in V):
+        if i == "end":
+            P.append(["end"])
+            continue
+        elif (not i in V):
             Z = visit(G,i,VV, twice)
-        elif (i!="start") and not twice:
+        elif not twice and i!="start":
             Z = visit(G,i,VV, True)
         else:
             continue
         
         for x in Z:
-            P.append([i]+x)
+            #x.append(i)
+            #P.append(x)
+            P.append("end")
     return (P)
 
 def bolibompa(twice):
     
     P=[]
+    c=0
     for i in G.neighbors("start"):
         T = visit(G, i, set(["start"]), twice)
         for x in T:
-            Y = ["start",i] + x
-            if "end" in Y:
-                P.append(Y)
-    
-    return len(P)
+            c+=1
+    return c
 
 print("Answer 1:",bolibompa(True))
 print("Answer 2:",bolibompa(False))
