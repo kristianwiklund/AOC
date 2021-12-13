@@ -1,21 +1,17 @@
 #!/usr/bin/python3
 
 import sys
-import numpy
 
-def pr(W):
-    W = numpy.transpose(W)
-    for x in W:
-        for y in x:
-            if y==0:
-                print(" ",end='')
+def pr(W,mx,my):
+    for y in range(my+1):
+        for x in range(mx+1):
+            if (x,y) in W:
+                print("#",end='')
             else:
-                print(int(y),end='')
+                print(" ",end='')
         print("")
 
                                                                     
-
-#f = [t.strip().split(",") for t in sys.stdin]
 
 Q = set()
 
@@ -34,9 +30,6 @@ for t in sys.stdin:
     else:
         break
 
-#print(Q)
-# folds
-
 def transform(Q,d,p):
     mmx=0
     mmy=0
@@ -50,7 +43,9 @@ def transform(Q,d,p):
 
             if x>=p:
                 x = p-(x-p)
-            Z.add((x,y))        
+            mmx = max(mmx,x)
+            Z.add((x,y))
+        mmy = my
     else:
         Z=set()
 
@@ -61,13 +56,9 @@ def transform(Q,d,p):
 
             if y>=p:
                 y = p-(y-p)
+            mmy = max(mmy,y)
             Z.add((x,y))
-        
-    for (x,y) in Z:
-        mmx = max(mmx,x)
-        mmy = max(mmy,y)
-
-        
+        mmx = mx
     return (Z,mmx,mmy)
 
 c=False
@@ -84,12 +75,12 @@ for t in sys.stdin:
         print("Answer 1: ",len(Q))
         c=True
         
-M = numpy.zeros(shape=(mx+2,my+2))
+M = {}
 
 for (x,y) in Q:
 
-    M[int(x)][int(y)] = '1'
+    M[x,y] = '1'
 
 print("Answer 2:\n")
-pr(M)
+pr(M,mx,my)
 
