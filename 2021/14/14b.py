@@ -112,6 +112,6 @@ def kairo(c):
     return (d,ans)
 
 (d,ans)=kairo(c)
-print(ans/2)
+print("Answer 2:", int(ans/2))
 
 

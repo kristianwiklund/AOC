@@ -99,15 +99,5 @@ if template=="NNCB":
     
 print("Answer 1:",ans)
 
-oans=ans
-oa = c[d[0]]
-ob = c[d[-1]]
-for i in range(30):
-    s = subst(s,rules)
-    c = calcutta(s)
-    (d,ans) = kairo(c)
-    print (i+10, d[0],c[d[0]],c[d[0]]/oa, d[-1],c[d[-1]],c[d[-1]]/ob)
-    oa = c[d[0]]
-    ob = c[d[-1]]
 
 
