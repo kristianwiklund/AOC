@@ -16,7 +16,7 @@ for l in sys.stdin:
 
 for i in range(len(template)-1):
     q=template[i]+template[i+1]
-    print (q,pairs)
+    #print (q,pairs)
     if q in pairs:
         pairs[q]+=1
     else:
@@ -28,12 +28,15 @@ def kroppkaka(pairs, rules):
     for x in pairs:
         if x in rules:
             if pairs[x]>0:
+                # these are the newly formed pairs
                 p1=x[0]+rules[x]
                 p2=rules[x]+x[1]
+                # that replace the old pair
                 if not p1 in np:
                     np[p1]=pairs[x]
                 else:
                     np[p1]+=1
+                    
                 if not p2 in np:
                     np[p2]=pairs[x]
                 else:
@@ -44,6 +47,22 @@ def kroppkaka(pairs, rules):
     return np
                 
 #print(pairs)
-for i in range(1):
+s={}
+for i in range(4):
     pairs=kroppkaka(pairs,rules)
-print(pairs)
+#print(pairs)
+for i in pairs:
+    for j in i:
+        if not j in s:
+            s[j]=pairs[i]
+        else:
+            s[j]+=pairs[i]
+
+for i in s:
+    s[i]=int(s[i]/2)
+
+s[template[0]]=s[template[0]]+1
+s[template[-1]]=s[template[-1]]+1
+
+
+print (s)
