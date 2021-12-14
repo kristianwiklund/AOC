@@ -90,9 +90,9 @@ if template=="NNCB":
 def kairo(c):
     d=sorted(c,key=lambda x:c[x],reverse=True)
     ans=int(c[d[0]])-int(c[d[-1]])
-    return ans
+    return (d,ans)
 
-ans=kairo(c)
+(d,ans)=kairo(c)
 
 if template=="NNCB":
     assert(ans==1588)
@@ -100,11 +100,14 @@ if template=="NNCB":
 print("Answer 1:",ans)
 
 oans=ans
+oa = c[d[0]]
+ob = c[d[-1]]
 for i in range(30):
     s = subst(s,rules)
     c = calcutta(s)
-    ans = kairo(c)
-    print (i+10, ans, ans/oans)
-    oans=ans
+    (d,ans) = kairo(c)
+    print (i+10, d[0],c[d[0]],c[d[0]]/oa, d[-1],c[d[-1]],c[d[-1]]/ob)
+    oa = c[d[0]]
+    ob = c[d[-1]]
 
 
