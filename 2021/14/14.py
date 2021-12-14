@@ -68,26 +68,43 @@ else:
     for i in range(10):
         s=subst(s,rules)
 
-c={}
-for i in range(len(s)):
-    if s[i] in c:
-        c[s[i]]+=1
-    else:
-        c[s[i]]=1
+
+def calcutta(s):
+    
+    c={}
+    for i in range(len(s)):
+        if s[i] in c:
+            c[s[i]]+=1
+        else:
+            c[s[i]]=1
+    return (c)
+
+c= calcutta(s)
 
 if template=="NNCB":
     assert(c["B"]==1749)
     assert(c["C"]==298)
     assert(c["H"]==161)
     assert(c["N"]==865)
-    
-d=sorted(c,key=lambda x:c[x],reverse=True)
-ans=int(c[d[0]])-int(c[d[-1]])
+
+def kairo(c):
+    d=sorted(c,key=lambda x:c[x],reverse=True)
+    ans=int(c[d[0]])-int(c[d[-1]])
+    return ans
+
+ans=kairo(c)
 
 if template=="NNCB":
     assert(ans==1588)
     
 print("Answer 1:",ans)
 
+oans=ans
+for i in range(30):
+    s = subst(s,rules)
+    c = calcutta(s)
+    ans = kairo(c)
+    print (i+10, ans, ans/oans)
+    oans=ans
 
 

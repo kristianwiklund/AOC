@@ -48,21 +48,24 @@ def kroppkaka(pairs, rules):
                 
 #print(pairs)
 s={}
+
+def calcutta(pairs, template):
+    for i in pairs:
+        for j in i:
+            if not j in s:
+                s[j]=pairs[i]
+            else:
+                s[j]+=pairs[i]
+
+        for i in s:
+            s[i]=int(s[i]/2)
+
+    s[template[0]]=s[template[0]]+1
+    s[template[-1]]=s[template[-1]]+1    
+
+    return(s)
+    
 for i in range(4):
     pairs=kroppkaka(pairs,rules)
-#print(pairs)
-for i in pairs:
-    for j in i:
-        if not j in s:
-            s[j]=pairs[i]
-        else:
-            s[j]+=pairs[i]
-
-for i in s:
-    s[i]=int(s[i]/2)
-
-s[template[0]]=s[template[0]]+1
-s[template[-1]]=s[template[-1]]+1
-
-
-print (s)
+    s = calcutta(pairs, template)
+    print (s)
