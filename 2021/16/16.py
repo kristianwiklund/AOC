@@ -22,17 +22,69 @@ def decodeliteral(s):
         last = s[0]=='0'
     return(s,v)
 
+def execute(e):
+    what=e[2]
+
+    if not what:
+        return e[1]
+    else:
+        return what(e[1])
+    
+
+def msum(L):
+    s=0
+    for i in L:
+        s+=execute(i)
+    return(s)
+def mprod(L):
+    s=1
+    for i in L:
+        s*=execute(i)
+    return(s)
+def mmin(L):
+    s=[]
+    for i in L:
+        s.append(execute(i))
+    return(min(s))
+
+def mmax(L):
+    s=[]
+    for i in L:
+        s.append(execute(i))
+    return(max(s))
+def mgt(L):
+    s=[]
+    for i in L:
+        s.append(execute(i))
+    return(1 if s[0]>s[1] else 0)
+def mlt(L):
+    s=[]
+    for i in L:
+        s.append(execute(i))
+    return(1 if s[0]<s[1] else 0)
+def meq(L):
+    s=[]
+    for i in L:
+        s.append(execute(i))
+    return(1 if s[0]==s[1] else 0)
+
+op=[msum,mprod,mmin,mmax,None,mgt,mlt,meq]
+
+
+
+
 def decode(s):
 
     version=int(s[0:3],2)
     typeid=int(s[3:6],2)
+    
 
     # chomp
     s = s[6:]
 
     if typeid==4: # literal value
         (s,l)=decodeliteral(s)
-        return ((version,l),s)
+        return ((version,l,None),s)
     else:
         lengthtype=int(s[0])
         s=s[1:]
@@ -45,7 +97,7 @@ def decode(s):
             while ss:
                 (LT,ss)=decode(ss)
                 L.append(LT)
-            return((version,L),s)
+            return((version,L,op[typeid]),s)
         else:
             numpack=int(s[0:11],2)
             s=s[11:]
@@ -53,7 +105,7 @@ def decode(s):
             for i in range(numpack):
                 (LT,s)=decode(s)
                 L.append(LT)
-            return((version, L),s)
+            return((version, L,op[typeid]),s)
 
 def versum(L):
     s=0
@@ -72,3 +124,12 @@ def versum(L):
 #assert(versum(decode(L[6])[0])==31)
 
 print("Answer 1: ",versum(decode(L[0])[0]))
+
+
+#expr=decode(L[7])[0]
+#assert(execute(expr)==3)
+
+#expr=decode(L[8])[0]
+#assert(execute(expr)==54)
+
+print("Answer 1: ",execute(decode(L[0])[0]))
