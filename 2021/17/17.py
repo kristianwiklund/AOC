@@ -49,6 +49,8 @@ while True:
    if h<y2:
        print("exit: hmax=",hmax,h)
        break
+if test:
+    print("**** running with test data ****")
 print("Answer 1: ",hmax)
    
 
