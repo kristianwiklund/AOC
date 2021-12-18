@@ -131,10 +131,12 @@ assert(L==[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]])
 def add(a,b):
     return [a,b]
 
+# -- first test case for reducing a thing
 L=add([[[[4,3],4],4],[7,[[8,4],9]]],[1,1])
 (L,nl,nr)=boom(L,0)
 (L,s)=split(L)
 (L,s)=split(L)
 (L,nl,nr)=boom(L,0)
-print(L)
+assert(L==[[[[0,7],4],[[7,8],[6,0]]],[8,1]])
 
+# end first tc
