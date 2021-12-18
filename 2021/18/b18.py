@@ -1,11 +1,9 @@
 #!/usr/bin/python3
 
-from anytree import Node, RenderTree
-
 lq = []
 rq = []
 
-class SF(Node):
+class SF:
 
     lf=None
     rf=None
