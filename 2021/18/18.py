@@ -53,7 +53,7 @@ def boom(X,level):
     if type(X[0]) != list and type(X[1])==list:
 
         V = boom(X[1],level+1)
-        print(V)
+        #print(V)
         (NewL, vl, vr) = V
         if vl:
             return ([X[0]+vl, NewL], None, vr)
@@ -98,7 +98,7 @@ assert(L==[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]])
 assert(L==[[3,[2,[8,0]]],[9,[5,[7,0]]]])
 
 (L, vl, vr)=boom([[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]],0)
-print(L)
+#print(L)
 # all booms boom
 assert(L==[[[[0,7],4],[15,[0,13]]],[1,1]])
 #assert(L==[[[[0,7],4],[7,[[8,4],9]]],[1,1]])
@@ -106,4 +106,24 @@ assert(L==[[[[0,7],4],[15,[0,13]]],[1,1]])
 (L, vl, vr)=boom([[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]], 0)
 assert(L==[[[[0,7],4],[[7,8],[6,0]]],[8,1]])
 
+# ------ these were the explodes. now for the splits...
 
+def split(X,splitted=False):
+
+    if type(X)!=list:
+        if X>9 and not splitted:
+            return ([X//2,X-X//2], True)
+        else:
+            return (X, splitted)
+
+    (NL,splitted)=split(X[0],splitted)
+    (NR,splitted)=split(X[1],splitted)
+    return([NL,NR],splitted)
+
+# ---- test code
+
+(L, s) = split([[[[0,7],4],[15,[0,13]]],[1,1]])
+#print(L)       
+assert(L==[[[[0,7],4],[[7,8],[0,13]]],[1,1]])
+(L, s) = split(L)
+assert(L==[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]])
