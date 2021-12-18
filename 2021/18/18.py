@@ -2,9 +2,8 @@
 import sys
 
 
-L = [x.strip() for x in sys.stdin]
+IN = [eval(x.strip()) for x in sys.stdin]
 
-#print (L)
 
 s=[[6,[5,[4,[3,2]]]],1]
 
@@ -140,3 +139,30 @@ L=add([[[[4,3],4],4],[7,[[8,4],9]]],[1,1])
 assert(L==[[[[0,7],4],[[7,8],[6,0]]],[8,1]])
 
 # end first tc
+
+def dothething(L):
+
+    ap=True
+
+    while ap:
+        (L,nl,nr)=boom(L,0)
+        (L,ap)=split(L)
+    return L
+
+L=add([[[[4,3],4],4],[7,[[8,4],9]]],[1,1])
+L=dothething(L)
+assert(L==[[[[0,7],4],[[7,8],[6,0]]],[8,1]])
+
+# now we can do what we are supposed to do...
+
+L=False
+
+for i in IN:
+    if not L:
+        L = i
+    else:
+        L = add(L,i)
+        print(L)
+        L = dothething(L)
+
+print(L)
