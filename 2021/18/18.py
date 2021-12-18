@@ -22,16 +22,17 @@ def lowboom(X):
     # the left one explodes, and is added to the pair to the right which replaces both pairs
     LP = X[0]
     RP = X[1]
-    
+    print ("lowboom",RP[0],LP[1])
     return ([RP[0]+LP[1],0], LP[0], RP[1])
 
 assert(lowboom([1,[2,3]])==([3,0],None, 3))
 assert(lowboom([[1,2],3])==([0,5],1,None))
-print(lowboom([[1,1],[2,2]]))
-print(lowboom([0, [5, 8]]))
+#print(lowboom([[1,1],[2,2]]))
+#print(lowboom([0, [5, 8]]))
+
 def notrightboom(X, nu):
 
-    print("NRB",X,nu)
+    #print("NRB",X,nu)
     if type(X) != list:
         return X
 
@@ -41,19 +42,35 @@ def notrightboom(X, nu):
     if type(X[1]) != list:
         return [X[0],X[1]+nu]
 
-    print("----- dragons")
-    print (X[0])
+    #print("----- dragons")
+    #print (X[0])
     return [notrightboom(X[0],nu),X[1]]
+
+def notleftboom(X, nu):
+
+    print("NLB",X,nu)
+    if type(X) != list:
+        return X
+
+    if type(X[0]) !=list:
+        return [X[0]+nu,X[1]]
+
+    if type(X[1]) != list:
+        return [X[0],X[1]+nu]
+
+    #print("----- dragons")
+    #print (X[0])
+    return [X[0],notleftboom(X[1],nu)]
 
 def boom(X,level):
     if type(X) != list: # should never end up here, but anyway...
-        print("wtf")
+        #print("wtf")
         return None
 
-    print(level, X)
+    #print(level, X)
     if level==3:
         R=lowboom(X)
-        print("lowboom",R)
+        #print("lowboom",R)
         return R
     
     if type(X[0]) == list and type(X[1])!=list:
@@ -61,18 +78,18 @@ def boom(X,level):
         (NewL, vl, vr) = boom(X[0],level+1)
         if vr:
             NewR=X[1]+vr
-            print("MR2",NewL, NewR)
+            #print("MR2",NewL, NewR)
             return ([NewL, NewR], vl, None)
         else:
-            print("MR3",NewL, X[1])
+            #print("MR3",NewL, X[1])
             return ([NewL,X[1]], vl, vr)
 
     if type(X[0]) != list and type(X[1])==list:
 
         V = boom(X[1],level+1)
-        print(V)
+        #print(V)
         (NewR, vl, vr) = V
-        print(NewR)
+        #print(NewR)
         if vl:
             return ([X[0]+vl, NewR], None, vr)
         else:
@@ -86,13 +103,16 @@ def boom(X,level):
     (NewLL,vll, vrl) = boom(X[0],level+1)
     if vrl:
         NewLR = notrightboom(X[1],vrl)
-        print("nrb:",NewLR)
+        #print("nrb:",NewLR)
         return ([NewLL,NewLR],None,None)
     
     (NewLR,vlr, vrr) = boom(X[1],level+1)
         
     if vlr:
-        print ("right boom carry over")
+        #print ("right boom carry over")
+        NewLR = notleftboom(X[1],vlr)
+        #print("nrb:",NewLR)
+        return ([NewLL,NewLR],None,None)
 
     return ([NewLL, NewLR], vll, vrr)
 
@@ -117,7 +137,7 @@ assert(L==[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]])
 assert(L==[[3,[2,[8,0]]],[9,[5,[7,0]]]])
 
 (L, vl, vr)=boom([[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]],0)
-#print(L)
+##print(L)
 # all booms boom
 assert(L==[[[[0,7],4],[15,[0,13]]],[1,1]])
 #assert(L==[[[[0,7],4],[7,[[8,4],9]]],[1,1]])
@@ -130,7 +150,7 @@ assert(L==[[[[0,7],4],[[7,8],[6,0]]],[8,1]])
 def split(X,splitted=False):
 
 #    if not X:
-#        print( X)
+#        #print( X)
 #        return (X,False)
     
     if type(X)!=list:
@@ -146,7 +166,7 @@ def split(X,splitted=False):
 # ---- test code
 
 (L, s) = split([[[[0,7],4],[15,[0,13]]],[1,1]])
-#print(L)       
+##print(L)       
 assert(L==[[[[0,7],4],[[7,8],[0,13]]],[1,1]])
 (L, s) = split(L)
 assert(L==[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]])
@@ -169,9 +189,9 @@ def dothething(L):
     ap=True
 
     while ap:
-        print("boom", L)
+        ##print("boom", L)
         (L,nl,nr)=boom(L,0)
-        print("split", L)
+        ##print("split", L)
         (L,ap)=split(L)
     return L
 
@@ -181,6 +201,6 @@ assert(L==[[[[0,7],4],[[7,8],[6,0]]],[8,1]])
 
 V=add([[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]],[7,[[[3,7],[4,3]],[[6,3],[8,8]]]])
 L=dothething(V)
-print(V)
-print(L)
+#print(V)
+#print(L)
 assert(L==[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]])
