@@ -127,3 +127,14 @@ def split(X,splitted=False):
 assert(L==[[[[0,7],4],[[7,8],[0,13]]],[1,1]])
 (L, s) = split(L)
 assert(L==[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]])
+
+def add(a,b):
+    return [a,b]
+
+L=add([[[[4,3],4],4],[7,[[8,4],9]]],[1,1])
+(L,nl,nr)=boom(L,0)
+(L,s)=split(L)
+(L,s)=split(L)
+(L,nl,nr)=boom(L,0)
+print(L)
+
