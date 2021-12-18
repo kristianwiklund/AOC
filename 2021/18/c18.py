@@ -55,18 +55,22 @@ class SF(NodeMixin):
         L = []
         if len(self.children)==2:
 
-            return "["+str(self.children[0])+","+str(self.children[1])+" ("+str(self.depth())+") "+ "]"
+            return "["+str(self.children[0])+","+str(self.children[1])+ "]"
         
         return str(self.value)
 
     def boom(self):
         if self.depth()<4 or len(self.children)==0:
             return None
+        elif type(self.children[0].value)!=int or type(self.children[1].value)!=int:
+            return None
         else:
             # do the boom
+            print("boom",self)
             left = leftsibling(self)
             right = rightsibling(self)
             print("left: "+str(left)+", right: "+str(right))
+
 
             if not left: # go up
                 pass
@@ -76,13 +80,16 @@ class SF(NodeMixin):
                         i.value = i.value + self.children[0].value
                         break
             if not right: # go up
+                print("go up right")
                 pass
             else:
                 for i in PostOrderIter(right):
                     if type(i.value)==int:
                         i.value = i.value + self.children[1].value
                         break
-            
+                    
+            self.value=0
+            self.children=[]
             return True
             
         
@@ -98,16 +105,34 @@ assert(SF([1,2])+SF([[3,4],5])==SF([[1,2],[[3,4],5]]))
 d = SF([[[[4,3],4],4],[7,[[8,4],9]]]) + SF([1,1])
 assert(d==SF([[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]))
 
-e = SF([1,1])+SF([2,2])+SF([3,3])+SF([4,4])+SF([5,5])
 
-print(e)
 
-f = SF([[[[[9,8],1],2],3],4])
-g = SF([[1,1],[2,2]])
-print(RenderTree(f, style=AsciiStyle()))
-for i in PreOrderIter(f):
+#f = SF([[[[[9,8],1],2],3],4])
+
+#for i in PreOrderIter(f):
+#    x = i.boom()
+#    if x:
+#        break
+#assert(f==SF([[[[0,9],2],3],4]))
+
+g = SF([1,1])+SF([2,2])+SF([3,3])+SF([4,4])+SF([5,5])
+
+
+
+print(g)
+for i in PreOrderIter(g):
     x = i.boom()
     if x:
         break
+print(g)
+for i in PreOrderIter(g):
+    x = i.boom()
+    if x:
+        break
+print(g)
+for i in PreOrderIter(g):
+    x = i.boom()
+    if x:
+        break
+print(g)
 
-print(RenderTree(f, style=AsciiStyle()))
