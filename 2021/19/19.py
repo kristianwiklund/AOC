@@ -41,18 +41,39 @@ def klubba(A,B):
                     gop[s]+=1
                 else:
                     gop[s]=1
-    return gop
+    
+    for i in gop:
+        if gop[i]==12:
+            return i
+            
+    return None
             
 
 for i in range(len(ipp)-1):
     A = ipp[i]
     for j in range(i+1,len(ipp)):
         B = ipp[j]
-        #        for k = range(24):
-        r = R.from_euler('y', 180, degrees=True)
-        V=r.apply(B)        
-        print(klubba(A,V))
+        print ("trying "+str(i)+" vs "+str(j))
+        try:
+            for a in ["x","y","z"]:
+                for d in [0,90,180,270]:
+                    r = R.from_euler(a, d, degrees=True)
+                    m = r.as_matrix()
+                    m = m*((abs(m)>0.5))
+                    r = R.from_matrix(m)
 
+                    V=r.apply(B)
+                    t = klubba(A,V)
+                    if t:
+                        print ("Match between "+str(i)+" and "+str(j)+" "+str(a)+"="+str(d))
+                        U=[]
+                        for i in V:
+                            U.append(i+t)
+                            ipp[j]=U
+                        raise bopp
+        except:
+            pass
+                    
 #r = R.from_euler('y', 180, degrees=True)
 #B=numpy.matrix([[686,422,578]])
 #print(B)
