@@ -5,6 +5,8 @@ import scipy, numpy, scipy.spatial
 import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation as R
 
+# 680 too high
+# 627 too high
 ipp = {}
 for i in sys.stdin:
     t = i.split()
@@ -57,9 +59,9 @@ def klubba(A,B,mykt=False):
 def rotate(A,m):
     return (numpy.dot(A,m))
 
-def align(ipp,cpp):
+def align(cnt,ipp,cpp):
     
-    for i in range(len(ipp)):
+    for i in range(cnt,len(ipp)):
         A = ipp[i]
 
         A=numpy.array(A)
@@ -70,30 +72,35 @@ def align(ipp,cpp):
             B = ipp[j]
             
             B = numpy.array(B)
-            print ("trying "+str(i)+" vs "+str(j))
+#            print ("trying "+str(i)+" vs "+str(j))
 
             for x in [0,90,180,270]:
                 for y in [0,90,180,270]:
                     for z in [0,90,180,270]:
+                        V=B
+                        
+                        if x!=0:
+                            rx = R.from_euler("X", x, degrees=True)
+                            mx = rx.as_matrix()
+                            mx = mx*((abs(mx)>0.5))
+                            mx = mx.astype(int)
+                            V=rotate(V,mx)
+                            
+                        if y!=0:
+                            ry = R.from_euler("Y", y, degrees=True)
+                            my = ry.as_matrix()
+                            my = my*((abs(my)>0.5))
+                            my = my.astype(int)
+                            V=rotate(V,my)
 
-                        rx = R.from_euler("X", x, degrees=True)
-                        mx = rx.as_matrix()
-                        mx = mx*((abs(mx)>0.5))
-                        mx = mx.astype(int)
-                        
-                        ry = R.from_euler("Y", y, degrees=True)
-                        my = ry.as_matrix()
-                        my = my*((abs(my)>0.5))
-                        my = my.astype(int)
-                        
-                        rz = R.from_euler("Z", z, degrees=True)
-                        mz = rz.as_matrix()
-                        mz = mz*((abs(mz)>0.5))
-                        mz = mz.astype(int)
-                        
-                        V=rotate(B,mx)
-                        V=rotate(V,my)
-                        V=rotate(V,mz)
+                        if z!=0:
+                            rz = R.from_euler("Z", z, degrees=True)
+                            mz = rz.as_matrix()
+                            mz = mz*((abs(mz)>0.5))
+                            mz = mz.astype(int)
+                            V=rotate(V,mz)                        
+
+
 
                         t = klubba(A,V)
 
@@ -105,15 +112,23 @@ def align(ipp,cpp):
                             print("Realign "+str(j))
                             ipp[j]=U
                             cpp[(i,j)]="aligned"
-                            return True
+                            return i
 
     return False
 
 cpp={}
 
-while(align(ipp,cpp)):
+bop=True
+cnt=0
+while(bop):
+    cnt = align(cnt,ipp,cpp)
+    if cnt is False:
+        bop=False
     pass
 
+# change to put already aligned bobs in a queue instead
+
+print("post align align summary")
 p = set()
 for i in ipp:
     for j in ipp[i]:
