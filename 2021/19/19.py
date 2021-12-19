@@ -31,10 +31,18 @@ plt.savefig("points.png")
 def klubba(A,B):
 
     bop = []
+    gop = {}
     for i in A:
         for j in B:
-            bop.append(int(sum(numpy.abs(j-i))))
-    return sorted(bop)
+            G = i-j
+            if (int(G[0])==68):
+                s = (int(G[0]),int(G[1]),int(G[2]))
+                if s in gop:
+                    gop[s]+=1
+                else:
+                    gop[s]=1
+    return gop
+            
 
 for i in range(len(ipp)-1):
     A = ipp[i]
@@ -42,12 +50,9 @@ for i in range(len(ipp)-1):
         B = ipp[j]
         #        for k = range(24):
         r = R.from_euler('y', 180, degrees=True)
-        V=r.apply(B)
-        
-        print("......")
+        V=r.apply(B)        
         print(klubba(A,V))
-        print(V)
-        print(A-V)
+
 #r = R.from_euler('y', 180, degrees=True)
 #B=numpy.matrix([[686,422,578]])
 #print(B)
