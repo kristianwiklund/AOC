@@ -1,206 +1,259 @@
 #!/usr/bin/python3
+
+import re
 import sys
 
+from colorama import Fore
+from colorama import Style
 
-IN = [eval(x.strip()) for x in sys.stdin]
 
 
-s=[[6,[5,[4,[3,2]]]],1]
+level="\[[^\[\]]*"
+fish="\[[0-9][0-9]*,[0-9][0-9]*\]"
+number="[0-9]"
 
-def lowboom(X):
+cols= [Fore.BLACK, Fore.RED, Fore.GREEN, Fore.YELLOW, Fore.BLUE, Fore.MAGENTA]
 
-    if type(X[0])==list and type(X[1])!=list:
-        return ([0,X[1]+X[0][1]],X[0][0],None) # combine list, carry the leftmost value
-    if type(X[1])==list and type(X[0])!=list:
-        return ([X[0]+X[1][0], 0], None, X[1][1]) # combine list, carry the rightmost valu
+def whot(s):
+    l=0
+    c=0
+    for i in s:
+        c+=1
+        if i=="[":
+            l+=1
 
-    if type(X[0]) != list and type (X[1])!=list:
-        return (X,None,None)
-
-    print("lowboom",X)
-    # these are two pairs
-    # the left one explodes, and is added to the pair to the right which replaces both pairs
-    LP = X[0]
-    RP = X[1]
-    print ("lowboom",RP[0],LP[1])
-    return ([RP[0]+LP[1],0], LP[0], RP[1])
-
-assert(lowboom([1,[2,3]])==([3,0],None, 3))
-assert(lowboom([[1,2],3])==([0,5],1,None))
-#print(lowboom([[1,1],[2,2]]))
-#print(lowboom([0, [5, 8]]))
-
-def notrightboom(X, nu):
-
-    #print("NRB",X,nu)
-    if type(X) != list:
-        return X
-
-    if type(X[0]) !=list:
-        return [X[0]+nu,X[1]]
-
-    if type(X[1]) != list:
-        return [X[0],X[1]+nu]
-
-    #print("----- dragons")
-    #print (X[0])
-    return [notrightboom(X[0],nu),X[1]]
-
-def notleftboom(X, nu):
-
-    print("NLB",X,nu)
-    if type(X) != list:
-        return X
-
-    if type(X[0]) !=list:
-        return [X[0]+nu,X[1]]
-
-    if type(X[1]) != list:
-        return [X[0],X[1]+nu]
-
-    #print("----- dragons")
-    #print (X[0])
-    return [X[0],notleftboom(X[1],nu)]
-
-def boom(X,level):
-    if type(X) != list: # should never end up here, but anyway...
-        #print("wtf")
-        return None
-
-    #print(level, X)
-    if level==3:
-        R=lowboom(X)
-        #print("lowboom",R)
-        return R
-    
-    if type(X[0]) == list and type(X[1])!=list:
-
-        (NewL, vl, vr) = boom(X[0],level+1)
-        if vr:
-            NewR=X[1]+vr
-            #print("MR2",NewL, NewR)
-            return ([NewL, NewR], vl, None)
+            if l==5:
+                try:
+                    #print(Fore.WHITE+s[c-1:]+Style.RESET_ALL,"<--whot")
+                    match = re.search(fish,s[c-1:])
+                    (start,end)=match.span()
+                    c = c + start
+                    return c
+                except:
+                    print("wot fail",c, s[:c-1]+"^"+s[c-1:],s)
+                    sys.exit()
+            #print(cols[l%6]+i,end="")
+        elif i=="]":
+            l-=1
+            #print(cols[l%6]+i,end="")
         else:
-            #print("MR3",NewL, X[1])
-            return ([NewL,X[1]], vl, vr)
+            pass
+            #print(i,end="")
+    #print(Style.RESET_ALL)
+    return None
 
-    if type(X[0]) != list and type(X[1])==list:
+def explode(s):
+    restr = level+level+level+level+fish
 
-        V = boom(X[1],level+1)
-        #print(V)
-        (NewR, vl, vr) = V
-        #print(NewR)
-        if vl:
-            return ([X[0]+vl, NewR], None, vr)
-        else:
-            return ([X[0], NewR], vl, vr)
+    where = whot(s)
 
-    if type(X[0]) != list and type(X[1])!= list:
-        return (X, None, None)
+    if where:
+        start = where
 
-    # out of the easy cases. if we get here, we may have to carry over the 
-    # boom to the other side
-    (NewLL,vll, vrl) = boom(X[0],level+1)
-    if vrl:
-        NewLR = notrightboom(X[1],vrl)
-        #print("nrb:",NewLR)
-        return ([NewLL,NewLR],None,None)
-    
-    (NewLR,vlr, vrr) = boom(X[1],level+1)
+        for t in range(0,6):
+            if s[t+where]=="]":
+                break
+        end = start+t
         
-    if vlr:
-        #print ("right boom carry over")
-        NewLR = notleftboom(X[1],vlr)
-        #print("nrb:",NewLR)
-        return ([NewLL,NewLR],None,None)
+        (l,r)=s[where:where+t].split(",")
+        #print ("fisk",s[where:where+t])
+        l = int(l)
+        r = int(r)
+        
+        # find the first fish to the right of the hit
+        match = re.search(number,s[end:])
+        if match:
+            (startr,endr)=match.span()
+            #print (s[end+startr:],"<--")
+            #            value=int(s[end+startr:][0])
 
-    return ([NewLL, NewLR], vll, vrr)
+            if s[end+startr+1] not in "[],":
+                sdf=2
+            else:
+                sdf=1
+                #            print(s[end+startr:end+startr+sdf])
+            value=int(s[end+startr:end+startr+sdf])
 
-# ----- test code -----
+            s = s[:end+startr]+str(value+r)+s[end+startr+sdf:]
 
-(L,vl,vr)=boom([[[[[9,8],1],2],3],4],0)
-assert(L==[[[[0,9],2],3],4])
+        # explode the hit
 
-(L,vl,vr)=boom([7,[6,[5,[4,[3,2]]]]],0)
-assert(L==[7,[6,[5,[7,0]]]])
+        s = s[:where-1]+"0"+s[end+1:]
 
-(L, vl, vr)=boom([[6,[5,[4,[3,2]]]],1],0)
-assert(L==[[6,[5,[7,0]]],3])
+        # find the first number to the left of the hit
 
-# b0rked, because we need to handle the left hand side first,
-# then we need to carry the right, and add it to the first left number
-# this goes the other way around as well...
-# if (one side explodes first, then the other side inherits the number)
-(L,vl,vr)=boom([[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]],0)
-assert(L==[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]])
-(L,vl,vr)=boom([[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]],0)
-assert(L==[[3,[2,[8,0]]],[9,[5,[7,0]]]])
+        w = s[:where-1][::-1]
 
-(L, vl, vr)=boom([[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]],0)
-##print(L)
-# all booms boom
-assert(L==[[[[0,7],4],[15,[0,13]]],[1,1]])
-#assert(L==[[[[0,7],4],[7,[[8,4],9]]],[1,1]])
+        match = re.search(number,w)
+        if match:
 
-(L, vl, vr)=boom([[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]], 0)
-assert(L==[[[[0,7],4],[[7,8],[6,0]]],[8,1]])
+            (startr,endr)=match.span()
+            value=int(w[startr:][0])
 
-# ------ these were the explodes. now for the splits...
+            w = w[:startr]+(str(value+l)[::-1])+w[startr+1:]
+        
+            w=w[::-1]
+            
+            s = w + s[where-1:]
 
-def split(X,splitted=False):
+    return s
 
-#    if not X:
-#        #print( X)
-#        return (X,False)
+def add(x,y):
+    return "["+x+","+y+"]"
+
+def split(s):
+
+    match = re.search(number+number,s)
+    if not match:
+        return s
+
+    (start,end)=match.span()
+    #print(start,end)
+    v = int(s[start:end])
+
+    return s[:start]+"["+str(v//2)+","+str(v-v//2)+"]"+s[end:]
+
+# reduce
+# run explodes, until explodes cannot be run more
+
+def red(s):
+
+
+    while True:
+        os = s
+        vs = s
+        s = explode(s)
+        if s!=os:
+            continue
+
+        os = s
+        s = split(s)
+        if s!=os:
+            continue
+        
+        
+        if s==vs:
+            break
+    return s
+
+
+
+# ------------- test cases ---------------
+
+# explode
+
+try:
+    s1="[[[[[9,8],1],2],3],4]"
+    assert (explode(s1) == "[[[[0,9],2],3],4]")
+except:
+    print (explode(s1),"<--fel")
+    print ("[[[[0,9],2],3],4]")
+    sys.exit()
     
-    if type(X)!=list:
-        if X>9 and not splitted:
-            return ([X//2,X-X//2], True)
-        else:
-            return (X, splitted)
+try:
+    s2="[7,[6,[5,[4,[3,2]]]]]"
+    assert(explode(s2) == "[7,[6,[5,[7,0]]]]")
+except:
+    print (explode(s2))
+    print ( "[7,[6,[5,[7,0]]]]")
+    sys.exit()
+    
+try:
+    s3="[[6,[5,[4,[3,2]]]],1]"
+    assert (explode(s3) == "[[6,[5,[7,0]]],3]")
+except:
+    print(explode(s3))
+    print("[[6,[5,[7,0]]],3]")
+    sys.exit()
+    
+s4="[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]"
+assert (explode(s4) == "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]")
 
-    (NL,splitted)=split(X[0],splitted)
-    (NR,splitted)=split(X[1],splitted)
-    return([NL,NR],splitted)
+try:
+    s5="[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]"
+    assert(explode(s5) == "[[3,[2,[8,0]]],[9,[5,[7,0]]]]")
+except:
+    print (s5)
+    print (explode(s5))
+    print("[[3,[2,[8,0]]],[9,[5,[7,0]]]]")
+    sys.exit()
 
-# ---- test code
+# add
+    
+assert(add("[1,2]","[[3,4],5]")=="[[1,2],[[3,4],5]]")
+assert(add("[[[[4,3],4],4],[7,[[8,4],9]]]","[1,1]")=="[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]")
+assert(add(add(add("[1,1]","[2,2]"),"[3,3]"),"[4,4]")=="[[[[1,1],[2,2]],[3,3]],[4,4]]")
 
-(L, s) = split([[[[0,7],4],[15,[0,13]]],[1,1]])
-##print(L)       
-assert(L==[[[[0,7],4],[[7,8],[0,13]]],[1,1]])
-(L, s) = split(L)
-assert(L==[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]])
+# split
 
-def add(a,b):
-    return [a,b]
+assert(split("[[[[0,7],4],[[7,8],[0,13]]],[1,1]]")=="[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]")
+assert(split("[[[[0,7],4],[15,[0,13]]],[1,1]]")=="[[[[0,7],4],[[7,8],[0,13]]],[1,1]]")
 
-# -- first test case for reducing a thing
-L=add([[[[4,3],4],4],[7,[[8,4],9]]],[1,1])
-(L,nl,nr)=boom(L,0)
-(L,s)=split(L)
-(L,s)=split(L)
-(L,nl,nr)=boom(L,0)
-assert(L==[[[[0,7],4],[[7,8],[6,0]]],[8,1]])
+s = add("[[[[4,3],4],4],[7,[[8,4],9]]]","[1,1]")
+assert (s=="[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]")
+s = explode(s)
+assert (s=="[[[[0,7],4],[7,[[8,4],9]]],[1,1]]")
+s = explode(s)
+try:
+    assert (s=="[[[[0,7],4],[15,[0,13]]],[1,1]]")
+except:
+    print(s)
+    sys.exit()
+s = split(s)
+s = split(s)
+s = explode(s)
+assert (s == "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
 
-# end first tc
+# ------------
 
-def dothething(L):
 
-    ap=True
+try:
+    assert (red("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]") == "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
+except:
+    print(red("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]"),"<--")
+    print( "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
+    sys.exit()
+    
+s = add(add(add(add("[1,1]","[2,2]"),"[3,3]"),"[4,4]"),"[5,5]")
+assert (red(s) == "[[[[3,0],[5,3]],[4,4]],[5,5]]")
 
-    while ap:
-        ##print("boom", L)
-        (L,nl,nr)=boom(L,0)
-        ##print("split", L)
-        (L,ap)=split(L)
-    return L
+s = add(s,"[6,6]")
+assert (red(s) == "[[[[5,0],[7,4]],[5,5]],[6,6]]")
 
-L=add([[[[4,3],4],4],[7,[[8,4],9]]],[1,1])
-L=dothething(L)
-assert(L==[[[[0,7],4],[[7,8],[6,0]]],[8,1]])
+# ---------------
 
-V=add([[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]],[7,[[[3,7],[4,3]],[[6,3],[8,8]]]])
-L=dothething(V)
-#print(V)
-#print(L)
-assert(L==[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]])
+# double numbers...
+
+assert (explode("[[[[[14,8],1],2],3],4]")=="[[[[0,9],2],3],4]")
+
+# big test case
+
+def ass(s,wha):
+    try:
+        assert(s==wha)
+    except:
+        print (s,"<--fail")
+        print(wha)
+        sys.exit()
+
+
+        
+
+s= add("[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]","[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]")
+s = red(s)
+
+ass (s,"[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]")
+
+# ----
+
+s=None
+for l in sys.stdin:
+    l=l.strip()
+
+    if s is None:
+        s = l
+    else:
+        s = add(s,l)
+        s = red(s)
+
+print(s)
