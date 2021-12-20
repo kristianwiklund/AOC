@@ -73,6 +73,7 @@ class SF(NodeMixin):
 
 
             if not left: # go up
+                print ("go up left")
                 pass
             else:
                 for i in PreOrderIter(left):
