@@ -295,6 +295,7 @@ assert(magnitude([[1,2],[[3,4],5]])==143)
 assert(magnitude([[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]])==3488)   
 
 s=None
+Y=[]
 for l in sys.stdin:
     l=l.strip()
 
@@ -303,11 +304,29 @@ for l in sys.stdin:
     else:
         s = add(s,l)
         s = red(s)
-
+    Y.append(l)
+    
 #print(s)
 G = eval(s)
 #print(G)
 
-print(magnitude(G))
+print("Answer 1:",magnitude(G))
+
+m = 0
+
+for i in range(len(Y)-1):
+    for j in range(i, len(Y)):
+
+        s = add(Y[i],Y[j])
+        s = red(s)
+        m = max(m,magnitude(eval(s)))
+
+        s = add(Y[j],Y[i])
+        s = red(s)
+        m = max(m,magnitude(eval(s)))
+
+print("Answer 2:",m)
+
+    
 
 
