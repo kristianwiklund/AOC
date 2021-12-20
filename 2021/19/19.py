@@ -5,8 +5,7 @@ import scipy, numpy, scipy.spatial
 import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation as R
 
-# 680 too high
-# 627 too high
+
 ipp = {}
 for i in sys.stdin:
     t = i.split()
@@ -19,17 +18,12 @@ for i in sys.stdin:
         ipp[scanner].append(numpy.array([int(x) for x in j]))
 
 print("all scanners loaded")
-#for i in ipp:
-#    ipp[i] = numpy.array(ipp[i])
+sq={}
+sq[0]=ipp[0]
+ipp[0]=None
 
-#fig = plt.figure()
-#ax = fig.add_subplot(projection='3d')
-
-#for i in ipp:
-#    for j in ipp[i]:
-#        ax.scatter(j[0], j[1], j[2], marker=i)
-
-#plt.savefig("points.png")
+scanners=[]
+scanners.append((0,0,0))
 
 def klubba(A,B,mykt=False):
 
@@ -61,15 +55,18 @@ def rotate(A,m):
 
 def align(cnt,ipp,cpp):
     
-    for i in range(cnt,len(ipp)):
-        A = ipp[i]
+    for i in sq.keys():
+        A = sq[i]
 
         A=numpy.array(A)
         
-        for j in range(i,len(ipp)):
+        for j in range(len(ipp)):
             if (i,j) in cpp or i==j:
                 continue
+            
             B = ipp[j]
+            if B is None:
+                continue
             
             B = numpy.array(B)
 #            print ("trying "+str(i)+" vs "+str(j))
@@ -109,8 +106,12 @@ def align(cnt,ipp,cpp):
                             U=[]
                             for tt in V:
                                 U.append(tt+t)
+                            scanners.append(t)
                             print("Realign "+str(j))
-                            ipp[j]=U
+
+                            sq[j]=U
+                        
+                            ipp[j]=None
                             cpp[(i,j)]="aligned"
                             return i
 
@@ -126,12 +127,18 @@ while(bop):
         bop=False
     pass
 
-# change to put already aligned bobs in a queue instead
-
 print("post align align summary")
 p = set()
-for i in ipp:
-    for j in ipp[i]:
+for i in sq:
+    for j in sq[i]:
         p.add((j[0],j[1],j[2]))
+print("Answer 1:",len(p))
 
-print(p,len(p))
+m = 0
+
+for i in range(len(scanners)-1):
+    for j in range(i,len(scanners)):
+
+        m = max(m, abs(scanners[i][0]-scanners[j][0])+abs(scanners[i][1]-scanners[j][1])+abs(scanners[i][2]-scanners[j][2]))
+
+print("Answer 2:",m)

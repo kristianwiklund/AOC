@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import sys,numpy
+import sys
 
 M=[]
 for l in sys.stdin:
@@ -80,13 +80,9 @@ else:
     testing=False
 
 M=enhance(M,step2=False)
-#print("step 1:"+str(len(M)))
 
 M=enhance(M,step2=(True if not testing else False))
-#print("step 2:"+str(len(M)))
-#print(M)
 
-#pr(M)
 s1=0
 for y in M:
    s+=sum(y)
