@@ -27,56 +27,43 @@ def whot(s):
 
 def explode(s):
     restr = level+level+level+level+fish
-    #print(restr)
-    #match = re.search(restr,s)
+
     where = whot(s)
-    #print ("wh",s,s[where:])
+
     if where:
-        
-        #print ("slajs",s[where:where+3])
         start = where
         end = where+3
         (l,r)=s[where:where+3].split(",")
-        #print(l,r)
         l = int(l)
         r = int(r)
         
         # find the first number to the right of the hit
         match = re.search(number,s[where+3:])
         if match:
-            #print (s)
-            #print(s[end:])
-            #print (match)
             (startr,endr)=match.span()
-            #print (s[end+startr:])
             value=int(s[end+startr:][0])
-            #print(value+r)
-            #print(s)
+
             s = s[:end+startr]+str(value+r)+s[end+startr+1:]
-            #print(s)
 
         # explode the hit
 
         s = s[:where-1]+"0"+s[where+4:]
-        #print(s)
+
         # find the first number to the left of the hit
 
         w = s[:where-1][::-1]
-        #print(w)
+
         match = re.search(number,w)
         if match:
-            #print (match)
-            #print("nosplice",w)
 
             (startr,endr)=match.span()
             value=int(w[startr:][0])
             w = w[:startr]+str(value+l)+w[startr+1:]
-            #print ("splice",w)
+
             w=w[::-1]
-            #print(w)
-            #print ("spre",s)
+
             s = w + s[where-1:]
-            #print("spost",s)
+
 
 
     return s
