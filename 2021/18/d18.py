@@ -41,7 +41,7 @@ def explode(s):
         l = int(l)
         r = int(r)
         
-        # find the first number to the right of the hit
+        # find the first fish to the right of the hit
         match = re.search(number,s[where+3:])
         if match:
             (startr,endr)=match.span()
