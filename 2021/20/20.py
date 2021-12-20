@@ -13,6 +13,7 @@ for l in sys.stdin:
     elif len(l)>0:
         M.append([1 if x =='#' else '0' for x in l])
 
+O=M
 #print(M)
 
 def gp(M,y,x,step2):
@@ -47,9 +48,9 @@ def lookup(irs,v):
 def enhance(M,step2=False):
 
     NM=[]
-    for y in range(-200,len(M)+200):
+    for y in range(-5,len(M)+5):
         s=[]
-        for x in range(-200,len(M[0])+200):
+        for x in range(-5,len(M[0])+5):
             s.append(lookup(irs,gv(M,x,y,step2)))
         NM.append(s)
     return NM
@@ -65,25 +66,42 @@ def pr(M):
         
 
 if len(M)==5: # test code
-    assert(gv(M,2,2)==34)
+    assert(gv(M,2,2,False)==34)
     print("test 1  passed")
 
-    assert(gv(M,-10,-10)==0)
+    assert(gv(M,-10,-10,False)==0)
     print("test 2 passed")
 
-M=enhance(M,step2=False)
-print("step 1:"+str(len(M)))
+    assert(gv(M,-10,-10,True)==0b111111111)
+    print("test 3 passed")
 
-M=enhance(M,step2=True)
-print("step 2:"+str(len(M)))
+    testing=True
+else:
+    testing=False
+
+M=enhance(M,step2=False)
+#print("step 1:"+str(len(M)))
+
+M=enhance(M,step2=(True if not testing else False))
+#print("step 2:"+str(len(M)))
 #print(M)
 
-pr(M)
+#pr(M)
+s1=0
+for y in M:
+   s+=sum(y)
+
+
+# 5395
+M=O
+
+for i in range(50):
+    M = enhance(M,step2=((i%2!=0) if not testing else False))
+    print (i)
+    
 s=0
 for y in M:
    s+=sum(y)
-print(s)
 
-# not 6816
-# 10590 is too high
-# 5504
+print("Answer 1:",s1)
+print("Answer 2:",s)
