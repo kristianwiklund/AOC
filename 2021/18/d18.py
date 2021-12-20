@@ -3,10 +3,16 @@
 import re
 import sys
 
+from colorama import Fore
+from colorama import Style
+
+
 
 level="\[[^\[\]]*"
 fish="\[[0-9][0-9]*,[0-9][0-9]*\]"
 number="[0-9]"
+
+cols= [Fore.BLACK, Fore.RED, Fore.GREEN, Fore.YELLOW, Fore.BLUE, Fore.MAGENTA]
 
 def whot(s):
     l=0
@@ -15,8 +21,10 @@ def whot(s):
         c+=1
         if i=="[":
             l+=1
+
             if l==5:
                 try:
+                    #print(Fore.WHITE+s[c-1:]+Style.RESET_ALL,"<--whot")
                     match = re.search(fish,s[c-1:])
                     (start,end)=match.span()
                     c = c + start
@@ -24,9 +32,14 @@ def whot(s):
                 except:
                     print("wot fail",c, s[:c-1]+"^"+s[c-1:],s)
                     sys.exit()
-        if i=="]":
+            #print(cols[l%6]+i,end="")
+        elif i=="]":
             l-=1
-
+            #print(cols[l%6]+i,end="")
+        else:
+            pass
+            #print(i,end="")
+    #print(Style.RESET_ALL)
     return None
 
 def explode(s):
@@ -36,22 +49,36 @@ def explode(s):
 
     if where:
         start = where
-        end = where+3
-        (l,r)=s[where:where+3].split(",")
+
+        for t in range(0,6):
+            if s[t+where]=="]":
+                break
+        end = start+t
+        
+        (l,r)=s[where:where+t].split(",")
+        #print ("fisk",s[where:where+t])
         l = int(l)
         r = int(r)
         
         # find the first fish to the right of the hit
-        match = re.search(number,s[where+3:])
+        match = re.search(number,s[end:])
         if match:
             (startr,endr)=match.span()
-            value=int(s[end+startr:][0])
+            #print (s[end+startr:],"<--")
+            #            value=int(s[end+startr:][0])
 
-            s = s[:end+startr]+str(value+r)+s[end+startr+1:]
+            if s[end+startr+1] not in "[],":
+                sdf=2
+            else:
+                sdf=1
+                #            print(s[end+startr:end+startr+sdf])
+            value=int(s[end+startr:end+startr+sdf])
+
+            s = s[:end+startr]+str(value+r)+s[end+startr+sdf:]
 
         # explode the hit
 
-        s = s[:where-1]+"0"+s[where+4:]
+        s = s[:where-1]+"0"+s[end+1:]
 
         # find the first number to the left of the hit
 
@@ -86,6 +113,31 @@ def split(s):
 
     return s[:start]+"["+str(v//2)+","+str(v-v//2)+"]"+s[end:]
 
+# reduce
+# run explodes, until explodes cannot be run more
+
+def red(s):
+
+
+    while True:
+        os = s
+        vs = s
+        s = explode(s)
+        if s!=os:
+            continue
+
+        os = s
+        s = split(s)
+        if s!=os:
+            continue
+        
+        
+        if s==vs:
+            break
+    return s
+
+
+
 # ------------- test cases ---------------
 
 # explode
@@ -94,7 +146,7 @@ try:
     s1="[[[[[9,8],1],2],3],4]"
     assert (explode(s1) == "[[[[0,9],2],3],4]")
 except:
-    print (explode(s1))
+    print (explode(s1),"<--fel")
     print ("[[[[0,9],2],3],4]")
     sys.exit()
     
@@ -154,33 +206,14 @@ assert (s == "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
 
 # ------------
 
-def red(s):
 
-    ts = s
-    os = ""
+try:
+    assert (red("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]") == "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
+except:
+    print(red("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]"),"<--")
+    print( "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
+    sys.exit()
     
-    while os != s:
-        os = s
-        s = explode(s)
-
-    if s == ts:
-        return s
-    
-    os = ""
-    while os != s:
-        os = s
-        s = split(s)
-
-
-    os = ""
-    while os != s:
-        os = s
-        s = red(s)
-        
-    return s
-
-assert (red("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]") == "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
-
 s = add(add(add(add("[1,1]","[2,2]"),"[3,3]"),"[4,4]"),"[5,5]")
 assert (red(s) == "[[[[3,0],[5,3]],[4,4]],[5,5]]")
 
@@ -189,11 +222,35 @@ assert (red(s) == "[[[[5,0],[7,4]],[5,5]],[6,6]]")
 
 # ---------------
 
-s = None
+# double numbers...
 
+assert (explode("[[[[[14,8],1],2],3],4]")=="[[[[0,9],2],3],4]")
+
+# big test case
+
+def ass(s,wha):
+    try:
+        assert(s==wha)
+    except:
+        print (s,"<--fail")
+        print(wha)
+        sys.exit()
+
+
+        
+
+s= add("[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]","[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]")
+s = red(s)
+
+ass (s,"[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]")
+
+# ----
+
+s=None
 for l in sys.stdin:
-    l = l.strip()
-    if not s:
+    l=l.strip()
+
+    if s is None:
         s = l
     else:
         s = add(s,l)
