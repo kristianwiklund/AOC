@@ -268,12 +268,31 @@ s = add (s, "[[2,[2,2]],[8,[8,1]]]")
 s = red(s)
 ass (s,"[[[[6,6],[6,6]],[[6,0],[6,7]]],[[[7,7],[8,9]],[8,[8,1]]]]")
 
-print("-------------------------------------")
+#print("-------------------------------------")
 s = add (s, "[2,9]")
 s = red(s)
 ass (s,"[[[[6,6],[7,7]],[[0,7],[7,7]]],[[[5,5],[5,6]],9]]")
 
 # ----
+
+def magnitude(L):
+
+    if type(L[0]) == list:
+        ML = magnitude(L[0])
+    else:
+        ML = L[0]
+
+    if type(L[1]) == list:
+        MR = magnitude(L[1])
+    else:
+        MR = L[1]
+
+    M = 3*ML + 2*MR
+
+    return M
+
+assert(magnitude([[1,2],[[3,4],5]])==143)
+assert(magnitude([[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]])==3488)   
 
 s=None
 for l in sys.stdin:
@@ -285,4 +304,10 @@ for l in sys.stdin:
         s = add(s,l)
         s = red(s)
 
-print(s)
+#print(s)
+G = eval(s)
+#print(G)
+
+print(magnitude(G))
+
+
