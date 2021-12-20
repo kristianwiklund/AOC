@@ -15,6 +15,6 @@
 15. python
 16. python
 17. python
-18.
-19.
+18. python
+19. python
 20. python
