@@ -5,7 +5,7 @@ import sys
 
 
 level="\[[^\[\]]*"
-fish="\[[0-9],[0-9]\]"
+fish="\[[0-9][0-9]*,[0-9][0-9]*\]"
 number="[0-9]"
 
 def whot(s):
@@ -16,10 +16,14 @@ def whot(s):
         if i=="[":
             l+=1
             if l==5:
-                match = re.search(fish,s[c-1:])
-                (start,end)=match.span()
-                c = c + start
-                return c
+                try:
+                    match = re.search(fish,s[c-1:])
+                    (start,end)=match.span()
+                    c = c + start
+                    return c
+                except:
+                    print("wot fail",c, s[:c-1]+"^"+s[c-1:],s)
+                    sys.exit()
         if i=="]":
             l-=1
 
@@ -178,8 +182,21 @@ def red(s):
 assert (red("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]") == "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")
 
 s = add(add(add(add("[1,1]","[2,2]"),"[3,3]"),"[4,4]"),"[5,5]")
+assert (red(s) == "[[[[3,0],[5,3]],[4,4]],[5,5]]")
 
+s = add(s,"[6,6]")
 assert (red(s) == "[[[[5,0],[7,4]],[5,5]],[6,6]]")
 
 # ---------------
 
+s = None
+
+for l in sys.stdin:
+    l = l.strip()
+    if not s:
+        s = l
+    else:
+        s = add(s,l)
+        s = red(s)
+
+print(s)
