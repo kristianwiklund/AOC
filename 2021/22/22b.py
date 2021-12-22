@@ -68,133 +68,9 @@ class Reactor:
         self.thesize = 0
 
     # cube completely overlaps c
-    def coverlap(self, c, cube):
+    def coverlap(self, cube, c):
         
         return c.x1>=cube.x1 and c.x2<=cube.x2 and c.y1>=cube.y1 and c.y2<=cube.y2 and c.z1>=cube.z1 and c.z2<=cube.z2
-        
-    def checkforintersection(self, c, cube):
-
-        L = []
-
-        if c.state=="off":
-            return L
-        
-        # find the cuts between the cubes
-
-        #if cube.state=="off":
-        #    print (str(cube) + " intersects " + str(c))
-
-        # regardless of how we do this, we remove "cube" from "c", then we either add cube or not, depending on if it is on or off
-
-        layer1 = True
-        layer2 = True
-        layer3 = True
-        
-        if layer1:
-            # layer 1
-            TB=(Box(["on",c.x1,cube.x1, c.y1,cube.y1, cube.z2,c.z2, "1A"])) # A
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x1, cube.x2, c.y1,cube.y1, cube.z2,c.z2, "1B"])) # B
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x2, c.x2, c.y1,cube.y1, cube.z2,c.z2, "1C"])) # C
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",c.x1,cube.x1,cube.y1,cube.y2, cube.z2,c.z2, "1D"])) # D
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x1, cube.x2, cube.y1,cube.y2, cube.z2,c.z2, "1E"])) # E
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x2,c.x2,cube.y1,cube.y2, cube.z2,c.z2, "1F"])) # F
-            if not self.coverlap(cube, TB):
-                L.append(TB)            
-            TB=(Box(["on",c.x1,cube.x1,cube.y2,c.y2, cube.z2,c.z2, "1G"])) # G
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x1, cube.x2, cube.y2,c.y2, cube.z2,c.z2, "1H"])) # H
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x2, c.x2, cube.y2,c.y2, cube.z2,c.z2, "1I"])) # I
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-                
-        if layer2:
-            # layer 2
-            TB=(Box(["on",c.x1,cube.x1,c.y1,cube.y1, cube.z1,cube.z2])) # A
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x1, cube.x2, c.y1,cube.y1, cube.z1,cube.z2])) # B
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x2, c.x2, c.y1,cube.y1, cube.z1,cube.z2])) # C
-            if not self.coverlap(cube, TB):
-                L.append(TB)            
-            TB=(Box(["on",c.x1,cube.x1,cube.y1,cube.y2, cube.z1,cube.z2])) # D
-            if not self.coverlap(cube, TB):
-                L.append(TB)            
-            TB=(Box(["on",cube.x2,c.x2,cube.y1,cube.y2, cube.z1,cube.z2])) # F
-            if not self.coverlap(cube, TB):
-                L.append(TB)            
-            TB=(Box(["on",c.x1,cube.x1,cube.y2, c.y2, cube.z1,cube.z2])) # G
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x1,cube.x2, cube.y2,c.y2, cube.z1,cube.z2])) # H
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x2,c.x2, cube.y2,c.y2, cube.z1,cube.z2])) # I
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-                
-        if layer3:
-            # layer 3
-            TB=(Box(["on",c.x1,cube.x1, c.y1,cube.y1, c.z1,cube.z1])) # A
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x1,cube.x2, c.y1,cube.y1, c.z1,cube.z1])) # B
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x2,c.x2, c.y1,cube.y1, c.z1,cube.z1])) # C
-            if not self.coverlap(cube, TB):
-                L.append(TB)            
-            TB=(Box(["on",c.x1,cube.x1, cube.y1,cube.y2, c.z1,cube.z1])) # D 
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x1, cube.x2, cube.y1,cube.y2, c.z1,cube.z1])) # E
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x2,c.x2, cube.y1,cube.y2, c.z1,cube.z1])) # F
-            if not self.coverlap(cube, TB):
-                L.append(TB)            
-            TB=(Box(["on",c.x1,cube.x1, cube.y2,c.y2, c.z1,cube.z1])) # G 
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x1,cube.x2, cube.y2,c.y2, c.z1,cube.z1])) #
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-            TB=(Box(["on",cube.x2,c.x2, cube.y2,c.y2, c.z1,cube.z1])) # I
-            if not self.coverlap(cube, TB):
-                L.append(TB)
-                
-        #print("Remaining of ",str(c)," is ",sum(S)," blocks")
-        X = list(filter(lambda x:x.size()>0,L))
-        #if cube.state=="off":
-        #    print(X,len(X))
-
-        #    print ([(x,x.size()) for x in X])
-        
-        #P = list(filter(lambda x:x.size()<=0,L))
-        #print(P,len(P))
-
-        return X
-
-
-        
-            
-
-            
-            
         
         
         
@@ -254,6 +130,13 @@ class Reactor:
     def __add__(self, cube):
         # b0rked
         #self.updaterealcubes(cube)
+
+        for i in range(len(self.reactor)-1,-1,-1):
+            # if a cube is completely covered, it can be removed
+            # regardless of if it is set or not set
+            if self.coverlap(cube, self.reactor[i]):
+                self.reactor.pop(i)
+        
         self.reactor.append(cube)
         
         return self
@@ -280,45 +163,9 @@ def readinaTOR():
         
 RR = readinaTOR()
 
-# Tests
-
-#assert(str(Box("on x=10..12,y=10..12,z=10..12"))=="on x=10..12,y=10..12,z=10..12")
-
-#assert(Box("on x=10..12,y=10..12,z=10..12").size()==27)
-
-
-
-# # test case from AOC
-#R = Reactor()
-
-#R = R + Box("on x=10..12,y=10..12,z=10..12")
-
-#assert(R.realcubes.__repr__()=="[on x=10..12,y=10..12,z=10..12]")
-#assert(R.size()==27)
-
-# additional test case 1: add a cube that is the exact size as the existing cube in the reactor
-#R = R + Box("on x=10..12,y=10..12,z=10..12")
-#assert(R.size()==27)
-
-# additional test case 2: add a cube that is smaller on one side compared to the existing cube in the reactor
-#R = R + Box("on x=11..12,y=10..12,z=10..12")
-#assert(R.size()==27)
-
-# AOC step 2
-#R = R + Box("on x=11..13,y=11..13,z=11..13")
-
-# AOC step 3
-#R = R + Box("off x=9..11,y=9..11,z=9..11")
-
-# AOC step 3
-#R = R + Box("on x=10..10,y=10..10,z=10..10")
-
-# --- visual test
-
-# print("Viz test")
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+#import matplotlib.pyplot as plt
+#from mpl_toolkits.mplot3d import Axes3D
 #R = Reactor()
 #R = R + Box("on x=1..3,y=1..3,z=1..3")
 #R = R + Box("off x=3..3,y=1..1,z=3..3")
@@ -345,7 +192,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 
-ax = plt.figure().add_subplot(projection='3d')
+#ax = plt.figure().add_subplot(projection='3d')
 
 n_voxels = np.zeros((110,110,110), dtype=bool)
 print ("(master)")
@@ -361,9 +208,9 @@ for i in RR.reactor:
                    else:
                        n_voxels[x+50,y+50,z+50]=False
 
-print("borkaborka")
-ax.voxels(n_voxels)
-plt.savefig("reactorMaster"+str(c)+".png")
+#print("borkaborka")
+#ax.voxels(n_voxels)
+#plt.savefig("reactorMaster"+str(c)+".png")
 
 
 print(sum(sum(sum(n_voxels))))
