@@ -184,9 +184,10 @@ def movebagg(bagg, G, board, rec=0):
             ny = int(t[1])
             b[i].x=nx
             b[i].y=ny
-            movebagg(b,G,plan, rec+1)
             
+            return min(sys.maxsize, x[i][0] + movebagg(b,G,plan, rec+1))
             
+    return sys.maxsize
     
     
     
