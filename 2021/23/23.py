@@ -2,6 +2,7 @@
 
 import networkx as nx
 from copy import deepcopy
+import sys
 
 #import matplotlib.pyplot as plt
 
@@ -88,18 +89,24 @@ class Bagg:
         # find all possible paths from where we are to unoccupied spaces
         V=[]
         for i in P:
-            V.append( nx.shortest_path(G,str(self.x)+","+str(self.y),i,weight="weight"))
+            t = nx.shortest_path(G,str(self.x)+","+str(self.y),i,weight="weight")
+            V.append((path_weight(G,t,"weight")*self.e[self.t], nx.shortest_path(G,str(self.x)+","+str(self.y),i,weight="weight")))
 
         # then remove paths that collide with occupied spaces
 
         for i in list(X): # these are the occupied spaces
             for t in range(len(V)-1,-1,-1):
-                if str(i.x)+","+str(i.y) in V[t] or len(V[t])==1:
+                if str(i.x)+","+str(i.y) in V[t][1] or len(V[t][1])==1:
                     V.pop(t)
-        
+
+
+        # if our home is at the end of a possible path, go for it
+        for x in V:
+            if str(self.home[self.t])+",2" in x[1] or str(self.home[self.t])+",3" in x[1]:
+                return [x]
                     
         if len(V)>0:
-            return (path_weight(G,V[0],"weight")*self.e[self.t],V[0])
+            return (V)
         else:
             return None
 
@@ -150,9 +157,9 @@ for y in range(len(plan)):
             s+=plan[y][x]
     plan[y]=s
     
-def pr(rec, board, bagg):
+def pr(rec, board, bagg, cost):
 
-    print("-- "+str(rec)+" --")
+    print("-- "+str(rec)+" -- "+str(cost)+" --")
     for y in range(len(board)):
         s=""
         for x in range(len(board[0])):
@@ -166,28 +173,47 @@ def pr(rec, board, bagg):
         print(s)
     print("------")
             
-def movebagg(bagg, G, board, rec=0):
+def movebagg(bagg, G, board, rec=0, cost=0):
 
-    pr(rec, board,bagg)
+    pr(rec, board,bagg, cost)
     
     x = dict()
     mc=None
     vc=None
+
+    c=0
+    for i in bagg:
+        if i.x==i.home[i.t] and i.y!=1:
+            c+=1
+    print("home: ",c)
+    if c==len(bagg):
+        print ("all home",cost)
+        sys.exit()
+        return 0
+
+    
     for i in range(len(bagg)):
         x[i] = bagg[i].findmoves(bagg, G)
         if x[i]:
-            print("Moving ",bagg[i],"from",x[i][1][0],"to",x[i][1][-1])
-            b = deepcopy(bagg)
-            t = (x[i][1])[-1].split(",")
+            for z in x[i]:
+                #print("Moving ",bagg[i],"from",x[i][1][0],"to",x[i][1][-1])
+                b = deepcopy(bagg)                
+                t = (z[1])[-1].split(",")
+                
+                nx = int(t[0])
+                ny = int(t[1])
+                b[i].x=nx
+                b[i].y=ny
+                
+                v = z[0] + movebagg(b,G,plan, rec+1, cost+z[0])
+                if mc is None or v<mc:
+                    mc = v
+                    vc = i
 
-            nx = int(t[0])
-            ny = int(t[1])
-            b[i].x=nx
-            b[i].y=ny
-            
-            return min(sys.maxsize, x[i][0] + movebagg(b,G,plan, rec+1))
-            
-    return sys.maxsize
+    if not mc is None:
+        return mc
+    else:
+        return sys.maxsize
     
     
     
