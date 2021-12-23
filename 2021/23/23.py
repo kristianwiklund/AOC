@@ -39,9 +39,16 @@ class Bagg:
 
         stoplist = []
 
-        # this is b0rked
-        if (self.x == self.home[self.t] and self.y==3):
-            return None
+        if (self.x == self.home[self.t]):
+            # if we are home, and in the bottom, stop moving
+            if self.y==3:
+                return None
+
+            # if we are home, and not in the bottom, but the bottom thing is the correct one, stop moving
+            if self.y==2:
+                X = list(filter(lambda x:x is not self and x.t==self.t,otherbagg))
+                if X[0].y==3 and X[0].x==self.home[self.t]:
+                    return None
         
         
         # list of _potential_ moves
@@ -56,32 +63,43 @@ class Bagg:
 
         # don't move to the first block in the burrow if the burrow is empty
         for i in [3,5,7,9]:
-            if str(i)+",2" in P:
-                P.discard(str(i)+",3")
+            if str(i)+",3" in P:
+                P.discard(str(i)+",2")
+
+        # don't move to a burrow if we are not supposed to be in that burrow
+        for i in self.home:
+            if i!=self.t:
+                P.discard(str(self.home[i])+",2")
+                P.discard(str(self.home[i])+",3")
 
         # don't move to a burrow if the burrow contains a bagg of another kind
-
+        # that bagg has to move outside first
+        
         for i in [3,5,7,9]:
             if filter(lambda x: x.x==i and x.y==3 and x.t != self.t, otherbagg):
                 P.discard(str(i)+",2")
                 P.discard(str(i)+",3")
 
+        # do not move in the corridor, if we already are in the corridor
         if self.y==1:
-            for i in [1,2,4,6,8,10]:
+            for i in [1,2,4,6,8,10,11]:
                 P.discard(str(i)+",1")
 
+        # find all possible paths from where we are to unoccupied spaces
         V=[]
         for i in P:
             V.append( nx.shortest_path(G,str(self.x)+","+str(self.y),i,weight="weight"))
 
-        NV = []
-        for i in list(X):
-            for t in range(len(V)):
-                if not str(i.x)+","+str(i.y) in V[t] and len(V[t])>1:
-                    NV.append((self.e[self.t]*path_weight(G,V[t],weight="weight"), V[t]))
+        # then remove paths that collide with occupied spaces
 
-        if len(NV)>0:
-            return NV[0]
+        for i in list(X): # these are the occupied spaces
+            for t in range(len(V)-1,-1,-1):
+                if str(i.x)+","+str(i.y) in V[t] or len(V[t])==1:
+                    V.pop(t)
+        
+                    
+        if len(V)>0:
+            return (path_weight(G,V[0],"weight")*self.e[self.t],V[0])
         else:
             return None
 
@@ -158,9 +176,10 @@ def movebagg(bagg, G, board, rec=0):
     for i in range(len(bagg)):
         x[i] = bagg[i].findmoves(bagg, G)
         if x[i]:
-            print(bagg[i],x[i])
+            print("Moving ",bagg[i],"from",x[i][1][0],"to",x[i][1][-1])
             b = deepcopy(bagg)
-            t = x[i][1][-1].split(",")
+            t = (x[i][1])[-1].split(",")
+
             nx = int(t[0])
             ny = int(t[1])
             b[i].x=nx
