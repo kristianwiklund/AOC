@@ -7,11 +7,8 @@ void fg(int v1, int v2, int v3) {
   z/=v3;
 
   if (x!=w)
-    y=26;
-  else
-    y=1;
+    z=26*z;
 
-  z*=y;
   y=w+v2;
 
   if (x==w)
