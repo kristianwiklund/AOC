@@ -25,7 +25,8 @@ int checkadd () {
 void pp() {
 
   for (int i=13;i>=0;i--)
-    printf("%c",s[i]+'0');
+    if (s[i]>=0 && s[i]<=9)
+      printf("%c",s[i]+'0');
   fflush(stdout);
 }
 
