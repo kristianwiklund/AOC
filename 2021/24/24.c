@@ -3,18 +3,16 @@
 long int w=0,x=0,y=0,z=0;
 
 void fg(int v1, int v2, int v3) {
-  x=z%26;
+  x=z%26+v1;
   z/=v3;
-  x+=v1;
+
   x=((x!=w)?1:0);
 
   y=25*x+1;
 
   z*=y;
-  y=0;
-  y+=w;
+  y=w+v2;
 
-  y+=v2;
   y*=x;
   z+=y;
 }
