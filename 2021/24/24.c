@@ -6,15 +6,10 @@ void fg(int v1, int v2, int v3) {
   x=z%26+v1;
   z/=v3;
 
-  if (x!=w)
-    z=26*z;
-
-  y=w+v2;
-
-  if (x==w)
-    y=0;
-  
-  z+=y;
+  if (x!=w) {
+        z=26*z;
+	z=z+w+v2;
+  }
 }
 
 
