@@ -1,6 +1,6 @@
 #include "24.h"
 
-long int w=0,x=0,y=0,z=0;
+long long int w=0,x=0,y=0,z=0;
 
 void fg(int v1, int v2, int v3) {
   x=z%26+v1;
@@ -8,12 +8,17 @@ void fg(int v1, int v2, int v3) {
 
   x=((x!=w)?1:0);
 
-  y=25*x+1;
+  if (x)
+    y=26;
+  else
+    y=1;
 
   z*=y;
   y=w+v2;
 
-  y*=x;
+  if (!x)
+    y=0;
+  
   z+=y;
 }
 
