@@ -2,55 +2,52 @@
 #include <string.h>
 #include <time.h>
 
-char s[15];
+unsigned char s[15];
+unsigned long long int w=0,x=0,z=0;
+unsigned long long int t=0;
+
+
+void pp() {
+  unsigned long long int x=10000000000000;
+  t=0;
+  for (int i=0;i<14;i++)
+    if (s[i]>=0 && s[i]<=9)
+      printf("%c",s[i]+'0'),t+=x*s[i],x/=10;
+  fflush(stdout);
+}
 
 int checkadd () {
 
-  int i=0;
   int c=1;
   char v;
   char f=1;
-  
-  while(i<14) {
+
+  for(int i=13;i>=0;i--) {
     v=s[i]+c;
     c=v/10;
     s[i]=v%10;
     f=f&(s[i]!=0);
-    i++;
-
   }
+
   return f;
 }
 
-void pp() {
-
-  for (int i=13;i>=0;i--)
-    if (s[i]>=0 && s[i]<=9)
-      printf("%c",s[i]+'0');
-  fflush(stdout);
-}
 
 int f();
 
-int main(int argc, char **argv) {
-  int z,cnt=0;
-  sprintf(s,"%ld",11111111111111);
+void wop(long long int ss) {
+  sprintf(s,"%14lld",ss);
   for (int i=0;i<14;i++)
-    s[i]-='0';
-  
+    s[i]-='0'; 
+
   while(1) {
-
-    if (checkadd(s)) {
-      z=f();
-      if (!z)
-	printf("%s %d\n", s, z);
-
-      cnt++;
-      if (!(cnt%10000000)) {
-        pp();
-	printf(" %d\n",z);
-      }
-    }
+    checkadd(s);
+    f();
+    pp();
+    printf(" %lld\n",z);
   }
-
+}
+int main(int argc, char **argv) {
+  wop(11111111111111);
+		  
 }
