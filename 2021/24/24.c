@@ -2,7 +2,7 @@
 
 long long int w=0,x=0,z=0;
 
-void fg(int v1, int v2, int v3) {
+inline void fg(int v1, int v2, int v3) {
   x=(z%26)+v1; 
   z=z/v3;      
 
