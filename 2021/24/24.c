@@ -6,9 +6,7 @@ void fg(int v1, int v2, int v3) {
   x=z%26+v1;
   z/=v3;
 
-  x=((x!=w)?1:0);
-
-  if (x)
+  if (x!=w)
     y=26;
   else
     y=1;
@@ -16,7 +14,7 @@ void fg(int v1, int v2, int v3) {
   z*=y;
   y=w+v2;
 
-  if (!x)
+  if (x==w)
     y=0;
   
   z+=y;
