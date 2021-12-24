@@ -3,12 +3,11 @@
 long long int w=0,x=0,y=0,z=0;
 
 void fg(int v1, int v2, int v3) {
-  x=z%26+v1;
-  z/=v3;
+  x=(z%26)+v1;
+  z=z/v3;
 
   if (x!=w) {
-        z=26*z;
-	z=z+w+v2;
+    z=26*z+w+v2;
   }
 }
 
