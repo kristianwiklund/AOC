@@ -1,66 +1,11 @@
 #!/usr/bin/python3
 
 import sys
+from cut import collision,dothecut
+from box import Box
 
-
-class Box:
-    def __init__(self, l):
-
-        def splitinaTOR(s):
-            x = s.split("=")[1].split("..")
-            return (int (x[0]), int(x[1]))
-
-        if type(l)==str:
-            x = l.split()
-            
-            state = x[0]
-            y = x[1].split(",")
-        
-            self.state = state
-        
-            (l,r)=splitinaTOR(y[0])
-            self.x1 = min(l,r)
-            self.x2 = max(l,r)+1
-        
-            (l,r)=splitinaTOR(y[1])
-            self.y1 = min(l,r)
-            self.y2 = max(l,r)+1
-            
-            (l,r)=splitinaTOR(y[2])
-            self.z1 = min(l,r)
-            self.z2 = max(l,r)+1
-            
-            self.id=None
-
-        elif type(l)==list:
-
-            self.state = l[0]
-            self.x1 = l[1]
-            self.x2 = l[2]
-            self.y1 = l[3]
-            self.y2 = l[4]
-            self.z1 = l[5]
-            self.z2 = l[6]
-            if len(l)==8:
-                self.id = l[7]
-            else:
-                self.id=None
-    def __repr__(self):
-        s= self.state+" x="+str(self.x1)+".."+str(self.x2-1)+",y="+str(self.y1)+".."+str(self.y2-1)+",z="+str(self.z1)+".."+str(self.z2-1)
-        if self.id:
-            s = s + " = "+str(self.size())
-            s = s + " ("+self.id+")"
-        return s
-
-    def size(self):
-        xs = (self.x2-self.x1)
-        ys = (self.y2-self.y1)
-        zs = (self.z2-self.z1)
-
-        s = abs(zs*ys*xs) * (-1 if (zs<0 or ys<0 or xs <0) else 1)
-        
-        return s
-
+# merge two cubes that are connected on the X side and return a new cube
+    
 def combinex(a,b):
 
     if a.state != b.state:
@@ -74,6 +19,8 @@ def combinex(a,b):
     else:
         return None
 
+# merge two cubes that are connected on the Y side and return a new cube
+    
 def combiney(a,b):
 
     if a.state != b.state:
@@ -87,6 +34,8 @@ def combiney(a,b):
     else:
         return None
 
+# merge two cubes that are connected on the Z side and return a new cube
+    
 def combinez(a,b):
 
     if a.state != b.state:
@@ -100,131 +49,13 @@ def combinez(a,b):
     else:
         return None
 
-# cube completely overlaps c
-def coverlap( cube, c):
+# check if cube c1 completely overlaps cube c2
+def coverlap( c1, c2):
         
-    return c.x1>=cube.x1 and c.x2<=cube.x2 and c.y1>=cube.y1 and c.y2<=cube.y2 and c.z1>=cube.z1 and c.z2<=cube.z2
+    return c2.x1>=c1.x1 and c2.x2<=c1.x2 and c2.y1>=c1.y1 and c2.y2<=c1.y2 and c2.z1>=c1.z1 and c2.z2<=c1.z2
 
-    
-def checkforoverlap(c, cube):
-    
-    L = []
-    
-    if c.state=="off":
-        return L
-    
-    # find the cuts between the cubes
-    
-    #if cube.state=="off":
-    #    print (str(cube) + " intersects " + str(c))
-    
-    # regardless of how we do this, we remove "cube" from "c", then we either add cube or not, depending on if it is on or off
-    
-    layer1 = True
-    layer2 = True
-    layer3 = True
-    
-    if layer1:
-        # layer 1
-        TB=(Box(["on",c.x1,cube.x1, c.y1,cube.y1, cube.z2,c.z2, "1A"])) # A
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x1, cube.x2, c.y1,cube.y1, cube.z2,c.z2, "1B"])) # B
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x2, c.x2, c.y1,cube.y1, cube.z2,c.z2, "1C"])) # C
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",c.x1,cube.x1,cube.y1,cube.y2, cube.z2,c.z2, "1D"])) # D
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x1, cube.x2, cube.y1,cube.y2, cube.z2,c.z2, "1E"])) # E
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x2,c.x2,cube.y1,cube.y2, cube.z2,c.z2, "1F"])) # F
-        if not coverlap(cube, TB):
-            L.append(TB)            
-        TB=(Box(["on",c.x1,cube.x1,cube.y2,c.y2, cube.z2,c.z2, "1G"])) # G
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x1, cube.x2, cube.y2,c.y2, cube.z2,c.z2, "1H"])) # H
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x2, c.x2, cube.y2,c.y2, cube.z2,c.z2, "1I"])) # I
-        if not coverlap(cube, TB):
-            L.append(TB)
-                
-    if layer2:
-        # layer 2
-        TB=(Box(["on",c.x1,cube.x1,c.y1,cube.y1, cube.z1,cube.z2])) # A
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x1, cube.x2, c.y1,cube.y1, cube.z1,cube.z2])) # B
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x2, c.x2, c.y1,cube.y1, cube.z1,cube.z2])) # C
-        if not coverlap(cube, TB):
-            L.append(TB)            
-        TB=(Box(["on",c.x1,cube.x1,cube.y1,cube.y2, cube.z1,cube.z2])) # D
-        if not coverlap(cube, TB):
-            L.append(TB)            
-        TB=(Box(["on",cube.x2,c.x2,cube.y1,cube.y2, cube.z1,cube.z2])) # F
-        if not coverlap(cube, TB):
-            L.append(TB)            
-        TB=(Box(["on",c.x1,cube.x1,cube.y2, c.y2, cube.z1,cube.z2])) # G
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x1,cube.x2, cube.y2,c.y2, cube.z1,cube.z2])) # H
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x2,c.x2, cube.y2,c.y2, cube.z1,cube.z2])) # I
-        if not coverlap(cube, TB):
-            L.append(TB)
-                
-    if layer3:
-        # layer 3
-        TB=(Box(["on",c.x1,cube.x1, c.y1,cube.y1, c.z1,cube.z1])) # A
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x1,cube.x2, c.y1,cube.y1, c.z1,cube.z1])) # B
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x2,c.x2, c.y1,cube.y1, c.z1,cube.z1])) # C
-        if not coverlap(cube, TB):
-            L.append(TB)            
-        TB=(Box(["on",c.x1,cube.x1, cube.y1,cube.y2, c.z1,cube.z1])) # D 
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x1, cube.x2, cube.y1,cube.y2, c.z1,cube.z1])) # E
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x2,c.x2, cube.y1,cube.y2, c.z1,cube.z1])) # F
-        if not coverlap(cube, TB):
-            L.append(TB)            
-        TB=(Box(["on",c.x1,cube.x1, cube.y2,c.y2, c.z1,cube.z1])) # G 
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x1,cube.x2, cube.y2,c.y2, c.z1,cube.z1])) #
-        if not coverlap(cube, TB):
-            L.append(TB)
-        TB=(Box(["on",cube.x2,c.x2, cube.y2,c.y2, c.z1,cube.z1])) # I
-        if not coverlap(cube, TB):
-            L.append(TB)
-                
-        #print("Remaining of ",str(c)," is ",sum(S)," blocks")
-        X = list(filter(lambda x:x.size()>0,L))
-        #if cube.state=="off":
-        #    print(X,len(X))
-
-        #    print ([(x,x.size()) for x in X])
-        
-        #P = list(filter(lambda x:x.size()<=0,L))
-        #print(P,len(P))
-
-        return X
-    
+# what this is doing, I don't know
 def ai(L, c):
-
     T = []
     for i in L:
         X = checkforoverlap(i, c)
@@ -234,65 +65,71 @@ def ai(L, c):
     
 
     
-    
+# the reactor
 class Reactor:
+
+    # constructor
     def __init__(self):
-        self.reactor=[]
+        self.cubes=[]
         self.realcubes=[]
         self.thesize = 0
 
-            
+    # return the size of the reactor. Updated during "add"
     def size(self):
         return self.thesize
 
-    def __add__(self, cube):
-        # b0rked
-        #self.updaterealcubes(cube)
-        rl = len(self.reactor)
-        
-        for i in range(rl-1,-1,-1):
-            # if a _previous cube_ is completely covered by the _new_ cube, it can be removed
-            # regardless of if it is set or not set
-            if coverlap(cube, self.reactor[i]):
-                #print ("kill ",self.reactor[i])                                
-                self.reactor.pop(i)
-                continue
-                       
-            x = combinex(cube,self.reactor[i])
-            if x is not None:
-                #print ("xkill ",self.reactor[i])
-                self.reactor.pop(i)
-
-                cube = x
-                continue
-            
-            y = combiney(cube,self.reactor[i])
-            if y is not None:
-                #print ("ykill ",self.reactor[i])
-                self.reactor.pop(i)
-
-                cube = y
-                continue
-            
-            z = combinez(cube,self.reactor[i])
-            if z is not None:
-                #print ("zkill ",self.reactor[i])
-                self.reactor.pop(i)
-                cube = z
-
-                continue
-
-        if cube.state!="off":
-            self.reactor.append(cube)
-
-        return self
     
+    
+    # add a cube to the reactor and calculate what actually happened
+    def __add__(self, newcube):
+        
+        # we have two lists of cubes. One is "realcubes" - the ones that are physically present
+        # the other is the list of added cubes
+
+        # when adding a cube, we check the impact on "realcubes"
+
+        newrealcubes = []
+        
+        for c in self.realcubes:
+
+            # if the new cube completely overlaps an existing cube, we remove the existing cube
+            if coverlap(newcube, c):
+                continue # that is, don't add anything and continue with the next turn in the loop
+
+            # if the cubes do not collide, keep c in the realcubes list and continue with the next turn in the loop
+            if not collision(newcube, c):
+                newrealcubes.append(c)
+                self.thesize+=newcube.size()
+                continue
+
+            # if we get here, we have some kind of collision
+            L = dothecut(newcube, c)
+
+            for i in L:
+                newrealcubes.append(i)
+                self.thesize+=i.size()
+            
+        # once we have filtered the realcubes, we add the new cube, if it is an "on" cube
+        if newcube.state == "on":
+            newrealcubes.append(newcube)
+            self.thesize+=newcube.size()
+
+        # we always add it to the list of cubes in the reactor (but not the realcubes)
+        self.cubes.append(newcube)
+        self.realcubes = newrealcubes
+        
+        # and return the result of the addition
+        return self
+        
+
+    # pretty print
     def __repr__(self):
 
         return str(self.reactor)
     
 # ---
 
+#read from stdin, create a reactor
 def readinaTOR():
 
     RR = Reactor()
@@ -302,21 +139,12 @@ def readinaTOR():
         l = l.strip()
 
         b = Box(l)
-        X = ai(RR.reactor, b)
-        for x in X:
-            RR = RR + x
+
         RR = RR + b
         print(l)
-        
-
         
     return RR
         
         
 RR = readinaTOR()
-
-s=0
-for r in RR.reactor:
-    s+=r.size()
-
-print(s)
+print(RR)
