@@ -4,8 +4,10 @@ import networkx as nx
 from copy import deepcopy
 import sys
 import random
+import multiprocessing as mp
 
-themin = sys.maxsize
+print (mp.cpu_count(),"processors")
+#themin = sys.maxsize
 tries=0
 cache = dict()
 
@@ -35,7 +37,7 @@ plant = [
     "###.#.#B#A###",
     "#############"]
 
-#plan = plan12521
+plan = plant
 
 def path_weight(G,path, weight):
     
@@ -246,8 +248,36 @@ def moveprint(p):
             print(p[j][i]+" ",end="")
         print("")
 
-def movebagg(bagg, G, board, rec=0, cost=0,path=[]):
-    global themin
+def descend(bagg, G, board, x, mv, i, rec=0, cost=0,path=[],themin=sys.maxsize):
+    
+    for z in x[i]:
+        if (cost+z[0])<mv:
+            
+            if bagg[i].t=="NONE":
+                print ("x=",x,"x[i]=",x[i])            
+                print("Moving bagg",i,bagg[i],"from",z[1][0],"to",z[1][-1])
+                
+            b = deepcopy(bagg)                
+            t = (z[1])[-1].split(",")
+                
+            nx = int(t[0])
+            ny = int(t[1])
+            b[i].x=nx
+            b[i].y=ny
+            
+            #proppen = "".join(pr(rec, board, b, cost))
+            
+            v = movebagg(b,G,plan, rec+1, cost+z[0],path+[pr(rec, board, b, cost)],mv)    
+            mv = min(v,mv)
+            #print(proppen,v)                    
+            #cache[proppen] = v
+            
+            #print(b.__repr__())
+
+    return mv
+        
+def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize):
+
     global tries
     global cache
     
@@ -284,29 +314,8 @@ def movebagg(bagg, G, board, rec=0, cost=0,path=[]):
 
         if x[i]:
             koko+=len(x[i])
-            for z in x[i]:
-                if (cost+z[0])<mv:
-
-                    if bagg[i].t=="NONE":
-                        print ("x=",x,"x[i]=",x[i])            
-                        print("Moving bagg",i,bagg[i],"from",z[1][0],"to",z[1][-1])
-                    b = deepcopy(bagg)                
-                    t = (z[1])[-1].split(",")
-                
-                    nx = int(t[0])
-                    ny = int(t[1])
-                    b[i].x=nx
-                    b[i].y=ny
-
-                    #proppen = "".join(pr(rec, board, b, cost))
-
-
-                    v = movebagg(b,G,plan, rec+1, cost+z[0],path+[pr(rec, board, b, cost)])    
-                    mv = min(v,mv)
-                    #print(proppen,v)                    
-                    #cache[proppen] = v
-                    
-                #print(b.__repr__())
+            mv = descend(bagg, G, board,x,mv,i,rec, cost,path,themin)
+ 
     if koko==0:
         #print("deadlock",cost)
         return sys.maxsize
@@ -314,6 +323,6 @@ def movebagg(bagg, G, board, rec=0, cost=0,path=[]):
     return mv    
     
     
-movebagg(bagg,G,plan)
+themin=movebagg(bagg,G,plan)
 print(themin,"in",tries,"tries")           
 
