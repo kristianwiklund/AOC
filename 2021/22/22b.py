@@ -69,9 +69,9 @@ class Reactor:
         if len(self.realcubes)<2:
             return self
 
-        print ("pre merge realcubes:", self.realcubes)
+        print ("** pre merge realcubes:", self.realcubes)
         # try to merge the existing newrealcubes into smaller ones
-        newrealcubes = []
+
         restart=True
         while restart:
             restart = False
@@ -127,6 +127,7 @@ class Reactor:
                 print(sys.exc_info()[2])
                 sys.exit()
 
+        print ("** post merge realcubes:", self.realcubes)
         # and return the result of the addition
         return self
         
