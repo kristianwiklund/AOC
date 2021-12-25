@@ -16,17 +16,27 @@ cache = dict()
 #23100 too high
 #18386 too high
 
-plan = [
+planA = [
     "#############",
     "#...........#",
     "###C#C#A#B###",
     "###D#D#B#A###",
     "#############"]
 
+
 plan12521 = [
     "#############",
     "#...........#",
     "###B#C#B#D###",
+    "###A#D#C#A###",
+    "#############"]
+
+plan44169 = [
+    "#############",
+    "#...........#",
+    "###B#C#B#D###",
+    "###D#C#B#A###",
+    "###D#B#A#C###",    
     "###A#D#C#A###",
     "#############"]
 
@@ -37,7 +47,19 @@ plant = [
     "###.#.#B#A###",
     "#############"]
 
-plan = plan12521
+
+
+
+planB = [
+    "#############",
+    "#...........#",
+    "###C#C#A#B###",
+    "###D#C#B#A###",
+    "###D#B#A#C###",
+    "###D#D#B#A###",
+    "#############"]
+
+plan = plan44169
 
 def path_weight(G,path, weight):
     
@@ -80,13 +102,15 @@ class Bagg:
 
         if (self.x == self.home[self.t]):
             # if we are home, and in the bottom, stop moving
-            if self.y==3:
+            if self.y==len(plan)-1:
                 return None
 
-            # if we are home, and not in the bottom, but the bottom thing is the correct one, stop moving
-            if self.y==2:
+            # if we are home, and not in the bottom, and the rest of the things are the correct ones, stop moving
+
+            # Part 2: this code needs fixing
+            if self.y==2: # check all levels
                 X = list(filter(lambda x:x is not self and x.t==self.t,otherbagg))
-                if X[0].y==3 and X[0].x==self.home[self.t]:
+                if X[0].y==len(plan)-1 and X[0].x==self.home[self.t]:
                     return None
         
         
@@ -106,7 +130,8 @@ class Bagg:
         # filter it for what we actually are able to do
 
         # don't move to the first block in the burrow if the burrow is empty
-        for i in [3,5,7,9]:
+        # Part 2: this code needs fixing to find the first empty block to move to in a burrow
+        for i in [3,5,7,9]: 
             if str(i)+",3" in P:
                 P.discard(str(i)+",2")
 
@@ -209,6 +234,20 @@ G.add_edge("7,2","7,3",weight=1)
 G.add_edge("8,1","9,2",weight=2)
 G.add_edge("10,1","9,2",weight=2)
 G.add_edge("9,2","9,3",weight=1)
+
+if(len(plan)==7):
+    G.add_edge("3,3","3,4",weight=1)
+    G.add_edge("3,4","3,5",weight=1)
+
+    G.add_edge("5,3","5,4",weight=1)
+    G.add_edge("5,4","5,5",weight=1)
+
+    G.add_edge("7,3","7,4",weight=1)
+    G.add_edge("7,4","7,5",weight=1)
+
+    G.add_edge("9,3","9,4",weight=1)
+    G.add_edge("9,4","9,5",weight=1)
+
 
 #nx.draw(G,  with_labels=True)
 #plt.savefig("maze.png")
