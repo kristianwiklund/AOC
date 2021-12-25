@@ -159,10 +159,9 @@ assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 print ("Testcase 3: merge on X edge")
 
 R = Reactor()
-a = Box("on x=1..1,y=1..1,z=1..1")
-b = Box("on x=2..3,y=1..1,z=1..1")
-R+=a
-R+=b
+R += Box("on x=1..1,y=1..1,z=1..1")
+R += Box("on x=2..3,y=1..1,z=1..1")
+
 
 assert(R.realcubes.__repr__()=="[on x=1..3,y=1..1,z=1..1]")
 
