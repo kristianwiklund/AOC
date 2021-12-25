@@ -1,58 +1,9 @@
 #!/usr/bin/python3
 
 import sys
-from cut import collision,dothecut
+import cut
 from box import Box
 
-# merge two cubes that are connected on the X side and return a new cube
-    
-def combinex(a,b):
-
-    if a.state != b.state:
-        return None
-    
-    if a.y1==b.y1 and a.y2==b.y2:
-        if a.z1==b.z1 and a.z2==b.z2:
-            if a.x2==b.x1:
-                return Box([a.state,a.x1,b.x2,a.y1,a.y2,a.z1,a.z2])
-            
-    else:
-        return None
-
-# merge two cubes that are connected on the Y side and return a new cube
-    
-def combiney(a,b):
-
-    if a.state != b.state:
-        return None
-    
-    if a.x1==b.x1 and a.x2==b.x2:
-        if a.z1==b.z1 and a.z2==b.z2:
-            if a.y2==b.y1:
-                return Box([a.state,a.x1,a.x2,a.y1,b.y2,a.z1,a.z2])
-            
-    else:
-        return None
-
-# merge two cubes that are connected on the Z side and return a new cube
-    
-def combinez(a,b):
-
-    if a.state != b.state:
-        return None
-    
-    if a.x1==b.x1 and a.x2==b.x2:
-        if a.y1==b.y1 and a.y2==b.y2:
-            if a.z2==b.z1:
-                return Box([a.state,a.x1,a.x2,a.y1,a.y2,a.z1,b.z2])
-            
-    else:
-        return None
-
-# check if cube c1 completely overlaps cube c2
-def coverlap( c1, c2):
-        
-    return c2.x1>=c1.x1 and c2.x2<=c1.x2 and c2.y1>=c1.y1 and c2.y2<=c1.y2 and c2.z1>=c1.z1 and c2.z2<=c1.z2
 
 # what this is doing, I don't know
 def ai(L, c):
@@ -63,7 +14,8 @@ def ai(L, c):
 
     return T
     
-
+class Done(Exception):
+    pass
     
 # the reactor
 class Reactor:
@@ -92,59 +44,142 @@ class Reactor:
         
         for c in self.realcubes:
 
-            # if the new cube completely overlaps an existing cube, we remove the existing cube
-            if coverlap(newcube, c):
+            # if the new cube completely overlaps or is identical to an existing cube, we remove the existing cube
+            if cut.coverlap(newcube, c):
                 continue # that is, don't add anything and continue with the next turn in the loop
-
+            
             # if the cubes do not collide, keep c in the realcubes list and continue with the next turn in the loop
-            if not collision(newcube, c):
+            if not cut.collision(newcube, c):
                 newrealcubes.append(c)
-                self.thesize+=newcube.size()
                 continue
 
             # if we get here, we have some kind of collision
-            L = dothecut(newcube, c)
+            L = cut.dothecut(newcube, c)
 
-            for i in L:
-                newrealcubes.append(i)
-                self.thesize+=i.size()
+            newrealcubes = newrealcubes + L
             
         # once we have filtered the realcubes, we add the new cube, if it is an "on" cube
         if newcube.state == "on":
             newrealcubes.append(newcube)
-            self.thesize+=newcube.size()
 
         # we always add it to the list of cubes in the reactor (but not the realcubes)
         self.cubes.append(newcube)
         self.realcubes = newrealcubes
-        
+
+        if len(self.realcubes)<2:
+            return self
+
+        print ("pre merge realcubes:", self.realcubes)
+        # try to merge the existing newrealcubes into smaller ones
+        newrealcubes = []
+        restart=True
+        while restart:
+            restart = False
+            try:
+                for i in range(len(self.realcubes)-1):
+                    for j in range(i+1,len(self.realcubes)):
+                        # if an "older" cube completely overlaps a newer cube, we remove the newer cube. this works because realcubes only contain the "on" set
+                        if cut.coverlap(self.realcubes[i],self.realcubes[j]):
+                            print(i,j,cut.coverlap(self.realcubes[i],self.realcubes[j]),self.realcubes[i],"removes",self.realcubes[j],"due to 100% overlap")
+                            self.realcubes.pop(j)
+                            X=[]
+                            raise Done
+
+                        X = cut.combinex(self.realcubes[i], self.realcubes[j])
+                        if X is not None:
+                            self.realcubes.pop(j)
+                            self.realcubes.pop(i)
+                            raise Done
+                        X = cut.combiney(self.realcubes[i], self.realcubes[j])
+                        if X is not None:
+                            self.realcubes.pop(j)
+                            self.realcubes.pop(i)
+                            raise Done
+                        X = cut.combinez(self.realcubes[i], self.realcubes[j])
+                        if X is not None:
+                            self.realcubes.pop(j)
+                            self.realcubes.pop(i)
+                            raise Done
+
+                        X = cut.combinex(self.realcubes[j], self.realcubes[i])
+                        if X is not None:
+                            self.realcubes.pop(j)
+                            self.realcubes.pop(i)
+                            raise Done
+                        X = cut.combiney(self.realcubes[j], self.realcubes[i])
+                        if X is not None:
+                            self.realcubes.pop(j)
+                            self.realcubes.pop(i)
+                            raise Done
+                        X = cut.combinez(self.realcubes[j], self.realcubes[i])
+                        if X is not None:
+                            self.realcubes.pop(j)
+                            self.realcubes.pop(i)
+                            raise Done                        
+                    print("saving",self.realcubes[i])
+            except Done:
+                self.realcubes+=X
+                restart = True
+
+            except:
+                import traceback
+                print(traceback.format_exc())
+                print(sys.exc_info()[2])
+                sys.exit()
+
         # and return the result of the addition
         return self
         
 
     # pretty print
     def __repr__(self):
-
-        return str(self.reactor)
+        return str(self.cubes)
     
-# ---
+# --- test cases
 
-#read from stdin, create a reactor
-def readinaTOR():
+print ("Testcase 1: adding two identical boxes results in only one box")
+R = Reactor()
+R += Box("on x=1..3,y=1..3,z=1..3")
+R += Box("on x=1..3,y=1..3,z=1..3")
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 
-    RR = Reactor()
+print ("Testcase 2: adding various boxes that overlap but are on the edge with the first, also result in only one box")
+R = Reactor()
+R += Box("on x=1..3,y=1..3,z=1..3")
+R += Box("on x=1..1,y=1..3,z=1..3")
+print(R.realcubes)
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+R += Box("on x=1..3,y=1..1,z=1..3")
+print(R.realcubes)
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+R += Box("on x=1..3,y=1..3,z=1..1")
+print(R.realcubes)
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+
+
+print ("Testcase 3: merge on X edge")
+
+R = Reactor()
+R += Box("on x=1..1,y=1..1,z=1..1")
+R += Box("on x=2..3,y=1..1,z=1..1")
+print(R)
+
+
+# #read from stdin, create a reactor
+# def readinaTOR():
+
+#     RR = Reactor()
     
-    for l in sys.stdin:
+#     for l in sys.stdin:
 
-        l = l.strip()
+#         l = l.strip()
 
-        b = Box(l)
+#         b = Box(l)
 
-        RR = RR + b
-        print(l)
+#         RR = RR + b
         
-    return RR
+#     return RR
         
         
-RR = readinaTOR()
-print(RR)
+# RR = readinaTOR()
+# print(RR)
