@@ -57,6 +57,8 @@ def dothecut(c1, c2):
 
     # find the cut between the boxes and remove it from c2
 
+    # food plz
+    
     return [c2]
 
 # check if cube c1 completely overlaps cube c2
