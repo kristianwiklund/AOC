@@ -3,15 +3,39 @@
 import networkx as nx
 from copy import deepcopy
 import sys
+import random
+
+themin = sys.maxsize
+tries=0
+cache = dict()
 
 #import matplotlib.pyplot as plt
 
+#23100 too high
+#18386 too high
+
 plan = [
+    "#############",
+    "#...........#",
+    "###C#C#A#B###",
+    "###D#D#B#A###",
+    "#############"]
+
+plan12521 = [
     "#############",
     "#...........#",
     "###B#C#B#D###",
     "###A#D#C#A###",
     "#############"]
+
+plant = [
+    "#############",
+    "#CC.......DD#",
+    "###.#.#A#B###",
+    "###.#.#B#A###",
+    "#############"]
+
+#plan = plan12521
 
 def path_weight(G,path, weight):
     
@@ -30,6 +54,18 @@ class Bagg:
 
     e = {"A":1, "B":10, "C":100, "D":1000}
     home = {"A":3, "B":5, "C":7, "D":9}
+
+    def __lt__(self, other):
+
+        if self.t < other.t:
+            return self.t<other.t
+
+        if self.y < other.y:
+            return self.y < other.y
+
+        return self.x < other.x
+
+        
     
     def __init__(self,t,x,y):
         self.t = t
@@ -55,10 +91,15 @@ class Bagg:
         # list of _potential_ moves
         P = set(G.nodes())
         X = list(filter(lambda x:x is not self, otherbagg))
-
+        
         for i in X:
             P.remove(str(i.x)+","+str(i.y))
 
+        if self.t=="NONE":
+            print(P)
+            
+
+            
         # this is the list of all unoccupied spaces in the graph
         # filter it for what we actually are able to do
 
@@ -67,25 +108,43 @@ class Bagg:
             if str(i)+",3" in P:
                 P.discard(str(i)+",2")
 
+        if self.t=="NONE":
+            print(P)
+            
+                
         # don't move to a burrow if we are not supposed to be in that burrow
         for i in self.home:
             if i!=self.t:
                 P.discard(str(self.home[i])+",2")
                 P.discard(str(self.home[i])+",3")
 
+        if self.t=="NONE":
+            print("wrong homes !=",self.home[self.t],"removed",P)
+                            
         # don't move to a burrow if the burrow contains a bagg of another kind
         # that bagg has to move outside first
         
         for i in [3,5,7,9]:
-            if filter(lambda x: x.x==i and x.y==3 and x.t != self.t, otherbagg):
-                P.discard(str(i)+",2")
-                P.discard(str(i)+",3")
+            for t in filter(lambda x: x.x==i and x.y==3 and x.t != self.t, otherbagg):
+                P.discard(str(t.x)+",2")
+                P.discard(str(t.x)+",3")
+                if self.t=="NONE":
+                    print("occ",t,P)
+                    
+
+                
+        if self.t=="NONE":
+            print("removed occupied burrows",P)
+                
 
         # do not move in the corridor, if we already are in the corridor
         if self.y==1:
-            for i in [1,2,4,6,8,10,11]:
+            for i in range(12):
                 P.discard(str(i)+",1")
 
+        if self.t=="NONE":
+            print(P)
+                            
         # find all possible paths from where we are to unoccupied spaces
         V=[]
         for i in P:
@@ -99,13 +158,19 @@ class Bagg:
                 if str(i.x)+","+str(i.y) in V[t][1] or len(V[t][1])==1:
                     V.pop(t)
 
-
-        # if our home is at the end of a possible path, go for it
+        #print (V)
+        # if our home is at the end of a possible path, go for it and nothing else
         for x in V:
             if str(self.home[self.t])+",2" in x[1] or str(self.home[self.t])+",3" in x[1]:
+                if self.t=="NONE":
+                    print("going home", [x])
                 return [x]
                     
         if len(V)>0:
+            if self.t=="NONE":
+                print("final possible remaining moves", V)
+                #            random.shuffle(V)
+            V=sorted(V,reverse=True,key=lambda x:x[0])
             return (V)
         else:
             return None
@@ -159,7 +224,7 @@ for y in range(len(plan)):
     
 def pr(rec, board, bagg, cost):
 
-    print("-- "+str(rec)+" -- "+str(cost)+" --")
+    bs = []
     for y in range(len(board)):
         s=""
         for x in range(len(board[0])):
@@ -170,54 +235,85 @@ def pr(rec, board, bagg, cost):
             if len(s)<=x:
                 s+=board[y][x]
 
-        print(s)
-    print("------")
-            
-def movebagg(bagg, G, board, rec=0, cost=0):
+        bs.append(s)
+    return bs
 
-    pr(rec, board,bagg, cost)
+def moveprint(p):
+
+    #print (p)
+    for i in range(len(p[0])):
+        for j in range(len(p)):
+            print(p[j][i]+" ",end="")
+        print("")
+
+def movebagg(bagg, G, board, rec=0, cost=0,path=[]):
+    global themin
+    global tries
+    global cache
+    
+    tries+=1
+    
+#    if cost>themin:
+#        return themin+1
+    #pr(rec, board,bagg, cost)
+
+    #proppen = "".join(pr(rec, board, bagg, cost))
+    #if proppen in cache:
+    #    return cache[proppen]
     
     x = dict()
-    mc=None
-    vc=None
 
     c=0
     for i in bagg:
         if i.x==i.home[i.t] and i.y!=1:
             c+=1
-    print("home: ",c)
+    #print("home: ",c)
     if c==len(bagg):
-        print ("all home",cost)
-        sys.exit()
-        return 0
+        if themin is None or cost < themin:
+            print ("all home",cost)
+            #pr(rec, board, bagg, cost)
+            moveprint(path)
+            themin = cost
+        return cost
 
-    
+
+    koko=0
+    mv=themin
     for i in range(len(bagg)):
         x[i] = bagg[i].findmoves(bagg, G)
-        if x[i]:
-            for z in x[i]:
-                #print("Moving ",bagg[i],"from",x[i][1][0],"to",x[i][1][-1])
-                b = deepcopy(bagg)                
-                t = (z[1])[-1].split(",")
-                
-                nx = int(t[0])
-                ny = int(t[1])
-                b[i].x=nx
-                b[i].y=ny
-                
-                v = z[0] + movebagg(b,G,plan, rec+1, cost+z[0])
-                if mc is None or v<mc:
-                    mc = v
-                    vc = i
 
-    if not mc is None:
-        return mc
-    else:
+        if x[i]:
+            koko+=len(x[i])
+            for z in x[i]:
+                if (cost+z[0])<mv:
+
+                    if bagg[i].t=="NONE":
+                        print ("x=",x,"x[i]=",x[i])            
+                        print("Moving bagg",i,bagg[i],"from",z[1][0],"to",z[1][-1])
+                    b = deepcopy(bagg)                
+                    t = (z[1])[-1].split(",")
+                
+                    nx = int(t[0])
+                    ny = int(t[1])
+                    b[i].x=nx
+                    b[i].y=ny
+
+                    #proppen = "".join(pr(rec, board, b, cost))
+
+
+                    v = movebagg(b,G,plan, rec+1, cost+z[0],path+[pr(rec, board, b, cost)])    
+                    mv = min(v,mv)
+                    #print(proppen,v)                    
+                    #cache[proppen] = v
+                    
+                #print(b.__repr__())
+    if koko==0:
+        #print("deadlock",cost)
         return sys.maxsize
-    
+
+    return mv    
     
     
 movebagg(bagg,G,plan)
-            
-
+print(themin,"in",tries,"tries")           
 
