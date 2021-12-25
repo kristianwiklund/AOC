@@ -1,4 +1,4 @@
 #!/bin/bash
 
-awk -f 24.awk > 24.c < input
+awk -f 24.awk > f.py < input
 
