@@ -71,11 +71,10 @@ class Reactor:
 
         # try to merge the existing newrealcubes into smaller ones
 
-        print ("checking if we can merge any of ",len(self.realcubes),"realcubes:",self.realcubes)
         restart=True
         while restart:
             restart = False
-            print("realcubes is ",len(self.realcubes),"long")
+
             try:
                 for i in range(len(self.realcubes)-1):
                     for j in range(i+1,len(self.realcubes)):
@@ -85,7 +84,7 @@ class Reactor:
                             self.realcubes.pop(j)
                             X=[]
                             raise Done
-                        print("trying to merge ",self.realcubes[i],"with",self.realcubes[j])
+
                         X = cut.combinex(self.realcubes[i], self.realcubes[j])
                         if X is not None:
                             self.realcubes.pop(j)
@@ -117,9 +116,9 @@ class Reactor:
                             self.realcubes.pop(j)
                             self.realcubes.pop(i)
                             raise Done                        
-                    print("saving",self.realcubes[i])
+
             except Done:
-                print("append",X,"to realcubes")
+
                 self.realcubes+=X
                 restart = True
 
@@ -157,30 +156,51 @@ assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 
 
 print ("Testcase 3: merge on X edge")
-
 R = Reactor()
+
 R += Box("on x=1..1,y=1..1,z=1..1")
 R += Box("on x=2..3,y=1..1,z=1..1")
-
-
 assert(R.realcubes.__repr__()=="[on x=1..3,y=1..1,z=1..1]")
 
+print ("Testcase 4: merge on Y edge")
+R += Box("on x=1..3,y=2..3,z=1..1")
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..1]")
+
+print ("Testcase 5: merge on Z edge")
+R += Box("on x=1..3,y=1..3,z=2..3")
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+
+print ("Testcase 6: merge on (reverse) X edge")
+R = Reactor()
+
+R += Box("on x=2..3,y=2..3,z=2..3")
+R += Box("on x=1..1,y=2..3,z=2..3")
+
+assert(R.realcubes.__repr__()=="[on x=1..3,y=2..3,z=2..3]")
+
+print ("Testcase 4: merge on (reverse) Y edge")
+R += Box("on x=1..3,y=1..1,z=2..3")
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=2..3]")
+
+print ("Testcase 5: merge on (reverse) Z edge")
+R += Box("on x=1..3,y=1..3,z=1..1")
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 
 # #read from stdin, create a reactor
-# def readinaTOR():
+def readinaTOR():
 
-#     RR = Reactor()
+    RR = Reactor()
     
-#     for l in sys.stdin:
+    for l in sys.stdin:
 
-#         l = l.strip()
+        l = l.strip()
 
-#         b = Box(l)
+        b = Box(l)
 
-#         RR = RR + b
+        RR = RR + b
         
-#     return RR
+    return RR
         
         
-# RR = readinaTOR()
-# print(RR)
+RR = readinaTOR()
+print(len(RR.cubes),len(RR.realcubes))

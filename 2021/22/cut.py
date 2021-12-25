@@ -77,7 +77,6 @@ def combinex(a,b):
                 return [Box([a.state,a.x1,b.x2,a.y1,a.y2,a.z1,a.z2])]
             
     else:
-        print ("combinex failed:",a,b)
         return None
 
 # merge two cubes that are connected on the Y side and return a new cube
@@ -93,7 +92,6 @@ def combiney(a,b):
                 return [Box([a.state,a.x1,a.x2,a.y1,b.y2,a.z1,a.z2])]
             
     else:
-        print ("combiney failed:",a,b)
         return None
 
 # merge two cubes that are connected on the Z side and return a new cube
@@ -109,7 +107,6 @@ def combinez(a,b):
                 return [Box([a.state,a.x1,a.x2,a.y1,a.y2,a.z1,b.z2])]
             
     else:
-        print ("combinez failed:",a,b)
         return None
 
 
