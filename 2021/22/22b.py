@@ -69,22 +69,23 @@ class Reactor:
         if len(self.realcubes)<2:
             return self
 
-        print ("** pre merge realcubes:", self.realcubes)
         # try to merge the existing newrealcubes into smaller ones
 
+        print ("checking if we can merge any of ",len(self.realcubes),"realcubes:",self.realcubes)
         restart=True
         while restart:
             restart = False
+            print("realcubes is ",len(self.realcubes),"long")
             try:
                 for i in range(len(self.realcubes)-1):
                     for j in range(i+1,len(self.realcubes)):
                         # if an "older" cube completely overlaps a newer cube, we remove the newer cube. this works because realcubes only contain the "on" set
                         if cut.coverlap(self.realcubes[i],self.realcubes[j]):
-                            print(i,j,cut.coverlap(self.realcubes[i],self.realcubes[j]),self.realcubes[i],"removes",self.realcubes[j],"due to 100% overlap")
+                            #print(i,j,cut.coverlap(self.realcubes[i],self.realcubes[j]),self.realcubes[i],"removes",self.realcubes[j],"due to 100% overlap")
                             self.realcubes.pop(j)
                             X=[]
                             raise Done
-
+                        print("trying to merge ",self.realcubes[i],"with",self.realcubes[j])
                         X = cut.combinex(self.realcubes[i], self.realcubes[j])
                         if X is not None:
                             self.realcubes.pop(j)
@@ -118,6 +119,7 @@ class Reactor:
                             raise Done                        
                     print("saving",self.realcubes[i])
             except Done:
+                print("append",X,"to realcubes")
                 self.realcubes+=X
                 restart = True
 
@@ -127,7 +129,6 @@ class Reactor:
                 print(sys.exc_info()[2])
                 sys.exit()
 
-        print ("** post merge realcubes:", self.realcubes)
         # and return the result of the addition
         return self
         
@@ -148,22 +149,22 @@ print ("Testcase 2: adding various boxes that overlap but are on the edge with t
 R = Reactor()
 R += Box("on x=1..3,y=1..3,z=1..3")
 R += Box("on x=1..1,y=1..3,z=1..3")
-print(R.realcubes)
 assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 R += Box("on x=1..3,y=1..1,z=1..3")
-print(R.realcubes)
 assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 R += Box("on x=1..3,y=1..3,z=1..1")
-print(R.realcubes)
 assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 
 
 print ("Testcase 3: merge on X edge")
 
 R = Reactor()
-R += Box("on x=1..1,y=1..1,z=1..1")
-R += Box("on x=2..3,y=1..1,z=1..1")
-print(R)
+a = Box("on x=1..1,y=1..1,z=1..1")
+b = Box("on x=2..3,y=1..1,z=1..1")
+R+=a
+R+=b
+
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..1,z=1..1]")
 
 
 # #read from stdin, create a reactor
