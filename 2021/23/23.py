@@ -37,7 +37,7 @@ plant = [
     "###.#.#B#A###",
     "#############"]
 
-#plan = plan12521
+plan = plan12521
 
 def path_weight(G,path, weight):
     
@@ -248,7 +248,7 @@ def moveprint(p):
             print(p[j][i]+" ",end="")
         print("")
 
-def descend(bagg, G, board, x, mv, i, rec=0, cost=0,path=[],themin=sys.maxsize):
+def descend(bagg, G, board, x, mv, i, rec=0, cost=0,path=[],themin=sys.maxsize,queue=None):
     
     for z in x[i]:
         if (cost+z[0])<mv:
@@ -267,7 +267,7 @@ def descend(bagg, G, board, x, mv, i, rec=0, cost=0,path=[],themin=sys.maxsize):
             
             #proppen = "".join(pr(rec, board, b, cost))
             
-            v = movebagg(b,G,plan, rec+1, cost+z[0],path+[pr(rec, board, b, cost)],mv)    
+            v = movebagg(b,G,plan, rec+1, cost+z[0],path+[pr(rec, board, b, cost)],mv,queue=queue)    
             mv = min(v,mv)
             #print(proppen,v)                    
             #cache[proppen] = v
@@ -278,7 +278,7 @@ def descend(bagg, G, board, x, mv, i, rec=0, cost=0,path=[],themin=sys.maxsize):
 
 results=[]
 
-def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize):
+def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize,queue=None):
 
     global tries
     global cache
@@ -306,31 +306,56 @@ def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize):
             #pr(rec, board, bagg, cost)
             moveprint(path)
             themin = cost
+            if queue is not None:
+                print("sending result to queue")
+                queue.put(themin)
+        
+
         return cost
 
+    if rec==0:
+        m = mp.Manager()
+        queue=m.Queue()
+    
 
     koko=0
     mv=themin
+    if rec==0:
+        pool = mp.Pool(len(bagg))
+        
     for i in range(len(bagg)):
         x[i] = bagg[i].findmoves(bagg, G)
 
         if x[i]:
             koko+=len(x[i])
             if rec==0:
-                pool = mp.Pool(len(x[i]))
-                res = pool.apply_async(descend, (bagg, G, board,x,mv,i),{"rec":rec, "cost":cost,"path":path,"themin":themin})
+                res = pool.apply_async(descend, (bagg, G, board,x,mv,i),{"rec":rec, "cost":cost,"path":path,"themin":themin,"queue":queue})
                 results.append(res)
             else:
-                mv = descend(bagg, G, board,x,mv,i,rec, cost,path,themin)
+                mv = descend(bagg, G, board,x,mv,i,rec, cost,path,themin,queue)
     
     if koko==0:
         #print("deadlock",cost)
         return sys.maxsize
 
     if rec==0:
-        v = [res.get() for res in results]
-        print (v)
-        return (min(v))
+        while True:
+            try:
+                v = [res.get(timeout=1) for res in results]
+                print (v)
+                return (min(v))
+            except:
+                try:
+                    while True:
+                        w = queue.get(False)
+                        print ("got potential minvalue",w,"old minvalue is",mv)
+                        if w < mv:
+                            print ("new minvalue",w)
+                            mv = w
+                except: # queue empty exception
+                    pass
+
+            
     return mv    
     
 themin=movebagg(bagg,G,plan)
