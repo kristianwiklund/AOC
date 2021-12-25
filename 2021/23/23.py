@@ -37,7 +37,7 @@ plant = [
     "###.#.#B#A###",
     "#############"]
 
-plan = plant
+#plan = plan12521
 
 def path_weight(G,path, weight):
     
@@ -275,7 +275,9 @@ def descend(bagg, G, board, x, mv, i, rec=0, cost=0,path=[],themin=sys.maxsize):
             #print(b.__repr__())
 
     return mv
-        
+
+results=[]
+
 def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize):
 
     global tries
@@ -314,15 +316,24 @@ def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize):
 
         if x[i]:
             koko+=len(x[i])
-            mv = descend(bagg, G, board,x,mv,i,rec, cost,path,themin)
- 
+            if rec==0:
+                pool = mp.Pool(len(x[i]))
+                res = pool.apply_async(descend, (bagg, G, board,x,mv,i),{"rec":rec, "cost":cost,"path":path,"themin":themin})
+                results.append(res)
+            else:
+                mv = descend(bagg, G, board,x,mv,i,rec, cost,path,themin)
+    
     if koko==0:
         #print("deadlock",cost)
         return sys.maxsize
 
+    if rec==0:
+        v = [res.get() for res in results]
+        print (v)
+        return (min(v))
     return mv    
     
-    
 themin=movebagg(bagg,G,plan)
-print(themin,"in",tries,"tries")           
+    
+print("Answer 1:",themin)           
 
