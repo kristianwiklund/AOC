@@ -1,20 +1,22 @@
 #!/usr/bin/python3
 
 import networkx as nx
-from copy import deepcopy
+#from copy import deepcopy
 import sys
-import random
+#import random
 import multiprocessing as mp
 
 print (mp.cpu_count(),"processors")
 #themin = sys.maxsize
 tries=0
-cache = dict()
+#cache = dict()
 
 #import matplotlib.pyplot as plt
 
 #23100 too high
 #18386 too high
+
+debug=False
 
 planA = [
     "#############",
@@ -61,16 +63,16 @@ planB = [
 
 plantBt = [
     "#############",
-    "#AA...B.B.BD#",
+    "#AA.....B.BD#",
     "###B#.#.#.###",
-    "###D#.#C#.###",
-    "###D#.#C#C###",
+    "###D#C#.#.###",
+    "###D#B#C#C###",
     "###A#D#C#A###",
     "#############"]
 
 
 
-plan = plantBt
+plan = planB
 
 
 
@@ -109,7 +111,7 @@ class Bagg:
         self.x = x
         self.y = y
 
-    def findmoves(self, otherbagg, G):
+    def findmoves(self, otherbagg, G, plan):
 
         stoplist = []
 
@@ -124,76 +126,78 @@ class Bagg:
 
             # if we are home, and not in the bottom, and the rest of the things are the correct ones, stop moving
             if self.y>=2: # check all levels
-                if (self.t=="NONE"):
+                if (debug):
                     print("we are deeper than the corridor, check if we are good")
                     
                 X = sorted(list(filter(lambda x:x is not self and x.t==self.t and x.x==self.home[self.t], otherbagg)), key=lambda b:b.y)
                 l = len(plan)-4
-                if (self.t=="NONE"):
+                if (debug):
                     print("bagg in home for",self,"of type",self.t," are :",X)
-
-                # if all items in the list are home, and stacked starting from the bottom of the possible burrow, we are good
-
-                bcnt=0
-                #print (range(l,0,-1))
-                GOGG=[str(x.x)+","+str(x.y) for x in X]
-                for ll in range(len(plan)-2,0,-1):
-                    if self.t=="NONE":
-                        print ("checking position",str(self.home[self.t])+","+str(ll),"in",GOGG)
-                        
-                    if str(self.home[self.t])+","+str(ll) in GOGG:
-                        if self.t=="NONE":
-                            print ("Found a lower bagg - good")
-                        bcnt+=1
-                    else:
-                        break
                     
-                if bcnt==len(X) and len(X)!=0:
+                # if all items in the list are home, and stacked starting from the bottom of the possible burrow, we are good
+                if X!=[]:
+                    bcnt=0
+                    #print (range(l,0,-1))
+                    GOGG=[str(x.x)+","+str(x.y) for x in X]
+                    for ll in range(len(plan)-2,0,-1):
+                        if debug:
+                            print ("checking position",str(self.home[self.t])+","+str(ll),"in",GOGG)
+                        
+                        if str(self.home[self.t])+","+str(ll) in GOGG:
+                            if debug:
+                                print ("Found a lower bagg - good")
+                            bcnt+=1
+                        else:
+                            break
+                    
+                    if bcnt==len(X) and len(X)!=0:
                     #print ("bagg",self,"is at home due to",GOGG)
-                    return None
+                        return None
                             
                         
-                # this is borked
-                # if len(X) == l:
-                #     return None
-                # if l>2:
-                #     if len(X) == 2:
-                #         if X[0].y==4 and X[1]==5:
-                #             return None
-                #         elif len(X) == 3:
-                #             if X[0].y==3 and X[1]==4 and X[2]==5:
-                #                 return None
                             
-        if self.t=="NONE":
+        if debug:
             print("done checking if we are at home or not (we were not at home)")
                   
         # list of _potential_ moves
         P = set(G.nodes())
+
         X = list(filter(lambda x:x is not self, otherbagg))
         
         for i in X:
             P.remove(str(i.x)+","+str(i.y))
 
-        if self.t=="NONE":
+        if debug:
             print(P)
 
         # this is the list of all unoccupied spaces in the graph
         # filter it for what we actually are able to do
 
 
-
-            # don't move to a burrow if the burrow contains a bagg of another kind
+        # something here seems to be borked
+        # don't move to a burrow if the burrow contains a bagg of another kind
         # that bagg has to move outside first
         # we are not allowed to move to a burrow if there is a bagg of another type in it
         # fix this for part 2
         for i in [3,5,7,9]:
-            for t in filter(lambda x: x.x==i and x.y>2 and x.t != self.t, otherbagg):
-                P.discard(str(t.x)+",2")
-                P.discard(str(t.x)+",3")
-                P.discard(str(t.x)+",4")
-                P.discard(str(t.x)+",5")
-                if self.t=="NONE":
-                    print("occ",t,P)
+            if i == self.home[self.t]:
+                NOT = list(filter(lambda vx: vx.x==i and vx.y>2 and vx.t != self.t, otherbagg))
+
+                if debug:
+                    print(self,"check if have to move out >",NOT,"< from",P,len(NOT))
+        
+                for vt in NOT:
+
+                    P.discard(str(vt.x)+",2")
+                    P.discard(str(vt.x)+",3")
+                    P.discard(str(vt.x)+",4")
+                    P.discard(str(vt.x)+",5")
+                    
+                    if  debug:
+                        print("occ",vt,P)
+
+        if debug:
+            print("P after home bopp removed",P)
 
             
         # move to the lowest block in a burrow if we are allowed to move to a burrow
@@ -219,14 +223,14 @@ class Bagg:
                 P.discard(str(self.home[i])+",5")
                     
 
-        if self.t=="NONE":
-            print(P)
+        if debug:
+            print("P after burrow check:",P)
             
-        if self.t=="NONE":
+        if debug:
             print("wrong homes !=",self.home[self.t],"removed",P)
                             
 
-        if self.t=="NONE":
+        if debug:
             print("removed occupied burrows",P)
                 
 
@@ -235,8 +239,8 @@ class Bagg:
             for i in range(12):
                 P.discard(str(i)+",1")
 
-        if self.t=="NONE":
-            print(P)
+        if debug:
+            print("P after corridor check",P)
                             
         # find all possible paths from where we are to unoccupied spaces
         V=[]
@@ -244,6 +248,10 @@ class Bagg:
             t = nx.shortest_path(G,str(self.x)+","+str(self.y),i,weight="weight")
             V.append((path_weight(G,t,"weight")*self.e[self.t], nx.shortest_path(G,str(self.x)+","+str(self.y),i,weight="weight")))
 
+
+        if debug:
+            print("All possible paths from",self,"to",P)
+            print(V)
         # then remove paths that collide with occupied spaces
 
         for i in list(X): # these are the occupied spaces
@@ -253,14 +261,18 @@ class Bagg:
 
         #print (V)
         # if our home is at the end of a possible path, go for it and nothing else
+        homeV=[]
         for x in V:
             if str(self.home[self.t])+",2" in x[1] or str(self.home[self.t])+",3" in x[1]:
-                if self.t=="NONE":
+                if debug:
                     print("going home", [x])
-                return [x]
-                    
+                homeV.append(x)
+
+        if homeV!=[]:
+            V=homeV
+
         if len(V)>0:
-            if self.t=="NONE":
+            if debug:   
                 print("final possible remaining moves", V)
                 #            random.shuffle(V)
             V=sorted(V,reverse=True,key=lambda x:x[0])
@@ -360,30 +372,39 @@ def moveprint(p):
         print("")
 
 
-def descend(bagg, G, board, x, mv, i, rec=0, cost=0,path=[],themin=sys.maxsize,queue=None):
+def descend(bagg, G, board, bx, mv, bi, rec=0, cost=0,path=[],themin=sys.maxsize,queue=None):
 
+    global debug
+    
     #print ("moving bagg",i)
     #moveprint(path)
-    
-    for z in x[i]:
-        if (cost+z[0])<mv:
+
+    zcount=0
+    for thez in bx[bi]:
+        zcount+=1
+        if (cost+thez[0])<mv:
             
-            if bagg[i].t=="NONE":
-                print ("x=",x,"x[i]=",x[i])            
-                print("Moving bagg",i,bagg[i],"from",z[1][0],"to",z[1][-1])
+            #if bagg[bi].t=="B" and bagg[bi].x==5 and bagg[bi].y==4:
+            #    print ("x=",x,"bx[i]=",bx[bi])            
+            #    print(rec,": Moving (",zcount,"of",len(bx[bi]),") bagg",bi,bagg[bi],"from",thez[1][0],"to",thez[1][-1])
                 
-            b = deepcopy(bagg)                
-            t = (z[1])[-1].split(",")
+            #b = deepcopy(bagg)
+            b = bagg
+            ox = b[bi].x
+            oy = b[bi].y
+            t = (thez[1])[-1].split(",")
                 
             nx = int(t[0])
             ny = int(t[1])
-            b[i].x=nx
-            b[i].y=ny
+            b[bi].x=nx
+            b[bi].y=ny
             
             #proppen = "".join(pr(rec, board, b, cost))
             
-            v = movebagg(b,G,plan, rec+1, cost+z[0],path+[pr(rec, board, b, cost)],mv,queue=queue)    
+            v = movebagg(b,G,plan, rec+1, cost+thez[0],path+[pr(rec, board, b, cost)],mv,queue=queue)    
             mv = min(v,mv)
+            b[bi].x = ox
+            b[bi].y = oy
             #print(proppen,v)                    
             #cache[proppen] = v
             
@@ -397,23 +418,27 @@ def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize,queue=None
 
     global tries
     global cache
+    global debug
     
     tries+=1
     
-#    if cost>themin:
-#        return themin+1
+    if cost>themin:
+        print(rec,"cost",cost,"themin",themin)
+        return sys.maxsize
+
+
     #pr(rec, board,bagg, cost)
 
     #proppen = "".join(pr(rec, board, bagg, cost))
     #if proppen in cache:
     #    return cache[proppen]
     
-    x = dict()
 
     c=0
-    for i in bagg:
-        if i.x==i.home[i.t] and i.y>1:
+    for baggi in bagg:
+        if baggi.x==baggi.home[baggi.t] and baggi.y>1:
             c+=1
+            
     #print("home: ",c)
     if c==len(bagg):
         if themin is None or cost < themin:
@@ -430,30 +455,34 @@ def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize,queue=None
         m = mp.Manager()
         queue=m.Queue()
     
-
- 
-
     if rec==0:
         pool = mp.Pool(max(len(bagg),mp.cpu_count()))
         print("Created pool with",max(len(bagg),mp.cpu_count()),"threads")
-        
+    
     mv=themin                       
-    koko=0       
-    for i in range(len(bagg)):
-        x[i] = bagg[i].findmoves(bagg, G)
+    koko=0
+    bokbok=[]
+    thebagg = dict()
 
-        if x[i]:
-            koko+=len(x[i])
+    for bi in range(len(bagg)):
+        thebagg[bi] = bagg[bi].findmoves(bagg, G, plan)
+        bokbok.append(thebagg[bi])
+        if thebagg[bi]:
+            koko+=len(thebagg[bi])
             if rec==0:
-                res = pool.apply_async(descend, (bagg, G, board,x,mv,i),{"rec":rec, "cost":cost,"path":path,"themin":themin,"queue":queue})
+                res = pool.apply_async(descend, (bagg, G, board,thebagg,mv,bi),{"rec":rec, "cost":cost,"path":path,"themin":themin,"queue":queue})
                 results.append(res)
             else:
-                mv = descend(bagg, G, board,x,mv,i,rec, cost,path,themin,queue)
-#        else:
-#            print("found no moves for bagg",bagg[i])
-#            moveprint(path)
+                #if rec>0 and queue is None:
+                #    print(rec,":",bagg[bi],"moves",thebagg[bi])
+                mv = descend(bagg, G, board,thebagg,mv,bi,rec, cost,path,themin,queue)
+                
     if koko==0:
         #print("deadlock",cost)
+        #if cost==660:
+        #    #debug=True
+        #    moveprint(path)
+        #    #print(bokbok)
         if queue is not None:
             #print("sending result to queue")
             queue.put(sys.maxsize)
@@ -475,7 +504,7 @@ def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize,queue=None
                         else:
                             mscnt+=1
                             if mscnt%1000==0:
-                                print(mscnt,"dead ends")
+                                print(mscnt,"dead ends, minvalue=",mv)
                         if w < mv:
                             print ("new minvalue",w)
                             mv = w
@@ -486,7 +515,7 @@ def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize,queue=None
     #cache[proppen]=mv        
     return mv    
     
-themin=movebagg(bagg,G,plan)
+themin=movebagg(bagg,G,plan,rec=0)
     
 print("Answer 1:",themin)           
 
