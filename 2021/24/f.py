@@ -4,7 +4,7 @@ def f(s):
    z=0
    w=0
 
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i0(s, w,x,y,z):
    w=s
@@ -25,7 +25,7 @@ def i0(s, w,x,y,z):
    y+=7;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i1(s, w,x,y,z):
    w=s
@@ -46,7 +46,7 @@ def i1(s, w,x,y,z):
    y+=4;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i2(s, w,x,y,z):
    w=s
@@ -67,7 +67,7 @@ def i2(s, w,x,y,z):
    y+=8;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i3(s, w,x,y,z):
    w=s
@@ -88,7 +88,7 @@ def i3(s, w,x,y,z):
    y+=1;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i4(s, w,x,y,z):
    w=s
@@ -109,7 +109,7 @@ def i4(s, w,x,y,z):
    y+=5;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i5(s, w,x,y,z):
    w=s
@@ -130,7 +130,7 @@ def i5(s, w,x,y,z):
    y+=14;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i6(s, w,x,y,z):
    w=s
@@ -151,7 +151,7 @@ def i6(s, w,x,y,z):
    y+=12;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i7(s, w,x,y,z):
    w=s
@@ -172,7 +172,7 @@ def i7(s, w,x,y,z):
    y+=10;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i8(s, w,x,y,z):
    w=s
@@ -193,7 +193,7 @@ def i8(s, w,x,y,z):
    y+=5;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i9(s, w,x,y,z):
    w=s
@@ -214,7 +214,7 @@ def i9(s, w,x,y,z):
    y+=7;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i10(s, w,x,y,z):
    w=s
@@ -235,7 +235,7 @@ def i10(s, w,x,y,z):
    y+=6;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i11(s, w,x,y,z):
    w=s
@@ -256,7 +256,7 @@ def i11(s, w,x,y,z):
    y+=8;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i12(s, w,x,y,z):
    w=s
@@ -277,7 +277,7 @@ def i12(s, w,x,y,z):
    y+=4;
    y*=x;
    z+=y;
-   return (w,z,y,z)
+   return (w,x,y,z)
 
 def i13(s, w,x,y,z):
    w=s
