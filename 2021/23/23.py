@@ -59,7 +59,7 @@ planB = [
     "###D#D#B#A###",
     "#############"]
 
-plan = plan44169
+plan = plan12521
 
 def path_weight(G,path, weight):
     
@@ -102,17 +102,29 @@ class Bagg:
 
         if (self.x == self.home[self.t]):
             # if we are home, and in the bottom, stop moving
-            if self.y==len(plan)-1:
+            if self.y==len(plan)-2:
                 return None
 
             # if we are home, and not in the bottom, and the rest of the things are the correct ones, stop moving
 
             # Part 2: this code needs fixing
-            if self.y==2: # check all levels
-                X = list(filter(lambda x:x is not self and x.t==self.t,otherbagg))
-                if X[0].y==len(plan)-1 and X[0].x==self.home[self.t]:
+            if self.y>=2: # check all levels
+                X = sorted(list(filter(lambda x:x is not self and x.t==self.t and x.x==self.home[self.t], otherbagg)), key=lambda b:b.y)
+                l = len(plan)-4
+    
+                if len(X) == l:
                     return None
-        
+                if l>2:
+                    if len(X) == 2:
+                        if X[0].y==4 and X[1]==5:
+                            return None
+                        elif len(X) == 3:
+                            if X[0].y==3 and X[1]==4 and X[2]==5:
+                                return None
+                            
+                #if X[0].y==(len(plan)-2) and X[0].x==self.home[self.t]:
+                #    return None
+                
         
         # list of _potential_ moves
         P = set(G.nodes())
@@ -341,12 +353,12 @@ def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize,queue=None
     #print("home: ",c)
     if c==len(bagg):
         if themin is None or cost < themin:
-            print ("all home",cost)
+            #print ("all home",cost)
             #pr(rec, board, bagg, cost)
-            moveprint(path)
+            #moveprint(path)
             themin = cost
             if queue is not None:
-                print("sending result to queue")
+                #print("sending result to queue")
                 queue.put(themin)
         
 
@@ -360,7 +372,9 @@ def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize,queue=None
     koko=0
     mv=themin
     if rec==0:
-        pool = mp.Pool(len(bagg))
+        pool = mp.Pool(max(len(bagg),mp.cpu_count()))
+        print("Created pool with",max(len(bagg),mp.cpu_count()),"threads")
+                       
         
     for i in range(len(bagg)):
         x[i] = bagg[i].findmoves(bagg, G)
@@ -394,7 +408,7 @@ def movebagg(bagg, G, board, rec=0, cost=0,path=[],themin=sys.maxsize,queue=None
                 except: # queue empty exception
                     pass
 
-            
+    #cache[proppen]=mv        
     return mv    
     
 themin=movebagg(bagg,G,plan)
