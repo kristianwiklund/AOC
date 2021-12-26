@@ -41,7 +41,8 @@ class Reactor:
         # when adding a cube, we check the impact on "realcubes"
 
         newrealcubes = []
-        
+
+        #print ("pre",self.realcubes)
         for c in self.realcubes:
 
             # if the new cube completely overlaps or is identical to an existing cube, we remove the existing cube
@@ -55,9 +56,10 @@ class Reactor:
 
             # if we get here, we have some kind of collision
             L = cut.dothecut(newcube, c)
-
+            #print("We cut something and got something",L)
+            #print ("nrc",newrealcubes)
             newrealcubes = newrealcubes + L
-            
+            #print ("nrc 2",newrealcubes)
         # once we have filtered the realcubes, we add the new cube, if it is an "on" cube
         if newcube.state == "on":
             newrealcubes.append(newcube)
@@ -71,6 +73,13 @@ class Reactor:
 
         # try to merge the existing newrealcubes into smaller ones
 
+
+#        s=0
+#        for i in self.realcubes:
+#            s+=i.size()
+#        print("pre merge",self.realcubes,s)
+        # try to merge the realcubes
+    
         restart=True
         while restart:
             restart = False
@@ -78,10 +87,11 @@ class Reactor:
             try:
                 for i in range(len(self.realcubes)-1):
                     for j in range(i+1,len(self.realcubes)):
+                        #print(self.realcubes[i],self.realcubes[j])
                         # if an "older" cube completely overlaps a newer cube, we remove the newer cube. this works because realcubes only contain the "on" set
                         if cut.coverlap(self.realcubes[i],self.realcubes[j]):
                             #print(i,j,cut.coverlap(self.realcubes[i],self.realcubes[j]),self.realcubes[i],"removes",self.realcubes[j],"due to 100% overlap")
-                            self.realcubes.pop(j)
+                            #self.realcubes.pop(j)
                             X=[]
                             raise Done
 
@@ -128,6 +138,11 @@ class Reactor:
                 print(sys.exc_info()[2])
                 sys.exit()
 
+        s=0
+        for i in self.realcubes:
+            s+=i.size()
+#        print("post merge",self.realcubes,s)
+        self.thesize=s
         # and return the result of the addition
         return self
         
@@ -186,21 +201,34 @@ print ("Testcase 5: merge on (reverse) Z edge")
 R += Box("on x=1..3,y=1..3,z=1..1")
 assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 
+print ("Testcase 6: Remove a 1x1x1 cube from a 3x3x3 cube")
+R = Reactor()
+R += Box("on x=1..3,y=1..3,z=1..3")
+#print(Box("on x=1..3,y=1..3,z=1..3").size())
+R += Box("off x=1..1,y=1..1,z=1..1")
+
+#print (R.realcubes)
+#s=0
+#for i in R.realcubes:
+#    s+=i.size()
+#print(s)
+#print(R.size())
+    
 # #read from stdin, create a reactor
 def readinaTOR():
 
     RR = Reactor()
     
     for l in sys.stdin:
-
         l = l.strip()
 
         b = Box(l)
-
         RR = RR + b
         
     return RR
         
         
 RR = readinaTOR()
-print(len(RR.cubes),len(RR.realcubes))
+print(RR.size())
+print(RR)
+print(RR.realcubes)
