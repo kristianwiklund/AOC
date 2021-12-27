@@ -16,53 +16,53 @@ def ai(L, c):
     
 # --- test cases
 
-print ("Testcase 1: adding two identical boxes results in only one box")
-R = Reactor()
-R += Box("on x=1..3,y=1..3,z=1..3")
-R += Box("on x=1..3,y=1..3,z=1..3")
-assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+# print ("Testcase 1: adding two identical boxes results in only one box")
+# R = Reactor()
+# R += Box("on x=1..3,y=1..3,z=1..3")
+# R += Box("on x=1..3,y=1..3,z=1..3")
+# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 
-print ("Testcase 2: adding various boxes that overlap but are on the edge with the first, also result in only one box")
-R = Reactor()
-R += Box("on x=1..3,y=1..3,z=1..3")
-R += Box("on x=1..1,y=1..3,z=1..3")
-assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
-R += Box("on x=1..3,y=1..1,z=1..3")
-assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
-R += Box("on x=1..3,y=1..3,z=1..1")
-assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+# print ("Testcase 2: adding various boxes that overlap but are on the edge with the first, also result in only one box")
+# R = Reactor()
+# R += Box("on x=1..3,y=1..3,z=1..3")
+# R += Box("on x=1..1,y=1..3,z=1..3")
+# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+# R += Box("on x=1..3,y=1..1,z=1..3")
+# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+# R += Box("on x=1..3,y=1..3,z=1..1")
+# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 
 
-print ("Testcase 3: merge on X edge")
-R = Reactor()
+# print ("Testcase 3: merge on X edge")
+# R = Reactor()
 
-R += Box("on x=1..1,y=1..1,z=1..1")
-R += Box("on x=2..3,y=1..1,z=1..1")
-assert(R.realcubes.__repr__()=="[on x=1..3,y=1..1,z=1..1]")
+# R += Box("on x=1..1,y=1..1,z=1..1")
+# R += Box("on x=2..3,y=1..1,z=1..1")
+# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..1,z=1..1]")
 
-print ("Testcase 4: merge on Y edge")
-R += Box("on x=1..3,y=2..3,z=1..1")
-assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..1]")
+# print ("Testcase 4: merge on Y edge")
+# R += Box("on x=1..3,y=2..3,z=1..1")
+# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..1]")
 
-print ("Testcase 5: merge on Z edge")
-R += Box("on x=1..3,y=1..3,z=2..3")
-assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+# print ("Testcase 5: merge on Z edge")
+# R += Box("on x=1..3,y=1..3,z=2..3")
+# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 
-print ("Testcase 6: merge on (reverse) X edge")
-R = Reactor()
+# print ("Testcase 6: merge on (reverse) X edge")
+# R = Reactor()
 
-R += Box("on x=2..3,y=2..3,z=2..3")
-R += Box("on x=1..1,y=2..3,z=2..3")
+# R += Box("on x=2..3,y=2..3,z=2..3")
+# R += Box("on x=1..1,y=2..3,z=2..3")
 
-assert(R.realcubes.__repr__()=="[on x=1..3,y=2..3,z=2..3]")
+# assert(R.realcubes.__repr__()=="[on x=1..3,y=2..3,z=2..3]")
 
-print ("Testcase 7: merge on (reverse) Y edge")
-R += Box("on x=1..3,y=1..1,z=2..3")
-assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=2..3]")
+# print ("Testcase 7: merge on (reverse) Y edge")
+# R += Box("on x=1..3,y=1..1,z=2..3")
+# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=2..3]")
 
-print ("Testcase 8: merge on (reverse) Z edge")
-R += Box("on x=1..3,y=1..3,z=1..1")
-assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+# print ("Testcase 8: merge on (reverse) Z edge")
+# R += Box("on x=1..3,y=1..3,z=1..1")
+# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 
 
 # -- assert helper
@@ -78,14 +78,14 @@ def check(what,output,f=None):
 
 # -- end assert helper
 
-print ("Testcase 9: Remove a 1x1x1 cube from a 3x3x3 cube")
+# print ("Testcase 9: Remove a 1x1x1 cube from a 3x3x3 cube")
         
-R = Reactor()
-R += Box("on x=1..3,y=1..3,z=1..3")
-print(R.size())
-assert(R.size()==27)
-R += Box("off x=1..1,y=1..1,z=1..1")
-check(R.size()==26,[R.size(),R.realcubes],f=lambda : R.savefig())
+# R = Reactor()
+# R += Box("on x=1..3,y=1..3,z=1..3")
+# print(R.size())
+# assert(R.size()==27)
+# R += Box("off x=1..1,y=1..1,z=1..1")
+# check(R.size()==26,[R.size(),R.realcubes],f=lambda : R.savefig())
 
 print ("Testcase 10 : First example from AOC")
 

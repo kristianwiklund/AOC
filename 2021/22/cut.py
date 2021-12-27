@@ -80,7 +80,7 @@ def combinex(a,b):
         if a.z1==b.z1 and a.z2==b.z2:
             if a.x2==b.x1:
                 c = Box([a.state,a.x1,b.x2,a.y1,a.y2,a.z1,a.z2])
-#                print("x merge",a,b,c)
+                print("x merge",a,b,c)
                                 
                 return [c]
             
@@ -98,7 +98,7 @@ def combiney(a,b):
         if a.z1==b.z1 and a.z2==b.z2:
             if a.y2==b.y1:
                 c = Box([a.state,a.x1,a.x2,a.y1,b.y2,a.z1,a.z2])
-#                print("y merge",a,b,c)
+                print("y merge",a,b,c)
                 return [c]
             
     else:
@@ -114,8 +114,9 @@ def combinez(a,b):
     if a.x1==b.x1 and a.x2==b.x2:
         if a.y1==b.y1 and a.y2==b.y2:
             if a.z2==b.z1:
-#                print("z merge",a,b)
-                return [Box([a.state,a.x1,a.x2,a.y1,a.y2,a.z1,b.z2])]
+                c = Box([a.state,a.x1,a.x2,a.y1,a.y2,a.z1,b.z2])
+                print("z merge",a,b,c)
+                return [c]
             
     else:
         return None

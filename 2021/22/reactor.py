@@ -25,7 +25,7 @@ class Reactor:
         import glob
 
         try:
-            fl = glob.glob("realcubes*png")
+            fl = glob.glob("realcube*png")
             for fp in fl:
                 try:
                     os.remove(fp)
