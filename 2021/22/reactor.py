@@ -62,17 +62,17 @@ class Reactor:
 
         
         ax = plt.figure().add_subplot(projection='3d')
-        
+        n_voxels = np.zeros((15,15,15), dtype=bool)        
         for i in self.cubes:
             c+=1
             print(c," - ",i," - ", i.x1,i.x2-1,i.y1,i.y2-1,i.z1,i.z2-1)
-            n_voxels = np.zeros((15,15,15), dtype=bool)
+
             for x in range(i.x1, i.x2):
                 for y in range(i.y1, i.y2):
                     for z in range(i.z1, i.z2):
-                        n_voxels[x,y,z]=True
-            ax.voxels(n_voxels)
-            plt.savefig("cube"+str(c)+".png")
+                        n_voxels[x,y,z]=(i.state=="on")
+        ax.voxels(n_voxels)
+        plt.savefig("cube"+str(c)+".png")
         
     
     
@@ -87,9 +87,10 @@ class Reactor:
 
         newrealcubes = []
 
-        #print ("pre",self.realcubes)
+        print ("iterating over",self.realcubes)
+        
         for c in self.realcubes:
-
+            print ("checking",newcube,"vs",c)
             # if the new cube completely overlaps or is identical to an existing cube, we remove the existing cube
             if cut.coverlap(newcube, c):
                 continue # that is, don't add anything and continue with the next turn in the loop
@@ -106,10 +107,14 @@ class Reactor:
             newrealcubes = newrealcubes + L
             #print ("nrc 2",newrealcubes)
         # once we have filtered the realcubes, we add the new cube, if it is an "on" cube
+
+        print ("done iterating over realcubes")
         if newcube.state == "on":
+            print("adding",newcube,"to realcubes")
             newrealcubes.append(newcube)
 
         # we always add it to the list of cubes in the reactor (but not the realcubes)
+        print ("append",newcube,"to the completeset, updating realcubes")
         self.cubes.append(newcube)
         self.realcubes = newrealcubes
 
@@ -122,14 +127,15 @@ class Reactor:
         # try to merge the existing newrealcubes into smaller ones
 
 
-#        s=0
-#        for i in self.realcubes:
-#            s+=i.size()
-#        print("pre merge",self.realcubes,s)
+        s=0
+        for i in self.realcubes:
+            s+=i.size()
+        print("pre merge",self.realcubes,s)
         # try to merge the realcubes
     
         restart=True
         while restart:
+
             restart = False
 
             try:
@@ -138,8 +144,8 @@ class Reactor:
                         #print(self.realcubes[i],self.realcubes[j])
                         # if an "older" cube completely overlaps a newer cube, we remove the newer cube. this works because realcubes only contain the "on" set
                         if cut.coverlap(self.realcubes[i],self.realcubes[j]):
-                            #print(i,j,cut.coverlap(self.realcubes[i],self.realcubes[j]),self.realcubes[i],"removes",self.realcubes[j],"due to 100% overlap")
-                            #self.realcubes.pop(j)
+                            print(i,j,cut.coverlap(self.realcubes[i],self.realcubes[j]),self.realcubes[i],"removes",self.realcubes[j],"due to 100% overlap")
+                            self.realcubes.pop(j)
                             X=[]
                             raise Done
 
@@ -179,7 +185,6 @@ class Reactor:
 
                 self.realcubes+=X
                 restart = True
-
             except:
                 import traceback
                 print(traceback.format_exc())

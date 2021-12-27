@@ -1,4 +1,5 @@
 from box import Box
+from reactor import Reactor
 
 # return true if c1 and c2 are touching
 def collision(c1, c2):
@@ -34,7 +35,7 @@ def dothecut(c1, c2):
         newx = (c2.x2-c2.x1)//2+c2.x1
         c2a = Box([c2.state,c2.x1,newx, c2.y1,c2.y2, c2.z1,c2.z2])
         c2b = Box([c2.state,newx+1,c2.x2, c2.y1,c2.y2, c2.z1,c2.z2])
-
+        print ("split",c2,"in the x axis")
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # check if c2 is completely inside c1 on the y axis
@@ -43,7 +44,7 @@ def dothecut(c1, c2):
         newy = (c2.y2-c2.y1)//2+c2.y1
         c2a = Box([c2.state,c2.x1,c2.x2, c2.y1,newy, c2.z1,c2.z2])
         c2b = Box([c2.state,c2.x1,c2.x2, newy+1,c2.y2, c2.z1,c2.z2])
-
+        print ("split",c2,"in the y axis")
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # check if c2 is completely inside c1 on the z axis
@@ -52,16 +53,16 @@ def dothecut(c1, c2):
         newz = (c2.z2-c2.z1)//2+c2.z1
         c2a = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, c2.z1,newz])
         c2b = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, newz+1,c2.z2])
-
+        print ("split",c2,"in the z axis")
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # find the cut between the boxes and remove it from c2
 
     # food plz
 
-    #print("remove",c1,"from",c2)
+    print("remove",c1,"from",c2)
     c2 = cutapart(c2,c1)
-    #print("result",c2)
+    print("result",c2)
     return c2
 
 # check if cube c1 completely overlaps cube c2
@@ -79,7 +80,10 @@ def combinex(a,b):
     if a.y1==b.y1 and a.y2==b.y2:
         if a.z1==b.z1 and a.z2==b.z2:
             if a.x2==b.x1:
-                c = Box([a.state,a.x1,b.x2,a.y1,a.y2,a.z1,a.z2])
+                if a.id != None and b.id != None:
+                    c = Box([a.state,a.x1,b.x2,a.y1,a.y2,a.z1,a.z2,a.id+"+"+b.id])
+                else:
+                    c = Box([a.state,a.x1,b.x2,a.y1,a.y2,a.z1,a.z2])
                 print("x merge",a,b,c)
                                 
                 return [c]
@@ -97,7 +101,10 @@ def combiney(a,b):
     if a.x1==b.x1 and a.x2==b.x2:
         if a.z1==b.z1 and a.z2==b.z2:
             if a.y2==b.y1:
-                c = Box([a.state,a.x1,a.x2,a.y1,b.y2,a.z1,a.z2])
+                if a.id != None and b.id != None:
+                    c = Box([a.state,a.x1,a.x2,a.y1,b.y2,a.z1,a.z2,a.id+"+"+b.id])
+                else:
+                    c = Box([a.state,a.x1,a.x2,a.y1,b.y2,a.z1,a.z2])
                 print("y merge",a,b,c)
                 return [c]
             
@@ -114,7 +121,10 @@ def combinez(a,b):
     if a.x1==b.x1 and a.x2==b.x2:
         if a.y1==b.y1 and a.y2==b.y2:
             if a.z2==b.z1:
-                c = Box([a.state,a.x1,a.x2,a.y1,a.y2,a.z1,b.z2])
+                if a.id != None and b.id != None:
+                    c = Box([a.state,a.x1,a.x2,a.y1,a.y2,a.z1,b.z2,a.id+"+"+b.id])
+                else:
+                    c = Box([a.state,a.x1,a.x2,a.y1,a.y2,a.z1,b.z2])
                 print("z merge",a,b,c)
                 return [c]
             
@@ -123,7 +133,15 @@ def combinez(a,b):
 
 def cutapart(c, cube):
     
-    L = []
+
+    cx1 = c.x1
+    cx2 = c.x2
+    cy1 = c.y1
+    cy2 = c.y2
+    cz1 = c.z1
+    cz2 = c.z2
+    
+    
     
     #if c.state=="off":
     #    return L
@@ -136,53 +154,46 @@ def cutapart(c, cube):
     # regardless of how we do this, we remove "cube" from "c", then we either add cube or not, depending on if it is on or off
     # if "cube" is fully covered by c in any dimension, we split c in whatevs parts first
     
-    
-    layer1 = True
-    layer2 = True
-    layer3 = True
-    
-    if layer1:
-        # layer 1
-        L.append(Box(["on",c.x1,cube.x1, c.y1,cube.y1, cube.z2,c.z2, "1A"])) # A
-        L.append(Box(["on",cube.x1, cube.x2, c.y1,cube.y1, cube.z2,c.z2, "1B"])) # B
-        L.append(Box(["on",cube.x2, c.x2, c.y1,cube.y1, cube.z2,c.z2, "1C"])) # C
-        L.append(Box(["on",c.x1,cube.x1,cube.y1,cube.y2, cube.z2,c.z2, "1D"])) # D
-        L.append(Box(["on",cube.x1, cube.x2, cube.y1,cube.y2, cube.z2,c.z2, "1E"])) # E
-        L.append(Box(["on",cube.x2,c.x2,cube.y1,cube.y2, cube.z2,c.z2, "1F"])) # F
-        L.append(Box(["on",c.x1,cube.x1,cube.y2,c.y2, cube.z2,c.z2, "1G"])) # G
-        L.append(Box(["on",cube.x1, cube.x2, cube.y2,c.y2, cube.z2,c.z2, "1H"])) # H
-        L.append(Box(["on",cube.x2, c.x2, cube.y2,c.y2, cube.z2,c.z2, "1I"])) # I
-                
-    if layer2:
-        # layer 2
-        L.append(Box(["on",c.x1,cube.x1,c.y1,cube.y1, cube.z1,cube.z2])) # A
-        L.append(Box(["on",cube.x1, cube.x2, c.y1,cube.y1, cube.z1,cube.z2])) # B
-        L.append(Box(["on",cube.x2, c.x2, c.y1,cube.y1, cube.z1,cube.z2])) # C
-        L.append(Box(["on",c.x1,cube.x1,cube.y1,cube.y2, cube.z1,cube.z2])) # D
-        L.append(Box(["on",cube.x2,c.x2,cube.y1,cube.y2, cube.z1,cube.z2])) # F
-        L.append(Box(["on",c.x1,cube.x1,cube.y2, c.y2, cube.z1,cube.z2])) # G
-        L.append(Box(["on",cube.x1,cube.x2, cube.y2,c.y2, cube.z1,cube.z2])) # H
-        L.append(Box(["on",cube.x2,c.x2, cube.y2,c.y2, cube.z1,cube.z2])) # I
-                
-    if layer3:
-        # layer 3
-        L.append(Box(["on",c.x1,cube.x1, c.y1,cube.y1, c.z1,cube.z1])) # A
-        L.append(Box(["on",cube.x1,cube.x2, c.y1,cube.y1, c.z1,cube.z1])) # B
-        L.append(Box(["on",cube.x2,c.x2, c.y1,cube.y1, c.z1,cube.z1])) # C
-        L.append(Box(["on",c.x1,cube.x1, cube.y1,cube.y2, c.z1,cube.z1])) # D 
-        L.append(Box(["on",cube.x1, cube.x2, cube.y1,cube.y2, c.z1,cube.z1])) # E
-        L.append(Box(["on",cube.x2,c.x2, cube.y1,cube.y2, c.z1,cube.z1])) # F
-        L.append(Box(["on",c.x1,cube.x1, cube.y2,c.y2, c.z1,cube.z1])) # G 
-        L.append(Box(["on",cube.x1,cube.x2, cube.y2,c.y2, c.z1,cube.z1])) #
-        L.append(Box(["on",cube.x2,c.x2, cube.y2,c.y2, c.z1,cube.z1])) # I
 
-    #print("all cuts",L)
+    # when we get here, the cubes have been split to overlap in one of the corners
+    # this means that we need to retain the three slabs of "c" that are outside "cube"
+
+    # slab covering the x side of cube
+    if cx1 < cube.x1:
+        xb = (Box([c.state,cx1,cube.x1,cy1,c.y2,cz1,cz2,c.id+" XLOW"]))
+        cx1 = cube.x1
+    else:
+        xb = (Box([c.state,cube.x2,cx2,cy1,c.y2,cz1,cz2,c.id+" XHIGH"]))
+        cx1 = cube.x2
+        
+    # slab covering the y side of cube. we have an overlap between X and this, that is known
+    # hence, we need to remove the X value
+    if cy1 < cube.y1:
+        yb = (Box([c.state,cx1,cx2,cy1,cube.y1,cz1,cz2,"YLOW"]))
+        cy1 = cube.y1
+    else:
+        yb = (Box([c.state,cx1,cx2,cube.y2,c.y2,cz1,cz2,"YHIGH"]))
+        cy1 = cube.y2
+
+    # slab covering the z side of cube. again, overlap with previous, etc
+    if cz1 < cube.z1:
+        zb = (Box([c.state,cx1,cx2,cy1,c.y2,cz1,cube.z1,"ZLOW"]))
+    else:
+        zb = (Box([c.state,cx1,cx2,cy1,c.y2,cube.z2,cz2,"ZHIGH"]))
+
+    L = [xb,yb,zb]
+       
     X = list(filter(lambda x:x.size()>0,L))
-    #print("filtered cuts",X)
-    #sss=0
-    #for i in X:
-    #    sss+=i.size()
-    #print(sss)
-    return X
+    if len(X)!=len(L):
+        print("filtered cuts",X)
+    else:
+        print("all cuts",L)
+
+    sss=0
+    for i in X:
+        sss+=i.size()
+#    print(sss)
+    
+    return L
 
 

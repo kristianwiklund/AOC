@@ -91,16 +91,26 @@ print ("Testcase 10 : First example from AOC")
 
 R=Reactor()
 print ("         10a: Check that first cube is size 27")
-R+=Box("on x=10..12,y=10..12,z=10..12")
+a=Box("on x=10..12,y=10..12,z=10..12")
+a.id="Box1"
+R+=a
 assert(R.size()==27)
-R+=Box("on x=11..13,y=11..13,z=11..13")
+b = Box("on x=11..13,y=11..13,z=11..13")
+b.id = "Box2"
+R+=b
 print ("         10a: Check that merging two cubes result in the correct size ("+str(27+19)+")")
 check(R.size()==27+19,[R.size(),R.realcubes,[i.size() for i in R.realcubes]],f=lambda : R.savefig())
-R+=Box("off x=9..11,y=9..11,z=9..11")
-assert(R.size()==27+19-8)
+c = Box("off x=9..11,y=9..11,z=9..11")
+c.id = "Box3"
+R+=c
+print ("         10b: Check that removing a cube result in the correct size ("+str(27+19-8)+")")
+check(R.size()==27+19-8,[R.size(),R.realcubes,[i.size() for i in R.realcubes]],f=lambda : R.savefig())
+
+print ("         10b: Check that adding a cube result in the correct size ("+str(39)+")")
 R+=Box("on x=10..10,y=10..10,z=10..10")
 assert(R.size()==39)
 
+sys.exit()
 
 # - finally, read input from stdin and solve the problem
 
