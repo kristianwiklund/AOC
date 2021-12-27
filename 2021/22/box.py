@@ -60,6 +60,7 @@ class Box:
         ys = (self.y2-self.y1)
         zs = (self.z2-self.z1)
 
+        #        print((self.x2-self.x1),(self.y2-self.y1),(self.z2-self.z1))
         s = abs(zs*ys*xs) * (-1 if (zs<0 or ys<0 or xs <0) else 1)
         
         return s
