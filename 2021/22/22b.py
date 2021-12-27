@@ -77,15 +77,13 @@ print ("Testcase 8: merge on (reverse) Z edge")
 R += Box("on x=1..3,y=1..3,z=1..1")
 assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
 
-
-# print ("Testcase 9: Remove a 1x1x1 cube from a 3x3x3 cube")
+print (colored("Testcase 9: Remove a 1x1x1 cube from a 3x3x3 cube","red"))
         
-# R = Reactor()
-# R += Box("on x=1..3,y=1..3,z=1..3")
-# print(R.size())
-# assert(R.size()==27)
-# R += Box("off x=1..1,y=1..1,z=1..1")
-# check(R.size()==26,[R.size(),R.realcubes],f=lambda : R.savefig())
+R = Reactor()
+R += Box("on x=1..3,y=1..3,z=1..3")
+assert(R.size()==27)
+R += Box("off x=1..1,y=1..1,z=1..1")
+check(R.size()==26,[R.size(),R.realcubes],f=lambda : R.savefig())
 
 print ("Testcase 10 : First example from AOC")
 

@@ -1,5 +1,6 @@
 import cut
 from box import Box
+from copy import copy
 
 class Done(Exception):
     pass
@@ -109,7 +110,7 @@ class Reactor:
             
             # if we get here, we have some kind of collision
             L = cut.dothecut(newcube, c)
-            #print("We cut something and got something",L)
+            print("We cut something and got something",L)
             #print ("nrc",newrealcubes)
             newrealcubes = newrealcubes + L
             #print ("nrc 2",newrealcubes)
@@ -134,12 +135,13 @@ class Reactor:
         # try to merge the existing newrealcubes into smaller ones
 
 
-        s=0
-        for i in self.realcubes:
-            s+=i.size()
+        #s=0
+        #for i in self.realcubes:
+        #    s+=i.size()
         #print("pre merge",self.realcubes,s)
         # try to merge the realcubes
-    
+
+        tmpX = copy(self.realcubes)
         restart=True
         while restart:
 
@@ -181,7 +183,6 @@ class Reactor:
                             raise Done                        
 
             except Done:
-
                 self.realcubes+=X
                 restart = True
             except:
@@ -190,9 +191,12 @@ class Reactor:
                 print(sys.exc_info()[2])
                 sys.exit()
 
+        print(colored("pre-merge on-set was","yellow"),tmpX)        
+        print(colored("post-merge on-set is","yellow"),colored(str(self.realcubes),"red"))
+                
         # go through the on-set and kill cubes that completely overlap each other
 
-        tmpX = self.realcubes
+        tmpX = copy(self.realcubes)
         cnt=0
         restart=True
         while restart:
@@ -233,15 +237,15 @@ class Reactor:
                 print(sys.exc_info()[2])
                 sys.exit()
 
-        #print(colored("pre-merge on-set was","yellow"),self.realcubes)
-        
-        #print(colored("post-merge on-set is","yellow"),colored(str(self.realcubes),"red"))
+
+        print(colored("pre-overlap on-set was","yellow"),tmpX)        
+        print(colored("post-overlap on-set is","yellow"),colored(str(self.realcubes),"red"))
         
         s=0
         for i in self.realcubes:
             s+=i.size()
-#        print("post merge",self.realcubes,s)
-        self.thesize=s
+            print("post merge",i,s)
+            self.thesize=s
         # and return the result of the addition
         return self
         
