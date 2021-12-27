@@ -35,7 +35,7 @@ def dothecut(c1, c2):
         newx = (c2.x2-c2.x1)//2+c2.x1
         c2a = Box([c2.state,c2.x1,newx, c2.y1,c2.y2, c2.z1,c2.z2])
         c2b = Box([c2.state,newx+1,c2.x2, c2.y1,c2.y2, c2.z1,c2.z2])
-        print ("split",c2,"in the x axis")
+        #print ("split",c2,"in the x axis")
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # check if c2 is completely inside c1 on the y axis
@@ -44,7 +44,7 @@ def dothecut(c1, c2):
         newy = (c2.y2-c2.y1)//2+c2.y1
         c2a = Box([c2.state,c2.x1,c2.x2, c2.y1,newy, c2.z1,c2.z2])
         c2b = Box([c2.state,c2.x1,c2.x2, newy+1,c2.y2, c2.z1,c2.z2])
-        print ("split",c2,"in the y axis")
+        #print ("split",c2,"in the y axis")
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # check if c2 is completely inside c1 on the z axis
@@ -53,16 +53,16 @@ def dothecut(c1, c2):
         newz = (c2.z2-c2.z1)//2+c2.z1
         c2a = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, c2.z1,newz])
         c2b = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, newz+1,c2.z2])
-        print ("split",c2,"in the z axis")
+        #print ("split",c2,"in the z axis")
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # find the cut between the boxes and remove it from c2
 
     # food plz
 
-    print("remove",c1,"from",c2)
+    #print("remove",c1,"from",c2)
     c2 = cutapart(c2,c1)
-    print("result",c2)
+    #print("result",c2)
     return c2
 
 # check if cube c1 completely overlaps cube c2
@@ -84,7 +84,7 @@ def combinex(a,b):
                     c = Box([a.state,a.x1,b.x2,a.y1,a.y2,a.z1,a.z2,a.id+"+"+b.id])
                 else:
                     c = Box([a.state,a.x1,b.x2,a.y1,a.y2,a.z1,a.z2])
-                print("x merge",a,b,c)
+                #print("x merge",a,b,c)
                                 
                 return [c]
             
@@ -105,7 +105,7 @@ def combiney(a,b):
                     c = Box([a.state,a.x1,a.x2,a.y1,b.y2,a.z1,a.z2,a.id+"+"+b.id])
                 else:
                     c = Box([a.state,a.x1,a.x2,a.y1,b.y2,a.z1,a.z2])
-                print("y merge",a,b,c)
+                #print("y merge",a,b,c)
                 return [c]
             
     else:
@@ -125,7 +125,7 @@ def combinez(a,b):
                     c = Box([a.state,a.x1,a.x2,a.y1,a.y2,a.z1,b.z2,a.id+"+"+b.id])
                 else:
                     c = Box([a.state,a.x1,a.x2,a.y1,a.y2,a.z1,b.z2])
-                print("z merge",a,b,c)
+                #print("z merge",a,b,c)
                 return [c]
             
     else:
@@ -141,8 +141,10 @@ def cutapart(c, cube):
     cz1 = c.z1
     cz2 = c.z2
     
-    
-    
+    if c.id is None:
+        c.id=""
+
+        
     #if c.state=="off":
     #    return L
     
@@ -160,11 +162,13 @@ def cutapart(c, cube):
 
     # slab covering the x side of cube
     if cx1 < cube.x1:
+        x = sorted([cube.x1,cx1])
         xb = (Box([c.state,cx1,cube.x1,cy1,c.y2,cz1,cz2,c.id+" XLOW"]))
         cx1 = cube.x1
     else:
-        xb = (Box([c.state,cube.x2,cx2,cy1,c.y2,cz1,cz2,c.id+" XHIGH"]))
-        cx1 = cube.x2
+        # b0rked
+        xb = (Box([c.state,cube.x2-1,cx2,cy1,c.y2,cz1,cz2,c.id+" XHIGH"]))
+        cx2 = cube.x2
         
     # slab covering the y side of cube. we have an overlap between X and this, that is known
     # hence, we need to remove the X value
@@ -172,22 +176,24 @@ def cutapart(c, cube):
         yb = (Box([c.state,cx1,cx2,cy1,cube.y1,cz1,cz2,"YLOW"]))
         cy1 = cube.y1
     else:
-        yb = (Box([c.state,cx1,cx2,cube.y2,c.y2,cz1,cz2,"YHIGH"]))
-        cy1 = cube.y2
+        # b0rked
+        yb = (Box([c.state,cx1,cx2,cube.y2-1,cy2,cz1,cz2,"YHIGH"]))
+        cy2 = cube.y2
 
     # slab covering the z side of cube. again, overlap with previous, etc
     if cz1 < cube.z1:
         zb = (Box([c.state,cx1,cx2,cy1,c.y2,cz1,cube.z1,"ZLOW"]))
     else:
-        zb = (Box([c.state,cx1,cx2,cy1,c.y2,cube.z2,cz2,"ZHIGH"]))
-
+        # b0rked
+        zb = (Box([c.state,cx1,cx2,cy1,c.y2,cube.z2-1,cz2,"ZHIGH"]))
+        
     L = [xb,yb,zb]
        
     X = list(filter(lambda x:x.size()>0,L))
-    if len(X)!=len(L):
-        print("filtered cuts",X)
-    else:
-        print("all cuts",L)
+    #if len(X)!=len(L):
+    #    print("filtered cuts",X)
+    #else:
+    #    print("all cuts",L)
 
     sss=0
     for i in X:

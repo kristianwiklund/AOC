@@ -4,66 +4,7 @@ import sys
 import cut
 from box import Box
 from reactor import Reactor
-
-# what this is doing, I don't know
-def ai(L, c):
-    T = []
-    for i in L:
-        X = checkforoverlap(i, c)
-        T=T+X
-
-    return T
-    
-# --- test cases
-
-# print ("Testcase 1: adding two identical boxes results in only one box")
-# R = Reactor()
-# R += Box("on x=1..3,y=1..3,z=1..3")
-# R += Box("on x=1..3,y=1..3,z=1..3")
-# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
-
-# print ("Testcase 2: adding various boxes that overlap but are on the edge with the first, also result in only one box")
-# R = Reactor()
-# R += Box("on x=1..3,y=1..3,z=1..3")
-# R += Box("on x=1..1,y=1..3,z=1..3")
-# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
-# R += Box("on x=1..3,y=1..1,z=1..3")
-# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
-# R += Box("on x=1..3,y=1..3,z=1..1")
-# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
-
-
-# print ("Testcase 3: merge on X edge")
-# R = Reactor()
-
-# R += Box("on x=1..1,y=1..1,z=1..1")
-# R += Box("on x=2..3,y=1..1,z=1..1")
-# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..1,z=1..1]")
-
-# print ("Testcase 4: merge on Y edge")
-# R += Box("on x=1..3,y=2..3,z=1..1")
-# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..1]")
-
-# print ("Testcase 5: merge on Z edge")
-# R += Box("on x=1..3,y=1..3,z=2..3")
-# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
-
-# print ("Testcase 6: merge on (reverse) X edge")
-# R = Reactor()
-
-# R += Box("on x=2..3,y=2..3,z=2..3")
-# R += Box("on x=1..1,y=2..3,z=2..3")
-
-# assert(R.realcubes.__repr__()=="[on x=1..3,y=2..3,z=2..3]")
-
-# print ("Testcase 7: merge on (reverse) Y edge")
-# R += Box("on x=1..3,y=1..1,z=2..3")
-# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=2..3]")
-
-# print ("Testcase 8: merge on (reverse) Z edge")
-# R += Box("on x=1..3,y=1..3,z=1..1")
-# assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
-
+from termcolor import colored
 
 # -- assert helper
 def check(what,output,f=None):
@@ -77,6 +18,65 @@ def check(what,output,f=None):
         sys.exit()
 
 # -- end assert helper
+
+# --- test cases
+
+print (colored("Testcase 1: adding two identical boxes results in only one box","red"))
+R = Reactor()
+R += Box("on x=1..3,y=1..3,z=1..3")
+R += Box("on x=1..3,y=1..3,z=1..3")
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+
+print (colored("Testcase 2: adding various boxes that overlap but are on the edge with the first, also result in only one box","red"))
+R = Reactor()
+R += Box("on x=1..3,y=1..3,z=1..3")
+
+print (colored("        2a: check that adding sliver on x doesn't cause more boxes","yellow"))
+R += Box("on x=1..1,y=1..3,z=1..3")
+check(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]",[R.size(),R.realcubes,[i.size() for i in R.realcubes]],f=lambda : R.savefig())
+
+print (colored("        2c: check that adding sliver on z doesn't cause more boxes ","yellow"))
+R += Box("on x=1..3,y=1..3,z=1..1")
+check(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]",[R.size(),R.realcubes,[i.size() for i in R.realcubes]],f=lambda : R.savefig())
+
+print (colored("        2b: check that adding sliver on y doesn't cause more boxes","yellow"))
+R += Box("on x=1..3,y=1..1,z=1..3")
+check(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]",[R.size(),R.realcubes,[i.size() for i in R.realcubes]],f=lambda : R.savefig())
+
+
+
+
+print (colored("Testcase 3: merge on X edge"),"red")
+R = Reactor()
+
+R += Box("on x=1..1,y=1..1,z=1..1")
+R += Box("on x=2..3,y=1..1,z=1..1")
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..1,z=1..1]")
+
+print ("Testcase 4: merge on Y edge")
+R += Box("on x=1..3,y=2..3,z=1..1")
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..1]")
+
+print ("Testcase 5: merge on Z edge")
+R += Box("on x=1..3,y=1..3,z=2..3")
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+
+print ("Testcase 6: merge on (reverse) X edge")
+R = Reactor()
+
+R += Box("on x=2..3,y=2..3,z=2..3")
+R += Box("on x=1..1,y=2..3,z=2..3")
+
+assert(R.realcubes.__repr__()=="[on x=1..3,y=2..3,z=2..3]")
+
+print ("Testcase 7: merge on (reverse) Y edge")
+R += Box("on x=1..3,y=1..1,z=2..3")
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=2..3]")
+
+print ("Testcase 8: merge on (reverse) Z edge")
+R += Box("on x=1..3,y=1..3,z=1..1")
+assert(R.realcubes.__repr__()=="[on x=1..3,y=1..3,z=1..3]")
+
 
 # print ("Testcase 9: Remove a 1x1x1 cube from a 3x3x3 cube")
         
