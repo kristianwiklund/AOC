@@ -165,7 +165,6 @@ def cutapart(c, cube):
         xb = (Box([c.state,cx1,cube.x1,cy1,c.y2,cz1,cz2,c.id+" XLOW"]))
         cx1 = cube.x1
     else:
-        # b0rked
         xb = (Box([c.state,cube.x2,cx2,cy1,c.y2,cz1,cz2,c.id+" XHIGH"]))
         cx2 = cube.x2
         
@@ -175,16 +174,15 @@ def cutapart(c, cube):
         yb = (Box([c.state,cx1,cx2,cy1,cube.y1,cz1,cz2,"YLOW"]))
         cy1 = cube.y1
     else:
-        # b0rked
         yb = (Box([c.state,cx1,cx2,cube.y2,cy2,cz1,cz2,"YHIGH"]))
         cy2 = cube.y2
 
     # slab covering the z side of cube. again, overlap with previous, etc
     if cz1 < cube.z1:
-        zb = (Box([c.state,cx1,cx2,cy1,c.y2,cz1,cube.z1,"ZLOW"]))
+        zb = (Box([c.state,cx1,cx2,cy1,cy2,cz1,cube.z1,"ZLOW"]))
     else:
         # b0rked
-        zb = (Box([c.state,cx1,cx2,cy1,c.y2,cube.z2,cz2,"ZHIGH"]))
+        zb = (Box([c.state,cx1,cx2,cy1,cy2,cube.z2,cz2,"ZHIGH"]))
         
     L = [xb,yb,zb]
        
