@@ -145,17 +145,23 @@ R += Box("off x=3..3,y=3..3,z=3..3")
 check(R.size()==26,[R.size(),R.realcubes],f=lambda : R.savefig())
 
 
+print (colored("Testcase 10x-x: Remove a smaller part of the blob","red"))
+R = Reactor()
+R+= Box("on x=1..4,y=1..1,z=1..1")
+R+= Box("off x=2..3,y=1..1,z=1..1")
+check(R.size()==2,[R.size(),R.realcubes,[i.size() for i in R.realcubes]],f=lambda : R.savefig())
+
 print(colored("Testcase 11, deconstructed","green"))
 R = Reactor()
 # steps 11a and 11b results in these cubes
 a=Box("on x=10..10,y=10..12,z=10..12")
 a.id="[1]"
-#b=Box("on x=11..12,y=10..10,z=10..12")
-#b.id="[2]"
-#c=Box("on x=11..12,y=11..12,z=10..10")
-#c.id="[3]"
-#d=Box("on x=11..13,y=11..13,z=11..13")
-#d.id="[4]"
+b=Box("on x=11..12,y=10..10,z=10..12")
+b.id="[2]"
+c=Box("on x=11..12,y=11..12,z=10..10")
+c.id="[3]"
+d=Box("on x=11..13,y=11..13,z=11..13")
+d.id="[4]"
 R+=a
 #R+=b
 #R+=c

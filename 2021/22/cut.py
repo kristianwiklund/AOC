@@ -1,6 +1,6 @@
 from box import Box
 from reactor import Reactor
-
+from termcolor import colored
 # return true if c1 and c2 are touching
 def collision(c1, c2):
 
@@ -29,19 +29,34 @@ def collision(c1, c2):
 def overlap(c1,c2):
 
     if not collision(c1,c2):
+        print(c1,"does not collide with",c2)
         return False
 
     if coverlap(c1,c2):
+        print(c1,"overlaps",c2)
         return True
 
-    if coverlap(c2,c1):
-        return True
+    # obvs broken:
+    # off x=2..3,y=1..1,z=1..1 does not intersect on x=3..4,y=1..1,z=1..1
+    # it does, the first is really from 2 to 4
 
-    if  (c1.x1 < c2.x1 and c2.x1 < c1.x2) and ( c1.y1 < c2.y1 and c2.y1 < c1.y2) and    (c1.z1 < c2.z1 and c2.z1 < c1.z2):
-        return True
+    if  (c1.x1 > c2.x1 and  c1.x1 < c2.x2):
+        if ( c1.y1 <= c2.y1 and c2.y2 <= c1.y2) and    (c1.z1 <= c2.z1 and c2.z2 <= c1.z2):
+            print(c1,"is completely covering",c2,"according to the overlap function")
+            return True
+        # we have a complete overlap on the x axis, but what about the others? do we touch?
+        
+        # y axis
+        
+        if c1.y1 > c2.y2 or c1.y2 < c2.y1:
+            return False
+        # z axis
+        if c1.z1 > c2.z2 or c1.z2 < c2.z1:
+            return False
 
-    if  (c2.x1 < c1.x1 and c1.x1 < c2.x2) and ( c2.y1 < c1.y1 and c1.y1 < c2.y2) and    (c2.z1 < c1.z1 and c1.z1 < c2.z2):
         return True
+         
+    
 
     return False
     
@@ -51,6 +66,8 @@ def overlap(c1,c2):
 def dothecut(c1, c2):
     # c1 is the new cube
 
+    print(colored("cutting","green"),c1,"from",c2)
+    
     # check if c2 is completely inside c1 on the x axis
     if c1.x2<c2.x2 and c1.x1>c2.x1:
         # split c2 in two parts before doing the cuts
@@ -156,6 +173,8 @@ def combinez(a,b):
 def cutapart(c, cube):
     
 
+    # atm, it borks if cube is larger than c.
+    
     cx1 = c.x1
     cx2 = c.x2
     cy1 = c.y1
@@ -169,16 +188,14 @@ def cutapart(c, cube):
     #print("cutapart, cut",cube,"from",c)
 
     # don't cut if we don't collide
-    if not overlap(cube,c):
+    if not overlap(cube,c) and not overlap(c,cube):
+        print(cube,colored("does not intersect","green"),c)
         return [c]
-    
-    #if c.state=="off":
-    #    return L
     
     # find the cuts between the cubes
     
-    #if cube.state=="off":
-    #    print (str(cube) + " intersects " + str(c))
+    if cube.state=="off":
+        print (colored("off cube ","yellow")+str(cube) + " intersects " + str(c))
     
     # regardless of how we do this, we remove "cube" from "c", then we either add cube or not, depending on if it is on or off
     # if "cube" is fully covered by c in any dimension, we split c in whatevs parts first
@@ -209,7 +226,7 @@ def cutapart(c, cube):
         cy2 = cube.y2
 
     if overlap(xb,yb):
-        print("bad boxes:",xb,yb)
+        print("still overlapping boxes:",xb,yb)
         
         
     # slab covering the z side of cube. again, overlap with previous, etc
