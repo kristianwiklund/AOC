@@ -148,13 +148,24 @@ check(R.size()==26,[R.size(),R.realcubes],f=lambda : R.savefig())
 print(colored("Testcase 11, deconstructed","green"))
 R = Reactor()
 # steps 11a and 11b results in these cubes
-R+=Box("on x=10..10,y=10..12,z=10..12")
-R+=Box("on x=11..12,y=10..10,z=10..12")
-#R+=Box("on x=11..12,y=11..12,z=10..10")
-#R+=Box("on x=11..13,y=11..13,z=11..13")
+a=Box("on x=10..10,y=10..12,z=10..12")
+a.id="[1]"
+#b=Box("on x=11..12,y=10..10,z=10..12")
+#b.id="[2]"
+#c=Box("on x=11..12,y=11..12,z=10..10")
+#c.id="[3]"
+#d=Box("on x=11..13,y=11..13,z=11..13")
+#d.id="[4]"
+R+=a
+#R+=b
+#R+=c
+#R+=d
 # steps 11c removes a cube
-R+=Box("off x=9..11,y=9..11,z=9..11")
-
+e=Box("off x=9..11,y=9..11,z=9..11")
+e.id="[5]"
+R+=e
+R.savefig()
+sys.exit()
 
 
 print (colored("Testcase 11 : First example from AOC","red"))

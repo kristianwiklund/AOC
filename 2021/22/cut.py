@@ -25,10 +25,32 @@ def collision(c1, c2):
 
     return True
 
+# return true if c1 and c2 are overlapping in any capacity
+def overlap(c1,c2):
+
+    if not collision(c1,c2):
+        return False
+
+    if coverlap(c1,c2):
+        return True
+
+    if coverlap(c2,c1):
+        return True
+
+    if  (c1.x1 < c2.x1 and c2.x1 < c1.x2) and ( c1.y1 < c2.y1 and c2.y1 < c1.y2) and    (c1.z1 < c2.z1 and c2.z1 < c1.z2):
+        return True
+
+    if  (c2.x1 < c1.x1 and c1.x1 < c2.x2) and ( c2.y1 < c1.y1 and c1.y1 < c2.y2) and    (c2.z1 < c1.z1 and c1.z1 < c2.z2):
+        return True
+
+    return False
+    
+    
+
 # remove the overlapping parts between c1 and c2 from c2
 def dothecut(c1, c2):
     # c1 is the new cube
-    
+
     # check if c2 is completely inside c1 on the x axis
     if c1.x2<c2.x2 and c1.x1>c2.x1:
         # split c2 in two parts before doing the cuts
@@ -147,7 +169,7 @@ def cutapart(c, cube):
     #print("cutapart, cut",cube,"from",c)
 
     # don't cut if we don't collide
-    if not collision(cube,c):
+    if not overlap(cube,c):
         return [c]
     
     #if c.state=="off":
@@ -165,33 +187,39 @@ def cutapart(c, cube):
     # when we get here, the cubes have been split to overlap in one of the corners
     # this means that we need to retain the three slabs of "c" that are outside "cube"
 
-    # the "high" ones fail
+    # the "high" ones where cube is lower than c fail
     
     # slab covering the x side of cube
-    if cx1 < cube.x1:
-        xb = (Box([c.state,cx1,cube.x1,cy1,c.y2,cz1,cz2,"XLOW"]))
+    if cx1 <  cube.x1:
+        xb = (Box([c.state,cx1,cube.x1,cy1,c.y2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XLOW"]))
         cx1 = cube.x1
     else:
-        xb = (Box([c.state,cube.x2,cx2,cy1,c.y2,cz1,cz2,"XHIGH"]))
+        xb = (Box([c.state,cube.x2,cx2,cy1,c.y2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XHIGH"]))
+        print("cx2 pre",cx2,"post",cube.x2)
+        print("remove",cube,"from",c,"to create",xb)
         cx2 = cube.x2
         
     # slab covering the y side of cube. we have an overlap between X and this, that is known
     # hence, we need to remove the X value
     if cy1 < cube.y1:
-        yb = (Box([c.state,cx1,cx2,cy1,cube.y1,cz1,cz2,"YLOW"]))
+        yb = (Box([c.state,cx1,cx2,cy1,cube.y1,cz1,cz2,str(c.id)+" "+str(cube.id)+" YLOW"]))
         cy1 = cube.y1
     else:
-        yb = (Box([c.state,cx1,cx2,cube.y2,cy2,cz1,cz2,"YHIGH"]))
+        yb = (Box([c.state,cx1,cx2,cube.y2,cy2,cz1,cz2,str(c.id)+" "+str(cube.id)+" YHIGH"]))
         cy2 = cube.y2
 
+    if overlap(xb,yb):
+        print("bad boxes:",xb,yb)
+        
+        
     # slab covering the z side of cube. again, overlap with previous, etc
     if cz1 < cube.z1:
-        zb = (Box([c.state,cx1,cx2,cy1,cy2,cz1,cube.z1,"ZLOW"]))
+        zb = (Box([c.state,cx1,cx2,cy1,cy2,cz1,cube.z1,str(c.id)+" "+str(cube.id)+" ZLOW"]))
     else:
         # b0rked
-        zb = (Box([c.state,cx1,cx2,cy1,cy2,cube.z2,cz2,"ZHIGH"]))
+        zb = (Box([c.state,cx1,cx2,cy1,cy2,cube.z2,cz2,str(c.id)+" "+str(cube.id)+" ZHIGH"]))
         
-    L = [xb,yb,zb]
+    L=[xb,yb,zb]
        
     X = list(filter(lambda x:x.size()>0,L))
 #    if len(X)!=len(L):
