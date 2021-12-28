@@ -94,13 +94,13 @@ R += Box("off x=3..3,y=3..3,z=3..3")
 check(R.size()==26,[R.size(),R.realcubes],f=lambda : R.savefig())
 
 
-# print (colored("Testcase 9c: Remove a 1x1x1 cube from a 3x3x3 cube","red"))
+print (colored("Testcase 9c: Remove a 1x1x1 cube from a 3x3x3 cube","red"))
         
-# R = Reactor()
-# R += Box("on x=1..3,y=1..3,z=1..3")
-# assert(R.size()==27)
-# R += Box("off x=2..2,y=2..2,z=2..2")
-# check(R.size()==26,[R.size(),R.realcubes],f=lambda : R.savefig())
+R = Reactor()
+R += Box("on x=1..3,y=1..3,z=1..3")
+assert(R.size()==27)
+R += Box("off x=2..2,y=2..2,z=2..2")
+check(R.size()==26,[R.size(),R.realcubes],f=lambda : R.savefig())
 
 
 
