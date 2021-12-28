@@ -34,8 +34,8 @@ def dothecut(c1, c2):
         # split c2 in two parts before doing the cuts
         newx = (c2.x2-c2.x1)//2+c2.x1
         c2a = Box([c2.state,c2.x1,newx, c2.y1,c2.y2, c2.z1,c2.z2])
-        c2b = Box([c2.state,newx+1,c2.x2, c2.y1,c2.y2, c2.z1,c2.z2])
-        #print ("split",c2,"in the x axis")
+        c2b = Box([c2.state,newx,c2.x2, c2.y1,c2.y2, c2.z1,c2.z2])
+#        print ("split",c2,"in the x axis to",c2a,c2b)
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # check if c2 is completely inside c1 on the y axis
@@ -43,8 +43,8 @@ def dothecut(c1, c2):
         # split c2 in two parts before doing the cuts
         newy = (c2.y2-c2.y1)//2+c2.y1
         c2a = Box([c2.state,c2.x1,c2.x2, c2.y1,newy, c2.z1,c2.z2])
-        c2b = Box([c2.state,c2.x1,c2.x2, newy+1,c2.y2, c2.z1,c2.z2])
-        #print ("split",c2,"in the y axis")
+        c2b = Box([c2.state,c2.x1,c2.x2, newy,c2.y2, c2.z1,c2.z2])
+#        print ("split",c2,"in the y axis")
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # check if c2 is completely inside c1 on the z axis
@@ -52,8 +52,8 @@ def dothecut(c1, c2):
         # split c2 in two parts before doing the cuts
         newz = (c2.z2-c2.z1)//2+c2.z1
         c2a = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, c2.z1,newz])
-        c2b = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, newz+1,c2.z2])
-        #print ("split",c2,"in the z axis")
+        c2b = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, newz,c2.z2])
+#        print ("split",c2,"in the z axis")
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # find the cut between the boxes and remove it from c2
@@ -187,10 +187,10 @@ def cutapart(c, cube):
     L = [xb,yb,zb]
        
     X = list(filter(lambda x:x.size()>0,L))
-    if len(X)!=len(L):
-        print("filtered cuts",X,[x.id for x in X])
-    else:
-        print("all cuts",L,[x.id for x in X])
+#    if len(X)!=len(L):
+#        print("filtered cuts",X,[x.id for x in X])
+#   else:
+#        print("all cuts",L,[x.id for x in X])
 
     sss=0
     #for i in X:
