@@ -41,7 +41,7 @@ class Reactor:
         print("plotting on-set")
         for i in self.realcubes:
             c+=1
-            print(c," - ",i," - ", i.x1,i.x2-1,i.y1,i.y2-1,i.z1,i.z2-1)
+            print(c," - ",i," - ", i.x1,i.x2-1,i.y1,i.y2-1,i.z1,i.z2-1,i.id if i.id!=None else "")
             n_voxels = np.zeros((15,15,15), dtype=bool)
             for x in range(i.x1, i.x2):
                 for y in range(i.y1, i.y2):

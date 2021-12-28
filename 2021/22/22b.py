@@ -102,12 +102,65 @@ assert(R.size()==27)
 R += Box("off x=2..2,y=2..2,z=2..2")
 check(R.size()==26,[R.size(),R.realcubes],f=lambda : R.savefig())
 
+print (colored("Testcase 10x: Remove a slab from the upper end of a slab","red"))
+
+R = Reactor()
+R += Box("on x=1..3,y=1..1,z=1..1")
+assert(R.size()==3)
+R += Box("off x=3..3,y=1..1,z=1..1")
+check(R.size()==2,[R.size(),R.realcubes],f=lambda : R.savefig())
 
 
-print ("Testcase 10 : First example from AOC")
+print (colored("Testcase 10y: Remove a slab from the upper end of a slab","red"))
+
+R = Reactor()
+R += Box("on x=1..1,y=1..3,z=1..1")
+assert(R.size()==3)
+R += Box("off x=1..1,y=3..3,z=1..1")
+check(R.size()==2,[R.size(),R.realcubes],f=lambda : R.savefig())
+
+
+print (colored("Testcase 10z: Remove a slab from the upper end of a slab","red"))
+
+R = Reactor()
+R += Box("on x=1..1,y=1..1,z=1..3")
+assert(R.size()==3)
+R += Box("off x=1..1,y=1..1,z=3..3")
+check(R.size()==2,[R.size(),R.realcubes],f=lambda : R.savefig())
+
+print (colored("Testcase 10xy: Remove a corner from the upper end of a slab","red"))
+
+R = Reactor()
+R += Box("on x=1..3,y=1..3,z=1..1")
+assert(R.size()==9)
+R += Box("off x=3..3,y=3..3,z=1..1")
+check(R.size()==8,[R.size(),R.realcubes],f=lambda : R.savefig())
+
+print (colored("Testcase 10xy: Remove a corner from the upper end of a cube","red"))
+
+R = Reactor()
+R += Box("on x=1..3,y=1..3,z=1..3")
+assert(R.size()==27)
+R += Box("off x=3..3,y=3..3,z=3..3")
+check(R.size()==26,[R.size(),R.realcubes],f=lambda : R.savefig())
+
+
+print(colored("Testcase 11, deconstructed","green"))
+R = Reactor()
+# steps 11a and 11b results in these cubes
+R+=Box("on x=10..10,y=10..12,z=10..12")
+R+=Box("on x=11..12,y=10..10,z=10..12")
+#R+=Box("on x=11..12,y=11..12,z=10..10")
+#R+=Box("on x=11..13,y=11..13,z=11..13")
+# steps 11c removes a cube
+R+=Box("off x=9..11,y=9..11,z=9..11")
+
+
+
+print (colored("Testcase 11 : First example from AOC","red"))
 
 R=Reactor()
-print ("         10a: Check that first cube is size 27")
+print ("         11a: Check that first cube is size 27")
 a=Box("on x=10..12,y=10..12,z=10..12")
 a.id="Box1"
 R+=a
@@ -115,15 +168,16 @@ assert(R.size()==27)
 b = Box("on x=11..13,y=11..13,z=11..13")
 b.id = "Box2"
 R+=b
-print ("         10a: Check that merging two cubes result in the correct size ("+str(27+19)+")")
+print ("         11b: Check that merging two cubes result in the correct size ("+str(27+19)+")")
 check(R.size()==27+19,[R.size(),R.realcubes,[i.size() for i in R.realcubes]],f=lambda : R.savefig())
+
 c = Box("off x=9..11,y=9..11,z=9..11")
 c.id = "Box3"
 R+=c
-print ("         10b: Check that removing a cube result in the correct size ("+str(27+19-8)+")")
+print ("         11c: Check that removing a cube result in the correct size ("+str(27+19-8)+")")
 check(R.size()==27+19-8,[R.size(),R.realcubes,[i.size() for i in R.realcubes]],f=lambda : R.savefig())
 
-print ("         10b: Check that adding a cube result in the correct size ("+str(39)+")")
+print ("         11d: Check that adding a cube result in the correct size ("+str(39)+")")
 R+=Box("on x=10..10,y=10..10,z=10..10")
 assert(R.size()==39)
 

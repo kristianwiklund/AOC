@@ -33,27 +33,27 @@ def dothecut(c1, c2):
     if c1.x2<c2.x2 and c1.x1>c2.x1:
         # split c2 in two parts before doing the cuts
         newx = (c2.x2-c2.x1)//2+c2.x1
-        c2a = Box([c2.state,c2.x1,newx, c2.y1,c2.y2, c2.z1,c2.z2])
-        c2b = Box([c2.state,newx,c2.x2, c2.y1,c2.y2, c2.z1,c2.z2])
-#        print ("split",c2,"in the x axis to",c2a,c2b)
+        c2a = Box([c2.state,c2.x1,newx, c2.y1,c2.y2, c2.z1,c2.z2, "Xlower"])
+        c2b = Box([c2.state,newx,c2.x2, c2.y1,c2.y2, c2.z1,c2.z2, "Xhigher"])
+        print ("split",c2,"in the x axis to",c2a,c2b)
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # check if c2 is completely inside c1 on the y axis
     if c1.y2<c2.y2 and c1.y1>c2.y1:
         # split c2 in two parts before doing the cuts
         newy = (c2.y2-c2.y1)//2+c2.y1
-        c2a = Box([c2.state,c2.x1,c2.x2, c2.y1,newy, c2.z1,c2.z2])
-        c2b = Box([c2.state,c2.x1,c2.x2, newy,c2.y2, c2.z1,c2.z2])
-#        print ("split",c2,"in the y axis")
+        c2a = Box([c2.state,c2.x1,c2.x2, c2.y1,newy, c2.z1,c2.z2, "Ylower"])
+        c2b = Box([c2.state,c2.x1,c2.x2, newy,c2.y2, c2.z1,c2.z2, "Yhigher"])
+        print ("split",c2,"in the y axis")
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # check if c2 is completely inside c1 on the z axis
     if c1.z2<c2.z2 and c1.z1>c2.z1:
         # split c2 in two parts before doing the cuts
         newz = (c2.z2-c2.z1)//2+c2.z1
-        c2a = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, c2.z1,newz])
-        c2b = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, newz,c2.z2])
-#        print ("split",c2,"in the z axis")
+        c2a = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, c2.z1,newz, "Zlower"])
+        c2b = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, newz,c2.z2, "Zhigher"])
+        print ("split",c2,"in the z axis")
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # find the cut between the boxes and remove it from c2
@@ -144,7 +144,12 @@ def cutapart(c, cube):
     if c.id is None:
         c.id=""
 
-        
+    #print("cutapart, cut",cube,"from",c)
+
+    # don't cut if we don't collide
+    if not collision(cube,c):
+        return [c]
+    
     #if c.state=="off":
     #    return L
     
@@ -160,12 +165,14 @@ def cutapart(c, cube):
     # when we get here, the cubes have been split to overlap in one of the corners
     # this means that we need to retain the three slabs of "c" that are outside "cube"
 
+    # the "high" ones fail
+    
     # slab covering the x side of cube
     if cx1 < cube.x1:
-        xb = (Box([c.state,cx1,cube.x1,cy1,c.y2,cz1,cz2,c.id+" XLOW"]))
+        xb = (Box([c.state,cx1,cube.x1,cy1,c.y2,cz1,cz2,"XLOW"]))
         cx1 = cube.x1
     else:
-        xb = (Box([c.state,cube.x2,cx2,cy1,c.y2,cz1,cz2,c.id+" XHIGH"]))
+        xb = (Box([c.state,cube.x2,cx2,cy1,c.y2,cz1,cz2,"XHIGH"]))
         cx2 = cube.x2
         
     # slab covering the y side of cube. we have an overlap between X and this, that is known
@@ -189,7 +196,7 @@ def cutapart(c, cube):
     X = list(filter(lambda x:x.size()>0,L))
 #    if len(X)!=len(L):
 #        print("filtered cuts",X,[x.id for x in X])
-#   else:
+#    else:
 #        print("all cuts",L,[x.id for x in X])
 
     sss=0
@@ -197,6 +204,6 @@ def cutapart(c, cube):
     #    sss+=i.size()
     #    print(sss)
     
-    return L
+    return X
 
 
