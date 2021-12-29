@@ -67,6 +67,7 @@ class Reactor:
         print("plotting all")
         for i in self.cubes:
             c+=1
+
             print(c," - ",i," - ", i.x1,i.x2-1,i.y1,i.y2-1,i.z1,i.z2-1)
 
             for x in range(i.x1, i.x2):

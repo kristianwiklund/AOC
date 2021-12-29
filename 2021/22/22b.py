@@ -170,7 +170,7 @@ print (colored("Testcase 10xyz: Remove a part of a blob","red"))
 # off x=9..11,y=9..11,z=9..11 from on x=10..10,y=10..12,z=10..12
 R = Reactor()
 R+=Box("on x=10..10,y=10..12,z=10..12")
-R+=Box("off x=11..11,y=9..11,z=9..11")
+R+=Box("off x=9..11,y=9..11,z=9..11")
 R.savefig()
 sys.exit()
 

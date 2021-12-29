@@ -235,10 +235,10 @@ def cutapart(c, cube):
         xb = (Box([c.state,cx1,cube.x1,cy1,cy2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XLOW"]))
         cx1 = cube.x1
     else:
-        xb = (Box([c.state,cube.x2,cx2,cy1,cy2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XHIGH"]))
+        xb = (Box([c.state,min(cube.x2,cx2),cx2,cy1,cy2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XHIGH"]))
         print("remove",cube,"from",c,"to create",xb)
         print("cx2 pre",cx2,"post",cube.x2)
-        cx2 = cube.x2
+        cx2 = min(cube.x2,cx2)
         
     # slab covering the y side of cube. we have an overlap between X and this, that is known
     # hence, we need to remove the X value
@@ -246,7 +246,9 @@ def cutapart(c, cube):
         yb = (Box([c.state,cx1,cx2,cy1,cube.y1,cz1,cz2,str(c.id)+" "+str(cube.id)+" YLOW"]))
         cy1 = cube.y1
     else:
-        yb = (Box([c.state,cx1,cx2,cube.y2,cy2,cz1,cz2,str(c.id)+" "+str(cube.id)+" YHIGH"]))
+        yb = (Box([c.state,cx1,cx2,cube.y2,max(cube.y2,cy2),cz1,cz2,str(c.id)+" "+str(cube.id)+" YHIGH"]))
+        print("remove",cube,"from",c,"to create",xb)
+        print("cy2 pre",cy2,"post",cube.y2)
         cy2 = cube.y2
 
     if overlap(xb,yb):

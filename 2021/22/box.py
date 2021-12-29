@@ -33,12 +33,12 @@ class Box:
         elif type(l)==list:
 
             self.state = l[0]
-            self.x1 = min(l[1],l[2])
-            self.x2 = max(l[1],l[2])
-            self.y1 = min(l[3],l[4])
-            self.y2 = max(l[3],l[4])
-            self.z1 = min(l[5],l[6])
-            self.z2 = max(l[5],l[6])
+            self.x1 = l[1] #min(l[1],l[2])
+            self.x2 = l[2] #max(l[1],l[2])
+            self.y1 = l[3] #min(l[3],l[4])
+            self.y2 = l[4] #max(l[3],l[4])
+            self.z1 = l[5] #min(l[5],l[6])
+            self.z2 = l[6] #max(l[5],l[6])
 
             if len(l)==8:
                 self.id = l[7]
