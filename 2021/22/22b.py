@@ -171,32 +171,9 @@ print (colored("Testcase 10xyz: Remove a part of a blob","red"))
 R = Reactor()
 R+=Box("on x=10..10,y=10..12,z=10..12")
 R+=Box("off x=9..11,y=9..11,z=9..11")
-check(R.size()==3,[R.size(),R.realcubes,[i.size() for i in R.realcubes]],f=lambda : R.savefig())
+check(R.size()==5,[R.size(),R.realcubes,[i.size() for i in R.realcubes]],f=lambda : R.savefig())
 
 # -----------------
-
-
-print(colored("Testcase 11, deconstructed","green"))
-R = Reactor()
-# steps 11a and 11b results in these cubes
-a=Box("on x=10..10,y=10..12,z=10..12")
-a.id="[1]"
-b=Box("on x=11..12,y=10..10,z=10..12")
-b.id="[2]"
-c=Box("on x=11..12,y=11..12,z=10..10")
-c.id="[3]"
-d=Box("on x=11..13,y=11..13,z=11..13")
-d.id="[4]"
-R+=a
-#R+=b
-#R+=c
-#R+=d
-# steps 11c removes a cube
-e=Box("off x=9..11,y=9..11,z=9..11")
-e.id="[5]"
-R+=e
-R.savefig()
-sys.exit()
 
 
 print (colored("Testcase 11 : First example from AOC","red"))
