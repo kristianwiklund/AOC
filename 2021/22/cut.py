@@ -36,15 +36,10 @@ def overlap(c1,c2):
         print(c1,"overlaps",c2)
         return True
 
-    # obvs broken:
-    # off x=2..3,y=1..1,z=1..1 does not intersect on x=3..4,y=1..1,z=1..1
-    # it does, the first is really from 2 to 4
 
     if  (c1.x1 > c2.x1 and  c1.x1 < c2.x2):
         if ( c1.y1 <= c2.y1 and c2.y2 <= c1.y2) and    (c1.z1 <= c2.z1 and c2.z2 <= c1.z2):
-            print(c1,"is completely covering",c2,"according to the overlap function")
             return True
-        # we have a complete overlap on the x axis, but what about the others? do we touch?
         
         # y axis
         
@@ -52,6 +47,35 @@ def overlap(c1,c2):
             return False
         # z axis
         if c1.z1 > c2.z2 or c1.z2 < c2.z1:
+            return False
+
+        return True
+
+    if  (c1.y1 > c2.y1 and  c1.y1 < c2.y2):
+        if ( c1.x1 <= c2.x1 and c2.x2 <= c1.x2) and    (c1.z1 <= c2.z1 and c2.z2 <= c1.z2):
+            return True
+        
+        # y axis
+        
+        if c1.x1 > c2.x2 or c1.x2 < c2.x1:
+            return False
+        # z axis
+        if c1.z1 > c2.z2 or c1.z2 < c2.z1:
+            return False
+
+        return True
+
+
+    if  (c1.z1 > c2.z1 and  c1.z1 < c2.z2):
+        if ( c1.x1 <= c2.x1 and c2.x2 <= c1.x2) and    (c1.y1 <= c2.y1 and c2.y2 <= c1.y2):
+            return True
+        
+        # y axis
+        
+        if c1.x1 > c2.x2 or c1.x2 < c2.x1:
+            return False
+        # z axis
+        if c1.y1 > c2.y2 or c1.y2 < c2.y1:
             return False
 
         return True
@@ -173,7 +197,7 @@ def combinez(a,b):
 def cutapart(c, cube):
     
 
-    # atm, it borks if cube is larger than c.
+    # this breaks if we have an "off" cube involved.
     
     cx1 = c.x1
     cx2 = c.x2
@@ -208,12 +232,12 @@ def cutapart(c, cube):
     
     # slab covering the x side of cube
     if cx1 <  cube.x1:
-        xb = (Box([c.state,cx1,cube.x1,cy1,c.y2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XLOW"]))
+        xb = (Box([c.state,cx1,cube.x1,cy1,cy2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XLOW"]))
         cx1 = cube.x1
     else:
-        xb = (Box([c.state,cube.x2,cx2,cy1,c.y2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XHIGH"]))
-        print("cx2 pre",cx2,"post",cube.x2)
+        xb = (Box([c.state,cube.x2,cx2,cy1,cy2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XHIGH"]))
         print("remove",cube,"from",c,"to create",xb)
+        print("cx2 pre",cx2,"post",cube.x2)
         cx2 = cube.x2
         
     # slab covering the y side of cube. we have an overlap between X and this, that is known
