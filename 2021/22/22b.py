@@ -171,8 +171,7 @@ print (colored("Testcase 10xyz: Remove a part of a blob","red"))
 R = Reactor()
 R+=Box("on x=10..10,y=10..12,z=10..12")
 R+=Box("off x=9..11,y=9..11,z=9..11")
-R.savefig()
-sys.exit()
+check(R.size()==3,[R.size(),R.realcubes,[i.size() for i in R.realcubes]],f=lambda : R.savefig())
 
 # -----------------
 
