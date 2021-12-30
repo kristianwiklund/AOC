@@ -1,6 +1,7 @@
 import cut
 from box import Box
 from copy import copy
+from termcolor import colored
 
 class Done(Exception):
     pass
@@ -18,12 +19,24 @@ class Reactor:
     def size(self):
         return self.thesize
 
-    def savefig(self):
+    def savefig(self,colliding=False):
         import numpy as np
         import matplotlib.pyplot as plt
         from mpl_toolkits.mplot3d import Axes3D
         import os
         import glob
+
+        # only plot colliding on-set items if specified
+        cx = set(range(0,len(self.realcubes)))
+        if colliding:
+
+            for i in range(len(self.realcubes)-1):
+                for j in range(i+1,len(self.realcubes)):
+                    if cut.collision(self.realcubes[i],self.realcubes[j]):
+                        print(i,"collides with",j)
+                        cx.discard(i)
+                        cx.discard(j)
+                        
 
         try:
             fl = glob.glob("realcube*png")
@@ -41,7 +54,11 @@ class Reactor:
         print("plotting on-set")
         for i in self.realcubes:
             c+=1
+            if colliding and c in cx:
+                print(c," - ",i," - ", i.x1,i.x2-1,i.y1,i.y2-1,i.z1,i.z2-1,i.id if i.id!=None else "",colored("does not overlap","yellow"))
+                continue
             print(c," - ",i," - ", i.x1,i.x2-1,i.y1,i.y2-1,i.z1,i.z2-1,i.id if i.id!=None else "")
+
             n_voxels = np.zeros((15,15,15), dtype=bool)
             for x in range(i.x1, i.x2):
                 for y in range(i.y1, i.y2):

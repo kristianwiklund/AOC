@@ -4,36 +4,37 @@ from termcolor import colored
 # return true if c1 and c2 are touching
 def collision(c1, c2):
 
-    if c1.x2 < c2.x1:
+    if c1.x2 <= c2.x1:
         return False
 
-    if c1.x1 > c2.x2:
+    if c1.x1 >= c2.x2:
         return False
 
-
-    if c1.y2 < c2.y1:
+    if c1.y2 <= c2.y1:
         return False
 
-    if c1.y1 > c2.y2:
+    if c1.y1 >= c2.y2:
         return False
 
-    if c1.z2 < c2.z1:
+    if c1.z2 <= c2.z1:
         return False
 
-    if c1.z1 > c2.z2:
+    if c1.z1 >= c2.z2:
         return False
 
+    #    print("krash",c1,c2)
     return True
 
 # return true if c1 and c2 are overlapping in any capacity
 def overlap(c1,c2):
 
     if not collision(c1,c2):
-        print(c1,"does not collide with",c2)
+
+        #print(c1,"does not collide with",c2)
         return False
 
     if coverlap(c1,c2):
-        print(c1,"overlaps",c2)
+        #print(c1,"overlaps",c2)
         return True
 
 
@@ -90,7 +91,7 @@ def overlap(c1,c2):
 def dothecut(c1, c2):
     # c1 is the new cube
 
-    print(colored("cutting","green"),c1,"from",c2)
+    #    print(colored("cutting","green"),c1,"from",c2)
     
     # check if c2 is completely inside c1 on the x axis
     if c1.x2<c2.x2 and c1.x1>c2.x1:
@@ -98,7 +99,7 @@ def dothecut(c1, c2):
         newx = (c2.x2-c2.x1)//2+c2.x1
         c2a = Box([c2.state,c2.x1,newx, c2.y1,c2.y2, c2.z1,c2.z2, "Xlower"])
         c2b = Box([c2.state,newx,c2.x2, c2.y1,c2.y2, c2.z1,c2.z2, "Xhigher"])
-        print ("split",c2,"in the x axis to",c2a,c2b)
+        #print ("split",c2,"in the x axis to",c2a,c2b)
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # check if c2 is completely inside c1 on the y axis
@@ -107,7 +108,7 @@ def dothecut(c1, c2):
         newy = (c2.y2-c2.y1)//2+c2.y1
         c2a = Box([c2.state,c2.x1,c2.x2, c2.y1,newy, c2.z1,c2.z2, "Ylower"])
         c2b = Box([c2.state,c2.x1,c2.x2, newy,c2.y2, c2.z1,c2.z2, "Yhigher"])
-        print ("split",c2,"in the y axis")
+        #print ("split",c2,"in the y axis")
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # check if c2 is completely inside c1 on the z axis
@@ -116,7 +117,7 @@ def dothecut(c1, c2):
         newz = (c2.z2-c2.z1)//2+c2.z1
         c2a = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, c2.z1,newz, "Zlower"])
         c2b = Box([c2.state,c2.x1,c2.x2, c2.y1,c2.y2, newz,c2.z2, "Zhigher"])
-        print ("split",c2,"in the z axis")
+        #print ("split",c2,"in the z axis")
         return dothecut(c1,c2a)+dothecut(c1,c2b)
 
     # find the cut between the boxes and remove it from c2
@@ -144,7 +145,7 @@ def combinex(a,b):
         if a.z1==b.z1 and a.z2==b.z2:
             if a.x2==b.x1:
                 if a.id != None and b.id != None:
-                    c = Box([a.state,a.x1,b.x2,a.y1,a.y2,a.z1,a.z2,a.id+"+"+b.id])
+                    c = Box([a.state,a.x1,b.x2,a.y1,a.y2,a.z1,a.z2,"X("+a.id+"+"+b.id+")"])
                 else:
                     c = Box([a.state,a.x1,b.x2,a.y1,a.y2,a.z1,a.z2])
                 #print("x merge",a,b,c)
@@ -213,13 +214,14 @@ def cutapart(c, cube):
 
     # don't cut if we don't collide
     if not overlap(cube,c) and not overlap(c,cube):
-        print(cube,colored("does not intersect","green"),c)
+        #print(cube,colored("does not intersect","green"),c)
         return [c]
     
     # find the cuts between the cubes
     
-    if cube.state=="off":
-        print (colored("off cube ","yellow")+str(cube) + " intersects " + str(c))
+
+    #if cube.state=="off":
+    #    print (colored("off cube ","yellow")+str(cube) + " intersects " + str(c))
     
     # regardless of how we do this, we remove "cube" from "c", then we either add cube or not, depending on if it is on or off
     # if "cube" is fully covered by c in any dimension, we split c in whatevs parts first
@@ -234,10 +236,11 @@ def cutapart(c, cube):
     if cx1 <  cube.x1:
         xb = (Box([c.state,cx1,cube.x1,cy1,cy2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XLOW"]))
         cx1 = cube.x1
+        print("XL remove",cube,"from",c,"to create",xb)
     else:
         xb = (Box([c.state,min(cube.x2,cx2),cx2,cy1,cy2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XHIGH"]))
-        print("remove",cube,"from",c,"to create",xb)
-        print("cx2 pre",cx2,"post",cube.x2)
+
+        print("XH remove",cube,"from",c,"to create",xb,xb.size())
         cx2 = min(cube.x2,cx2)
         
     # slab covering the y side of cube. we have an overlap between X and this, that is known
@@ -245,10 +248,10 @@ def cutapart(c, cube):
     if cy1 < cube.y1:
         yb = (Box([c.state,cx1,cx2,cy1,cube.y1,cz1,cz2,str(c.id)+" "+str(cube.id)+" YLOW"]))
         cy1 = cube.y1
+        print("YL remove",cube,"from",c,"to create",xb)
     else:
         yb = (Box([c.state,cx1,cx2,cube.y2,max(cube.y2,cy2),cz1,cz2,str(c.id)+" "+str(cube.id)+" YHIGH"]))
-        print("remove",cube,"from",c,"to create",xb)
-        print("cy2 pre",cy2,"post",cube.y2)
+        print("YH remove",cube,"from",c,"to create",xb)
         cy2 = cube.y2
 
     if overlap(xb,yb):
