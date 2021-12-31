@@ -233,13 +233,18 @@ def cutapart(c, cube):
     # the "high" ones where cube is lower than c fail
     
     # slab covering the x side of cube
-    if cx1 <  cube.x1:
+
+    # only cut if we have an actual collision in the x dimension
+
+    
+    
+    if cx1 < cube.x1:
         xb = (Box([c.state,cx1,cube.x1,cy1,cy2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XLOW"]))
         cx1 = cube.x1
         print("XL remove",cube,"from",c,"to create",xb)
     else:
         xb = (Box([c.state,min(cube.x2,cx2),cx2,cy1,cy2,cz1,cz2,str(c.id)+" "+str(cube.id)+" XHIGH"]))
-
+        
         print("XH remove",cube,"from",c,"to create",xb,xb.size())
         cx2 = min(cube.x2,cx2)
         
@@ -268,11 +273,11 @@ def cutapart(c, cube):
     L=[xb,yb,zb]
        
     X = list(filter(lambda x:x.size()>0,L))
-#    if len(X)!=len(L):
-#        print("filtered cuts",X,[x.id for x in X])
-#    else:
-#        print("all cuts",L,[x.id for x in X])
-
+    if len(X)!=len(L):
+        print("filtered cuts",X,[x.id for x in X])
+    else:
+        print("all cuts",L,[x.id for x in X])
+    
     sss=0
     #for i in X:
     #    sss+=i.size()
