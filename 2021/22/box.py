@@ -187,19 +187,35 @@ class Box:
 
         # step one, cut the box in two parts z-wise. 
         
-        newz1 = Box([self.state, self.x1, self.x2, self.y1, self.y2, other.z2, self.z2, "LowerZ"]) #- other
-        newz2 = Box([self.state, self.x1, self.x2, self.y1, self.y2, self.z1, other.z1, "HigherZ"])# - other
+        new1 = Box([self.state, self.x1, self.x2, self.y1, self.y2, other.z2, self.z2, "LowerZ"]) #- other
+        new2 = Box([self.state, self.x1, self.x2, self.y1, self.y2, self.z1, other.z1, "HigherZ"])# - other
 
         # one of these will have a zero size. that is the one where we collide
         # we keep the non-zero one, and subtract it from self to get the slab where we need to continue working
         # (that subtraction is trivial)
-        if newz1.size()<=0:
-            L.append(newz2)
-            keep = (self-newz2)[0]
+        if new1.size()<=0:
+            L.append(new2)
+            keep = (self-new2)[0]
         else:
-            L.append(newz1)
-            keep = (self-newz1)[0]
+            L.append(new1)
+            keep = (self-new1)[0]
 
         # step 2, do the same thing with "keep" as with "self", but in the y axis
+        
+        new1 = Box([self.state, self.x1, self.x2, other.y2, self.y2, self.z1, self.z2, "LowerY"])
+        new2 = Box([self.state, self.x1, self.x2, self.y1, other.y1, self.z1, self.z2, "HigherY"])
+
+        # one of these will have a zero size. that is the one where we collide
+        # we keep the non-zero one, and subtract it from self to get the slab where we need to continue working
+        # (that subtraction is trivial)
+        if new1.size()<=0:
+            L.append(new2)
+            keep = (self-new2)[0]
+        else:
+            L.append(new1)
+            keep = (self-new1)[0]
+
+        # test
+        L.append(keep)
             
         return L
