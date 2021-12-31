@@ -1,0 +1,111 @@
+    
+    if layer1:
+        # layer 1
+        L.append(Box(["on",c.x1,cube.x1, c.y1,cube.y1, cube.z2,c.z2, "1A"])) # A
+        L.append(Box(["on",cube.x1, cube.x2, c.y1,cube.y1, cube.z2,c.z2, "1B"])) # B
+        L.append(Box(["on",cube.x2, c.x2, c.y1,cube.y1, cube.z2,c.z2, "1C"])) # C
+        L.append(Box(["on",c.x1,cube.x1,cube.y1,cube.y2, cube.z2,c.z2, "1D"])) # D
+        L.append(Box(["on",cube.x1, cube.x2, cube.y1,cube.y2, cube.z2,c.z2, "1E"])) # E
+        L.append(Box(["on",cube.x2,c.x2,cube.y1,cube.y2, cube.z2,c.z2, "1F"])) # F
+        L.append(Box(["on",c.x1,cube.x1,cube.y2,c.y2, cube.z2,c.z2, "1G"])) # G
+        L.append(Box(["on",cube.x1, cube.x2, cube.y2,c.y2, cube.z2,c.z2, "1H"])) # H
+        L.append(Box(["on",cube.x2, c.x2, cube.y2,c.y2, cube.z2,c.z2, "1I"])) # I
+                
+    if layer2:
+        # layer 2
+        L.append(Box(["on",c.x1,cube.x1,c.y1,cube.y1, cube.z1,cube.z2, "2A"])) # A
+        L.append(Box(["on",cube.x1, cube.x2, c.y1,cube.y1, cube.z1,cube.z2, "2B"])) # B
+        L.append(Box(["on",cube.x2, c.x2, c.y1,cube.y1, cube.z1,cube.z2, "2C"])) # C
+        L.append(Box(["on",c.x1,cube.x1,cube.y1,cube.y2, cube.z1,cube.z2, "2D"])) # D
+        L.append(Box(["on",cube.x2,c.x2,cube.y1,cube.y2, cube.z1,cube.z2, "2F"])) # F
+        L.append(Box(["on",c.x1,cube.x1,cube.y2, c.y2, cube.z1,cube.z2, "2G"])) # G
+        L.append(Box(["on",cube.x1,cube.x2, cube.y2,c.y2, cube.z1,cube.z2, "2H"])) # H
+        L.append(Box(["on",cube.x2,c.x2, cube.y2,c.y2, cube.z1,cube.z2, "2I"])) # I
+                
+    if layer3:
+        # layer 3
+        L.append(Box(["on",c.x1,cube.x1, c.y1,cube.y1, c.z1,cube.z1,"3A"])) # A
+        L.append(Box(["on",cube.x1,cube.x2, c.y1,cube.y1, c.z1,cube.z1,"3B"])) # B
+        L.append(Box(["on",cube.x2,c.x2, c.y1,cube.y1, c.z1,cube.z1,"3C"])) # C
+        L.append(Box(["on",c.x1,cube.x1, cube.y1,cube.y2, c.z1,cube.z1,"3D"])) # D 
+        L.append(Box(["on",cube.x1, cube.x2, cube.y1,cube.y2, c.z1,cube.z1,"3E"])) # E
+        L.append(Box(["on",cube.x2,c.x2, cube.y1,cube.y2, c.z1,cube.z1,"3F"])) # F
+        L.append(Box(["on",c.x1,cube.x1, cube.y2,c.y2, c.z1,cube.z1,"3G"])) # G 
+        L.append(Box(["on",cube.x1,cube.x2, cube.y2,c.y2, c.z1,cube.z1,"3H"])) # H
+        L.append(Box(["on",cube.x2,c.x2, cube.y2,c.y2, c.z1,cube.z1,"3I"])) # I
+
+
+    layer1 = True
+    layer2 = True
+    layer3 = True
+    
+    if layer1:
+        # layer 1
+        TB=(Box(["on",c1.x1,c2.x1, c1.y1,c2.y1, c2.z2,c1.z2, "1A"])) # A
+        L.append(TB)
+        TB=(Box(["on",c2.x1, c2.x2, c1.y1,c2.y1, c2.z2,c1.z2, "1B"])) # B
+        L.append(TB)
+        TB=(Box(["on",c2.x2, c1.x2, c1.y1,c2.y1, c2.z2,c1.z2, "1C"])) # C
+        L.append(TB)
+        TB=(Box(["on",c1.x1,c2.x1,c2.y1,c2.y2, c2.z2,c1.z2, "1D"])) # D
+        L.append(TB)
+        TB=(Box(["on",c2.x1, c2.x2, c2.y1,c2.y2, c2.z2,c1.z2, "1E"])) # E
+        L.append(TB)
+        TB=(Box(["on",c2.x2,c1.x2,c2.y1,c2.y2, c2.z2,c1.z2, "1F"])) # F
+        L.append(TB)            
+        TB=(Box(["on",c1.x1,c2.x1,c2.y2,c1.y2, c2.z2,c1.z2, "1G"])) # G
+        L.append(TB)
+        TB=(Box(["on",c2.x1, c2.x2, c2.y2,c1.y2, c2.z2,c1.z2, "1H"])) # H
+        L.append(TB)
+        TB=(Box(["on",c2.x2, c1.x2, c2.y2,c1.y2, c2.z2,c1.z2, "1I"])) # I
+        L.append(TB)
+                
+    if layer2:
+        # layer 2
+        TB=(Box(["on",c1.x1,c2.x1,c1.y1,c2.y1, c2.z1,c2.z2])) # A
+        L.append(TB)
+        TB=(Box(["on",c2.x1, c2.x2, c1.y1,c2.y1, c2.z1,c2.z2])) # B
+        L.append(TB)
+        TB=(Box(["on",c2.x2, c1.x2, c1.y1,c2.y1, c2.z1,c2.z2])) # C
+        L.append(TB)            
+        TB=(Box(["on",c1.x1,c2.x1,c2.y1,c2.y2, c2.z1,c2.z2])) # D
+        L.append(TB)            
+        TB=(Box(["on",c2.x2,c1.x2,c2.y1,c2.y2, c2.z1,c2.z2])) # F
+        L.append(TB)            
+        TB=(Box(["on",c1.x1,c2.x1,c2.y2, c1.y2, c2.z1,c2.z2])) # G
+        L.append(TB)
+        TB=(Box(["on",c2.x1,c2.x2, c2.y2,c1.y2, c2.z1,c2.z2])) # H
+        L.append(TB)
+        TB=(Box(["on",c2.x2,c1.x2, c2.y2,c1.y2, c2.z1,c2.z2])) # I
+        L.append(TB)
+                
+    if layer3:
+        # layer 3
+        TB=(Box(["on",c1.x1,c2.x1, c1.y1,c2.y1, c1.z1,c2.z1])) # A
+        L.append(TB)
+        TB=(Box(["on",c2.x1,c2.x2, c1.y1,c2.y1, c1.z1,c2.z1])) # B
+        L.append(TB)
+        TB=(Box(["on",c2.x2,c1.x2, c1.y1,c2.y1, c1.z1,c2.z1])) # C
+        L.append(TB)            
+        TB=(Box(["on",c1.x1,c2.x1, c2.y1,c2.y2, c1.z1,c2.z1])) # D 
+        L.append(TB)
+        TB=(Box(["on",c2.x1, c2.x2, c2.y1,c2.y2, c1.z1,c2.z1])) # E
+        L.append(TB)
+        TB=(Box(["on",c2.x2,c1.x2, c2.y1,c2.y2, c1.z1,c2.z1])) # F
+        L.append(TB)            
+        TB=(Box(["on",c1.x1,c2.x1, c2.y2,c1.y2, c1.z1,c2.z1])) # G 
+        L.append(TB)
+        TB=(Box(["on",c2.x1,c2.x2, c2.y2,c1.y2, c1.z1,c2.z1])) #
+        L.append(TB)
+        TB=(Box(["on",c2.x2,c1.x2, c2.y2,c1.y2, c1.z1,c2.z1])) # I
+        L.append(TB)
+                
+        #print("Remaining of ",str(c)," is ",sum(S)," blocks")
+        X = list(filter(lambda x:x.size()>0,L))
+        #if c2.state=="off":
+        #    print(X,len(X))
+
+        #    print ([(x,x.size()) for x in X])
+        
+        #P = list(filter(lambda x:x.size()<=0,L))
+        #print(P,len(P))
