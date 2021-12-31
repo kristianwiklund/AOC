@@ -2,6 +2,7 @@ import cut
 from box import Box
 from copy import copy
 from termcolor import colored
+import networkx as nx
 
 class Done(Exception):
     pass
@@ -94,14 +95,46 @@ class Reactor:
         ax.voxels(n_voxels)
         plt.savefig("cube"+str(c)+".png")
         
-    
-    
-    
-    # add a cube to the reactor and calculate what actually happened
     def __add__(self, newcube):
         
-        
-
+        self.cubes.append(newcube)
+        return self
+    
     # pretty print
     def __repr__(self):
         return str(self.cubes)
+
+    # -------------
+    
+    def optimize(self):
+
+        # optimization starts from the back
+        # any cube that iscompletely covered by a later cube is removed
+
+        poplist = set()
+        
+        for i in range(len(self.cubes)-1,-1,-1):
+            for j in range(0,i):
+        
+                if self.cubes[i].covers(self.cubes[j]):
+                    poplist.add(j)
+
+        for i in sorted(list(poplist),reverse=True):
+            self.cubes.pop(i)
+
+    # produce an interaction graph between the different boxes to find out which are touching
+    
+    def interactions(self):
+
+        G = nx.DiGraph()
+        
+        for i in range(len(self.cubes)-1,-1,-1):
+            for j in range(i-1,-1,-1):
+                if self.cubes[i].touches(self.cubes[j]):
+                    G.add_edge(str(i),str(j))
+
+        return G
+    
+                
+        
+        

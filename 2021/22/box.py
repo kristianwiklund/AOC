@@ -1,3 +1,6 @@
+class OverlapError(Exception):
+    pass
+
 class Box:
 
     # constructor can either create a cube from the string in the input, or from a list representing a cube
@@ -67,3 +70,111 @@ class Box:
         s = abs(zs*ys*xs) * (-1 if (zs<0 or ys<0 or xs <0) else 1)
         
         return s
+
+    # returns true if this cube completely covers "other" cube
+    def covers(self, other):
+
+        if other.x1 >= self.x1 and other.x2 <= self.x2:
+            if other.y1 >= self.y1 and other.y2 <= self.y2:
+                if other.z1 >= self.z1 and other.z2 <= self.z2:
+                    return True
+
+        return False
+
+    # true, if in the same range on x
+    def inxrange(self, other):
+
+        if self.x2 <= other.x1:
+            return False
+
+        if self.x1 >= other.x2:
+            return False
+
+        return True
+
+    # true, if in the same range on y
+    def inyrange(self, other):
+
+        if self.y2 <= other.y1:
+            return False
+
+        if self.y1 >= other.y2:
+            return False
+
+        return True
+
+    # true, if in the same range on z
+    def inzrange(self, other):
+
+        if self.z2 <= other.z1:
+            return False
+
+        if self.z1 >= other.z2:
+            return False
+
+        return True
+
+    
+    
+    # return true if c1 and other are touching
+    def touches(self, other):
+        return self.inxrange(other) and self.inyrange(other) and self.inzrange(other)
+
+    def __eq__(self,other):
+
+        return self.state==other.state and self.x1 == other.x1 and self.x2 == other.x2 and self.y1==other.y1 and self.y2==other.y2 and self.z1==other.z1 and self.z2==other.z2
+    
+    
+    # remove other from self. Returns an unoptimized list of Box with the parts covered by other removed
+    def __sub__(self, other):
+
+
+        # if the boxes do not touch, return self
+        if not self.touches(other):
+            return [self]
+        
+        # assumption: self is always smaller than other
+
+        #if self.covers(other):
+        #    raise OverlapError
+
+        # we completely cover self, return the empty list, nothing remains
+        if other.covers(self):
+            return []
+
+        # when we get here, we have a number of possible scenarios
+
+        # complete overlap on two sides, but skewed on one. this means that we cut off one single slab
+        # partial overlap on all sides, this means that we cut out one single slab plus two on the sides
+
+        completex = other.x1 <= self.x1 and other.x2 >= self.x2
+        completey = other.y1 <= self.y1 and other.y2 >= self.y2
+        completez = other.z1 <= self.z1 and other.z2 >= self.z2
+
+        # we have complete overlap in xy, partial in z
+        if completex and completey:
+            # return either higher slab or lower slab
+            if other.z1 <= self.z1:
+                return [Box([self.state, self.x1, self.x2, self.y1, self.y2, other.z2, self.z2, "LowerZ"])]
+            else:
+                return [Box([self.state, self.x1, self.x2, self.y1, self.y2, self.z1, other.z1, "HigherZ"])]
+            
+        # we have complete overlap in xz, partial in y
+        if completex and completez:
+            # return either higher slab or lower slab
+            if other.y1 <= self.y1:
+                return [Box([self.state, self.x1, self.x2, other.y2, self.y2, self.z1, self.z2, "LowerY"])]
+            else:
+                return [Box([self.state, self.x1, self.x2, self.y1, other.y1, self.z1, self.z2, "HigherY"])]
+
+
+        # we have complete overlap in yz, partial in x
+        if completey and completez:
+            # return either higher slab or lower slab
+            if other.x1 <= self.x1:
+                return [Box([self.state, other.x2, self.x2, self.y1, self.y2, self.z1, self.z2, "LowerX"])]
+            else:
+                return [Box([self.state, self.x1, other.x1, self.y1, self.y2, self.z1, self.z2, "HigherX"])]
+
+            
+        return []

@@ -1,6 +1,6 @@
 from box import Box
-from reactor import Reactor
 from termcolor import colored
+
 # return true if c1 and c2 are touching
 def collision(c1, c2):
 
