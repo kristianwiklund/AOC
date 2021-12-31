@@ -123,7 +123,9 @@ class Box:
     def __eq__(self,other):
 
         return self.state==other.state and self.x1 == other.x1 and self.x2 == other.x2 and self.y1==other.y1 and self.y2==other.y2 and self.z1==other.z1 and self.z2==other.z2
-    
+
+    def __add__(self,other):
+        return [self,other]
     
     # remove other from self. Returns an unoptimized list of Box with the parts covered by other removed
     def __sub__(self, other):
@@ -180,11 +182,24 @@ class Box:
         # now for the trickier parts. we need to cut a corner off self
         # this can be broken down in several steps
 
-        # step one, cut the box in two parts z-wise and subtract "other" from them
 
-        newz1 = Box([self.state, self.x1, self.x2, self.y1, self.y2, other.z2, self.z2, "LowerZ"]) - other
-        newz2 = Box([self.state, self.x1, self.x2, self.y1, self.y2, self.z1, other.z1, "HigherZ"]) - other
+        L=[]
 
-        # then check if we collide on any of these, and go on with the split of that box
-    
-        return [newz1,newz2]
+        # step one, cut the box in two parts z-wise. 
+        
+        newz1 = Box([self.state, self.x1, self.x2, self.y1, self.y2, other.z2, self.z2, "LowerZ"]) #- other
+        newz2 = Box([self.state, self.x1, self.x2, self.y1, self.y2, self.z1, other.z1, "HigherZ"])# - other
+
+        # one of these will have a zero size. that is the one where we collide
+        # we keep the non-zero one, and subtract it from self to get the slab where we need to continue working
+        # (that subtraction is trivial)
+        if newz1.size()<=0:
+            L.append(newz2)
+            keep = (self-newz2)[0]
+        else:
+            L.append(newz1)
+            keep = (self-newz1)[0]
+
+        # step 2, do the same thing with "keep" as with "self", but in the y axis
+            
+        return L

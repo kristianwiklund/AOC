@@ -43,7 +43,6 @@ def readinaTOR():
 a = Box("on x=2..4,y=2..4,z=2..4")
 b = Box("off x=1..4,y=1..4,z=-12..2")
 v = a-b
-print(v)
 assert (v[0] == Box("on x=2..4,y=2..4,z=3..4"))
 
 a = Box("on x=1..4,y=1..4,z=1..4")
@@ -76,3 +75,14 @@ assert (v[0] == Box("on x=1..4,y=1..2,z=1..4"))
 
 # trivial cases of cutting in half seems to work.
 # now for the cases where we cut a corner off a
+
+b = Box("on x=2..4,y=2..4,z=2..4")
+a = Box("on x=1..2,y=1..2,z=1..2")
+
+v = a-b
+print(v)
+
+R = Reactor()
+R.realcubes=v+[b]
+R.cubes=[a,b]
+R.savefig()
