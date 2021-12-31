@@ -9,6 +9,24 @@ from termcolor import colored
 
 #import test
 
+
+#import networkx as nx
+#import matplotlib.pyplot as plt
+
+#G = R.interactions()
+
+#nx.draw(G,  with_labels=True)
+#plt.savefig("graph.png")
+
+
+import test
+test.second()
+test.third()
+R=test.fourth()
+#R.savefig()
+print(R.size())
+
+sys.exit()
 # - finally, read input from stdin and solve the problem
 
 R = Reactor()
@@ -25,52 +43,30 @@ def readinaTOR():
         
     return RR
 
-#R = readinaTOR()
-#print(len(R.cubes))
-#R.optimize()
-#print(len(R.cubes))
+R = readinaTOR()
 
-#import networkx as nx
-#import matplotlib.pyplot as plt
+R.optimize()
 
-#G = R.interactions()
+for i in range(len(R.realcubes)-1,-1,-1):
+    if R.realcubes[i].x2 < -50 or R.realcubes[i].z2 < -50 or R.realcubes[i].y2 < -50:
+        R.realcubes.pop(i)
+    elif R.realcubes[i].x1 > 51 or R.realcubes[i].z1 > 51 or R.realcubes[i].y1 > 51:
+        R.realcubes.pop(i)
+    else:
+        R.realcubes[i].x1 = max(-50,R.realcubes[i].x1)
+        R.realcubes[i].y1 = max(-50,R.realcubes[i].y1)
+        R.realcubes[i].z1 = max(-50,R.realcubes[i].z1)
 
-#nx.draw(G,  with_labels=True)
-#plt.savefig("graph.png")
+        R.realcubes[i].x2 = min(51,R.realcubes[i].x2)
+        R.realcubes[i].y2 = min(51,R.realcubes[i].y2)
+        R.realcubes[i].z2 = min(51,R.realcubes[i].z2)
 
-# tests for complete overlap on 2 axes
-# test Z
-a = Box("on x=2..4,y=2..4,z=2..4")
-b = Box("off x=1..4,y=1..4,z=-12..2")
-v = a-b
-assert (v[0] == Box("on x=2..4,y=2..4,z=3..4"))
 
-a = Box("on x=1..4,y=1..4,z=1..4")
-b = Box("off x=1..4,y=1..4,z=3..4")
-v = a-b
-assert (v[0] == Box("on x=1..4,y=1..4,z=1..2"))
 
-# test X
-a = Box("on x=1..4,y=1..4,z=1..4")
-b = Box("off x=-12..2,y=1..4,z=1..4")
-v = a-b
-assert (v[0] == Box("on x=3..4,y=1..4,z=1..4"))
+s = sum([x.size() for x in R.realcubes])
+print(s)
+#print(R.realcubes)
+#R.savefig()
 
-a = Box("on x=1..4,y=1..4,z=1..4")
-b = Box("off x=3..12,y=1..4,z=1..4")
-v = a-b
-assert (v[0] == Box("on x=1..2,y=1..4,z=1..4"))
-
-# test y
-
-a = Box("on x=1..4,y=1..4,z=1..4")
-b = Box("off x=1..4,y=-12..2,z=1..4")
-v = a-b
-assert (v[0] == Box("on x=1..4,y=3..4,z=1..4"))
-
-a = Box("on x=1..4,y=1..4,z=1..4")
-b = Box("off x=1..4,y=3..12,z=1..4")
-v = a-b
-assert (v[0] == Box("on x=1..4,y=1..2,z=1..4"))
-
+# 1013549392644644 is too low
 

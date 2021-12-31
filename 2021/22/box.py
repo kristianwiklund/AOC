@@ -50,6 +50,17 @@ class Box:
                 
             #print("Created",self)
 
+    # true if x,y,z is within this box
+    def intersects(self,x,y,z):
+        
+        if self.x1 <=x and x <= self.x2:
+            if self.y1 <= y and y <= self.y2:
+                if self.z1 <=z and z <= self.z2:
+                    return True
+        return False
+        
+
+            
     # to pretty print a cube
     
     def __repr__(self):
@@ -61,7 +72,8 @@ class Box:
 
     # calculate the size of a cube
 
-    def size(self):
+    def size(self, limit=False):
+
         xs = (self.x2-self.x1)
         ys = (self.y2-self.y1)
         zs = (self.z2-self.z1)
@@ -130,7 +142,6 @@ class Box:
     # remove other from self. Returns an unoptimized list of Box with the parts covered by other removed
     def __sub__(self, other):
 
-
         # if the boxes do not touch, return self
         if not self.touches(other):
             return [self]
@@ -153,6 +164,10 @@ class Box:
         completey = other.y1 <= self.y1 and other.y2 >= self.y2
         completez = other.z1 <= self.z1 and other.z2 >= self.z2
 
+        #cutcheck on x=-20..26,y=-36..17,z=-47..7 on x=-20..33,y=-21..23,z=-26..28 True False False
+
+        #print("\ncutcheck",self,other,completex, completey, completez)
+        
         # we have complete overlap in xy, partial in z
         if completex and completey:
             # return either higher slab or lower slab
@@ -182,6 +197,8 @@ class Box:
         # now for the trickier parts. we need to cut a corner off self
         # this can be broken down in several steps
 
+        #        print ("no simple cuts between",self,other)
+        
 
         L=[]
 
@@ -200,6 +217,8 @@ class Box:
             L.append(new1)
             keep = (self-new1)[0]
 
+        #print ("z result keeps:",keep,"and L=",L)
+            
         # step 2, do the same thing with "keep" as with "self", but in the y axis
         
         new1 = Box([keep.state, keep.x1, keep.x2, other.y2, keep.y2, keep.z1, keep.z2, "LowerY"])
@@ -215,6 +234,8 @@ class Box:
             L.append(new1)
             keep = (keep-new1)[0]
 
+        #print ("y result keeps:",keep,"and L=",L)
+            
         # step 3, and finally, in the X axis
 
         
@@ -231,6 +252,7 @@ class Box:
             L.append(new1)
             #            keep = (keep-new1)[0]
 
+        L = list(filter(lambda x:x.size()>0,L))
         # test
         #L.append(keep)
             
