@@ -202,20 +202,36 @@ class Box:
 
         # step 2, do the same thing with "keep" as with "self", but in the y axis
         
-        new1 = Box([self.state, self.x1, self.x2, other.y2, self.y2, self.z1, self.z2, "LowerY"])
-        new2 = Box([self.state, self.x1, self.x2, self.y1, other.y1, self.z1, self.z2, "HigherY"])
+        new1 = Box([keep.state, keep.x1, keep.x2, other.y2, keep.y2, keep.z1, keep.z2, "LowerY"])
+        new2 = Box([keep.state, keep.x1, keep.x2, keep.y1, other.y1, keep.z1, keep.z2, "HigherY"])
 
         # one of these will have a zero size. that is the one where we collide
-        # we keep the non-zero one, and subtract it from self to get the slab where we need to continue working
+        # we keep the non-zero one, and subtract it from keep to get the slab where we need to continue working
         # (that subtraction is trivial)
         if new1.size()<=0:
             L.append(new2)
-            keep = (self-new2)[0]
+            keep = (keep-new2)[0]
         else:
             L.append(new1)
-            keep = (self-new1)[0]
+            keep = (keep-new1)[0]
+
+        # step 3, and finally, in the X axis
+
+        
+        new1 = Box([keep.state, other.x2, keep.x2, keep.y1, keep.y2, keep.z1, keep.z2, "LowerX"])
+        new2 = Box([keep.state, keep.x1, other.x1, keep.y1, keep.y2, keep.z1, keep.z2, "HigherX"])
+
+        # one of these will have a zero size. that is the one where we collide
+        # we keep the non-zero one, and subtract it from keep to get the slab where we need to continue working
+        # (that subtraction is trivial)
+        if new1.size()<=0:
+            L.append(new2)
+            #            keep = (keep-new2)[0] # we're done, so not keeping anything
+        else:
+            L.append(new1)
+            #            keep = (keep-new1)[0]
 
         # test
-        L.append(keep)
+        #L.append(keep)
             
         return L
