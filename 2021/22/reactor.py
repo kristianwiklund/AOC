@@ -216,8 +216,8 @@ class Reactor:
         nx = self.drawallblobs()
         ny = self.getonset()
         fail = (ny-nx)!=0
-        np.set_printoptions(threshold=sys.maxsize)
-        print(fail)
+#        np.set_printoptions(threshold=sys.maxsize)
+#        print(fail)
         ax = plt.figure().add_subplot(projection='3d')
                 
         ax.voxels(fail)

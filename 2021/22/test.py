@@ -247,19 +247,25 @@ def third():
 def fourth():
 
     R = Reactor()
-    
-#    R+=Box('on x=-49..1,y=-3..46,z=-24..28')
-    R+=Box('on x=-27..23,y=-28..26,z=-21..29')
-#    R+=Box('on x=-39..5,y=-6..47,z=-3..44')
-#    R+=Box('on x=-30..21,y=-8..43,z=-13..34')
     R.debug=True
-    # this screws up things... what happens here?
-    R+=Box("on x=-22..26,y=-27..20,z=-29..19")
-    # check the on set vs the all set
-
+            
+    R+=Box("on x=1..4,y=1..4,z=1..4")
+    R+=Box("on x=2..3,y=1..4,z=1..4")
     R.savefig()
     R.consistencycheck()
+    
+    R = Reactor()
+    
 
+    # this screws up things... what happens here?
+    R+=Box('on x=-27..23,y=-28..26,z=-21..29')
+    R+=Box("on x=-22..26,y=-27..20,z=-29..19")
+    # vi tappar bort flaket som ligger mellan y=-28..-27
+    # nya kuben är mindre än gamla i en av dimensionerna
+    # check the on set vs the all set
+    R.savefig()
+    R.consistencycheck()
+    R.debug=False
 
     
     R = Reactor()

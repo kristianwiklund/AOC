@@ -142,6 +142,10 @@ class Box:
     # remove other from self. Returns an unoptimized list of Box with the parts covered by other removed
     def __sub__(self, other):
 
+        # bug: we drop one part if we are bigger on both sides around.
+        # e.g. 1..4-2..3
+        # which means that we need to split before we calculate the cuts. bummer...
+        
         # if the boxes do not touch, return self
         if not self.touches(other):
             return [self]
