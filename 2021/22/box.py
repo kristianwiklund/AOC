@@ -176,5 +176,15 @@ class Box:
             else:
                 return [Box([self.state, self.x1, other.x1, self.y1, self.y2, self.z1, self.z2, "HigherX"])]
 
-            
-        return []
+
+        # now for the trickier parts. we need to cut a corner off self
+        # this can be broken down in several steps
+
+        # step one, cut the box in two parts z-wise and subtract "other" from them
+
+        newz1 = Box([self.state, self.x1, self.x2, self.y1, self.y2, other.z2, self.z2, "LowerZ"]) - other
+        newz2 = Box([self.state, self.x1, self.x2, self.y1, self.y2, self.z1, other.z1, "HigherZ"]) - other
+
+        # then check if we collide on any of these, and go on with the split of that box
+    
+        return [newz1,newz2]
