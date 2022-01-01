@@ -232,6 +232,9 @@ class Reactor:
         
         L = []
         for i in range(len(self.realcubes)-1):
+            if i is newcube:
+                print("dafuq")
+                continue
             nc = self.realcubes[i]-newcube
             #            print(self.realcubes[i],"-",newcube,"=",nc )
             L += nc

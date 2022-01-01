@@ -220,7 +220,8 @@ def second():
     
 
 def third():
-    
+
+    print ("= selftest 3 started")
     R=Reactor()
     a=Box("on x=10..12,y=10..12,z=10..12")
     a.id="Box1"
@@ -246,26 +247,26 @@ def third():
         
 def fourth():
 
+    print ("= selftest 4 started")
     R = Reactor()
-    R.debug=True
             
     R+=Box("on x=1..4,y=1..4,z=1..4")
-    R+=Box("on x=2..3,y=1..4,z=1..4")
-    R.savefig()
+    R+=Box("off x=2..3,y=1..4,z=1..4")
     R.consistencycheck()
-    
+
     R = Reactor()
     
-
     # this screws up things... what happens here?
-    R+=Box('on x=-27..23,y=-28..26,z=-21..29')
-    R+=Box("on x=-22..26,y=-27..20,z=-29..19")
+    a=Box('on x=-27..23,y=-28..26,z=-21..29')
+    b=Box("on x=-22..26,y=-27..20,z=-29..19")
+    a.id="a"
+    b.id="b"
+    R+=a
+    R+=b
     # vi tappar bort flaket som ligger mellan y=-28..-27
     # nya kuben är mindre än gamla i en av dimensionerna
     # check the on set vs the all set
-    R.savefig()
     R.consistencycheck()
-    R.debug=False
 
     
     R = Reactor()
@@ -278,14 +279,7 @@ def fourth():
     R+=Box("on x=-27..23,y=-28..26,z=-21..29")
     R+=Box("on x=-39..5,y=-6..47,z=-3..44")
     R+=Box("on x=-30..21,y=-8..43,z=-13..34")
-    # check the on set vs the all set
-    R.consistencycheck()
-    R.debug=True
-    # this screws up things... what happens here?
     R+=Box("on x=-22..26,y=-27..20,z=-29..19")
-    # check the on set vs the all set
-    R.consistencycheck()
-    
     R+=Box("off x=-48..-32,y=26..41,z=-47..-37")
     R+=Box("on x=-12..35,y=6..50,z=-50..-2")
     R+=Box("off x=-48..-32,y=-32..-16,z=-15..-5")

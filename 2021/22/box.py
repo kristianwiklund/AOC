@@ -1,3 +1,6 @@
+
+from termcolor import colored
+
 class OverlapError(Exception):
     pass
 
@@ -142,10 +145,7 @@ class Box:
     # remove other from self. Returns an unoptimized list of Box with the parts covered by other removed
     def __sub__(self, other):
 
-        # bug: we drop one part if we are bigger on both sides around.
-        # e.g. 1..4-2..3
-        # which means that we need to split before we calculate the cuts. bummer...
-        
+
         # if the boxes do not touch, return self
         if not self.touches(other):
             return [self]
@@ -155,9 +155,43 @@ class Box:
         #if self.covers(other):
         #    raise OverlapError
 
-        # we completely cover self, return the empty list, nothing remains
-        if other.covers(self):
-            return []
+        # e.g. 1..4-2..3
+        # which means that we need to split before we calculate the cuts.
+
+        #print ("subtract boxes",self,other)
+        # chomp off by x
+        if self.x1 < other.x1 and self.x2 > other.x2:
+            
+            n1 = Box([self.state,self.x1,other.x1,self.y1,self.y2,self.z1,self.z2,"SplitXLow"])
+            n2 = Box([self.state,other.x1,self.x2,self.y1,self.y2,self.z1,self.z2,"SplitXHigh"])
+
+            #print (colored("big chomp", "red"), self, other, colored("n1=","green"),n1, colored("n2=","green"), n2)
+            v = (n1-other) + (n2-other)
+            #print(colored("newlist=","green"),v)
+            return v
+
+        # chomp off by y
+        if self.y1 < other.y1 and self.y2 > other.y2:
+            
+            n1 = Box([self.state,self.x1,self.x2,self.y1,other.y1,self.z1,self.z2,"SplitYLow("+str(self.id)+" "+str(other.id)+" "+")"])
+            n2 = Box([self.state,self.x1,self.x2,other.y1,self.y2,self.z1,self.z2,"SplitYHigh("+str(self.id)+" "+str(other.id)+" "+")"])
+
+            #print (colored("big chomp", "red"), self, other, colored("n1=","green"),n1, colored("n2=","green"), n2)
+            v = (n1-other) + (n2-other)
+            #print(colored("newlist=","green"),v)
+            return v
+
+        # chomp off by z
+        if self.z1 < other.z1 and self.z2 > other.z2:
+            
+            n1 = Box([self.state,self.x1,self.x2,self.y1,self.y2,self.z1,other.z1,"SplitZLow"])
+            n2 = Box([self.state,self.x1,self.x2,self.y1,self.y2,other.z1,self.z2,"SplitZHigh"])
+
+            #print (colored("big chomp", "red"), self, other, colored("n1=","green"),n1, colored("n2=","green"), n2)
+            v = (n1-other) + (n2-other)
+            #print(colored("newlist=","green"),v)
+            return v
+        
 
         # when we get here, we have a number of possible scenarios
 
@@ -167,35 +201,35 @@ class Box:
         completex = other.x1 <= self.x1 and other.x2 >= self.x2
         completey = other.y1 <= self.y1 and other.y2 >= self.y2
         completez = other.z1 <= self.z1 and other.z2 >= self.z2
-
-        #cutcheck on x=-20..26,y=-36..17,z=-47..7 on x=-20..33,y=-21..23,z=-26..28 True False False
-
+        
+        
         #print("\ncutcheck",self,other,completex, completey, completez)
         
         # we have complete overlap in xy, partial in z
         if completex and completey:
             # return either higher slab or lower slab
             if other.z1 <= self.z1:
-                return [Box([self.state, self.x1, self.x2, self.y1, self.y2, other.z2, self.z2, "LowerZ"])]
+                return [Box([self.state, self.x1, self.x2, self.y1, self.y2, other.z2, self.z2, "HigherZ"])]
             else:
-                return [Box([self.state, self.x1, self.x2, self.y1, self.y2, self.z1, other.z1, "HigherZ"])]
+                return [Box([self.state, self.x1, self.x2, self.y1, self.y2, self.z1, other.z1, "LowerZ("+str(self.id)+" "+str(other.id)+" "+")"])]
             
         # we have complete overlap in xz, partial in y
         if completex and completez:
             # return either higher slab or lower slab
             if other.y1 <= self.y1:
-                return [Box([self.state, self.x1, self.x2, other.y2, self.y2, self.z1, self.z2, "LowerY"])]
+                return [Box([self.state, self.x1, self.x2, other.y2, self.y2, self.z1, self.z2, "HigherY"])]
             else:
-                return [Box([self.state, self.x1, self.x2, self.y1, other.y1, self.z1, self.z2, "HigherY"])]
+                return [Box([self.state, self.x1, self.x2, self.y1, other.y1, self.z1, self.z2, "LowerY"])]
 
 
         # we have complete overlap in yz, partial in x
         if completey and completez:
             # return either higher slab or lower slab
             if other.x1 <= self.x1:
-                return [Box([self.state, other.x2, self.x2, self.y1, self.y2, self.z1, self.z2, "LowerX"])]
+                return [Box([self.state, other.x2, self.x2, self.y1, self.y2, self.z1, self.z2, "HigherX"])]
             else:
-                return [Box([self.state, self.x1, other.x1, self.y1, self.y2, self.z1, self.z2, "HigherX"])]
+                return [Box([self.state, self.x1, other.x1, self.y1, self.y2, self.z1, self.z2, "LowerX"])]
+
 
 
         # now for the trickier parts. we need to cut a corner off self
@@ -208,8 +242,10 @@ class Box:
 
         # step one, cut the box in two parts z-wise. 
         
-        new1 = Box([self.state, self.x1, self.x2, self.y1, self.y2, other.z2, self.z2, "LowerZ"]) #- other
-        new2 = Box([self.state, self.x1, self.x2, self.y1, self.y2, self.z1, other.z1, "HigherZ"])# - other
+        new1 = Box([self.state, self.x1, self.x2, self.y1, self.y2, other.z2, self.z2, "CLowerZ("+str(self.id)+" "+str(other.id)+" "+")"])
+        new2 = Box([self.state, self.x1, self.x2, self.y1, self.y2, self.z1, other.z1, "CHigherZ("+str(self.id)+" "+str(other.id)+" "+")"])
+
+        #        print(colored("cutzoer","blue"), "self=",self, "other=",other, "n1=",new1,"nw=",new2)
 
         # one of these will have a zero size. that is the one where we collide
         # we keep the non-zero one, and subtract it from self to get the slab where we need to continue working
@@ -225,8 +261,8 @@ class Box:
             
         # step 2, do the same thing with "keep" as with "self", but in the y axis
         
-        new1 = Box([keep.state, keep.x1, keep.x2, other.y2, keep.y2, keep.z1, keep.z2, "LowerY"])
-        new2 = Box([keep.state, keep.x1, keep.x2, keep.y1, other.y1, keep.z1, keep.z2, "HigherY"])
+        new1 = Box([keep.state, keep.x1, keep.x2, other.y2, keep.y2, keep.z1, keep.z2, "CLowerY("+str(keep.id)+" "+str(other.id)+" "+")"])
+        new2 = Box([keep.state, keep.x1, keep.x2, keep.y1, other.y1, keep.z1, keep.z2, "CHigherY("+str(keep.id)+" "+str(other.id)+" "+")"])
 
         # one of these will have a zero size. that is the one where we collide
         # we keep the non-zero one, and subtract it from keep to get the slab where we need to continue working
@@ -243,8 +279,8 @@ class Box:
         # step 3, and finally, in the X axis
 
         
-        new1 = Box([keep.state, other.x2, keep.x2, keep.y1, keep.y2, keep.z1, keep.z2, "LowerX"])
-        new2 = Box([keep.state, keep.x1, other.x1, keep.y1, keep.y2, keep.z1, keep.z2, "HigherX"])
+        new1 = Box([keep.state, other.x2, keep.x2, keep.y1, keep.y2, keep.z1, keep.z2, "CLowerX"])
+        new2 = Box([keep.state, keep.x1, other.x1, keep.y1, keep.y2, keep.z1, keep.z2, "CHigherX"])
 
         # one of these will have a zero size. that is the one where we collide
         # we keep the non-zero one, and subtract it from keep to get the slab where we need to continue working
