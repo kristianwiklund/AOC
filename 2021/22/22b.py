@@ -23,28 +23,32 @@ import test
 test.second()
 test.third()
 test.fourth()
+test.example2()
 
-
+print ("= done testing")
 
 # - finally, read input from stdin and solve the problem
 
 R = Reactor()
 
 def readinaTOR():
-
+    c=1
+    import time
+    t = time.time()
     RR = Reactor()
     
     for l in sys.stdin:
         l = l.strip()
-
         b = Box(l)
+        print(str(c)+": ("+str(len(RR.realcubes))+") "+str(b)+" "+str(int(time.time()-t)))
+        c+=1
         RR = RR + b
         
     return RR
 
 R = readinaTOR()
 
-R.optimize()
+#R.optimize()
 
 # # for first part
 # for i in range(len(R.realcubes)-1,-1,-1):
