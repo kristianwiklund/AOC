@@ -12,20 +12,6 @@ def ph(x):
         x-=10
     return x
 
-def nr(x):
-    global rolls
-    rolls +=1
-    return x if x<=100 else x-100
-
-
-# how this crap works:
-# - we roll the dice. this takes us down one level recursively, where we roll the dice again. once done, we go another depth to a total of three, and check the score
-
-#def updatecache(who, pos, score, roll, rec, A):
-
-#    if not (who, pos[0], pos[1], score[0], score[1], roll, rec) in cache:
-#        cache[who, pos[0], pos[1], score[0], score[1], roll, rec] = copy(A)
-
 wins=0
 hits=0
 hitss=0
