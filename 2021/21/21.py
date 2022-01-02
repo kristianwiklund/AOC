@@ -59,6 +59,6 @@ while True:
         break
     
 
-print("Answer 1: ",min(s1,s2)*nr)
+print("Answer 1: ",min(s1,s2)*nr,min(s1,s2),nr)
 
 
