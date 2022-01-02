@@ -14,9 +14,14 @@ def nr(x):
 # how this crap works:
 # - we roll the dice. this takes us down one level recursively, where we roll the dice again. once done, we go another depth to a total of three, and check the score
 
+cache=dict()
+
 def dive(who, pos, score, roll, rec,deep):
 
     pos[who]=ph(pos[who]+roll)
+
+    if (pos[who], score[who], roll, rec) in cache:
+        return cache(pos[who], score[who], roll, rec)
     
     rec+=1
     #    print("rec",rec,"who",who,"roll",roll)
