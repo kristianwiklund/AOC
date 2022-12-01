@@ -31,4 +31,12 @@ print ("-",elves,"-")
 maxelf = sorted(elves,key=lambda x:elves[x]).pop()
 print ("Part 1:",maxelf, elves[maxelf])
 
+topthree = sorted(elves,key=lambda x:elves[x],reverse=True)[:3]
+p = 0
+for i in topthree:
+    p=p+elves[i]
+
+print ("Part 2:",topthree, p)
+
+
 
