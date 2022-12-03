@@ -13,8 +13,7 @@ with  open("input.txt","r") as fd:
     for p in r:
         a = set(p[0])
         b = set(p[1])
-        for i in b.intersection(a):
-            score=score+x.index(i)
+        score=score+x.index("".join(b.intersection(a)))
 
     print("part 1",score)
 
@@ -25,14 +24,7 @@ def r3(fd):
     c = set(fd.readline().strip())
 
     p = a.intersection(b.intersection(c))
-    #print(a,b,c,p)
-    if len(p)==0:
-        return 0
-    else:
-        score=0
-        for i in b.intersection(p):
-            score=score+x.index(i)
-        return score
+    return (x.index("".join(p)))
     
 with open("input.txt","r") as fd:
 
@@ -41,7 +33,6 @@ with open("input.txt","r") as fd:
         g = r3(fd)
         if g>0:
             sum=sum+g
-            print( g)
         else:
             break
             
