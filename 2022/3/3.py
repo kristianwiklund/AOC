@@ -3,16 +3,13 @@ x = "@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 with  open("input.txt","r") as fd:
     lines = fd.readlines()
 
-    r = list()
+    score=0
     for string in lines:
         string = string.strip()
-        firstpart, secondpart = string[:len(string)//2], string[len(string)//2:]
-        r.append([firstpart,secondpart])
+        p0, p1 = string[:len(string)//2], string[len(string)//2:]
 
-    score=0
-    for p in r:
-        a = set(p[0])
-        b = set(p[1])
+        a = set(p0)
+        b = set(p1)
         score=score+x.index("".join(b.intersection(a)))
 
     print("part 1",score)
