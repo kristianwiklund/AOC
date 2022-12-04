@@ -1,3 +1,6 @@
+The goal for 2020 was to write as much as possible in shell script (using standard utilities such as sed, awk, bc, etc).
+This was... sometimes less fun.
+
 Language per day
 ================
 1) shell script  (and a later solution in erlang)
