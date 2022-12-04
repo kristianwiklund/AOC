@@ -27,10 +27,13 @@ cnt=0
 
 while not str(b) in h:
     cnt+=1
-    h[str(b)]=True
+    h[str(b)]=cnt
     b = redist(b)
 
+    
 print("Answer 1:",cnt)
+
+print("Ansser 2:",cnt-h[str(b)]+1)
 
 
 
