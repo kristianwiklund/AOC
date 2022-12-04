@@ -1,5 +1,9 @@
 # various utility functions that could be reusable
 
+# usage
+# import sys
+# sys.path.append("../..")
+# from utilities import *
 
 # reads a block of lines separated with empty lines from a file
 def readblock(fd):
@@ -14,3 +18,22 @@ def readblock(fd):
         x = fd.readline().strip()
 
     return elf
+
+# reads a file to an array
+def readarray(fn, split=" ", convert=lambda x:x):
+
+    arr = []
+    
+    with open(fn, "r") as fd:
+        lines = fd.readlines()
+
+        for line in lines:
+            line = line.strip()
+
+            la = [convert(x) for x in line.split(split)]
+            arr.append(la)
+
+        return arr
+
+    return None
+            
