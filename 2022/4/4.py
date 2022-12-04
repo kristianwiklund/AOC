@@ -12,8 +12,8 @@ with open("input.txt","r") as fd:
         sa = set(range(a1,a2+1))
         sb = set(range(b1,b2+1))
 
-        cnt += 1 if sa.issubset(sb) or sb.issubset(sa) else 0
-        cnt2 += 0 if sa.isdisjoint(sb) else 1
+        cnt += sa.issubset(sb) or sb.issubset(sa)
+        cnt2 += not sa.isdisjoint(sb)
 
     print("Part 1:",cnt)
     print("Part 2:",cnt2)
