@@ -33,21 +33,18 @@ for i in range(1,10):
 tb = deepcopy(torn)
     
 def move(torn,n,f,t):
-    while n:
-        b = torn[f].pop()
-        torn[t].append(b)
-        n-=1
+
+    torn[t] = torn[t]+list(reversed(torn[f][-n:]))
+    torn[f] = torn[f][:-n]
+        
     return torn
 
 
 def move9001(torn,n,f,t):
-    l = list()
-    while n:
-        b = torn[f].pop()
-        l.append(b)
-        n-=1
-    l.reverse()
-    torn[t] = torn[t]+l
+
+    torn[t] = torn[t]+torn[f][-n:]
+    torn[f] = torn[f][:-n]
+
     return torn
 
 with open("input.code","r") as fd:
@@ -62,7 +59,10 @@ with open("input.code","r") as fd:
 
         torn = move(torn,n,f,t)
         tb = move9001(tb,n,f,t)
-        
-print ("Part 1:","".join([torn[x][-1] for x in torn]).replace("[","").replace("]",""))
-print ("Part 2:","".join([tb[x][-1] for x in tb]).replace("[","").replace("]",""))
+
+p1 = "".join([torn[x][-1] for x in torn]).replace("[","").replace("]","")
+p2 = "".join([tb[x][-1] for x in tb]).replace("[","").replace("]","")
+
+print ("Part 1:",p1)
+print ("Part 2:",p2)
 
