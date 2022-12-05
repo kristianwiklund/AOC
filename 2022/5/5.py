@@ -18,19 +18,15 @@ with open("input.torn","r") as fd:
     lines = [x.rstrip() for x in fd.readlines()]
 
     for line in lines:
-        print("")
         i = 1
         
         while line:
             (t,line)=tjonk(line)
             if t:
-                #print(t,end="")
                 torn[i].append(t)
-            #else:
-            #    print ("...",end="")
+
             i+=1
-#print("")
-print(torn)
+
 for i in range(1,10):
     torn[i].reverse()
 
@@ -49,7 +45,6 @@ with open("input.code","r") as fd:
     lines = [x.strip() for x in fd.readlines()]
 
     for line in lines:
-        print(line)
         line = line.split(" ")
         n = int(line[1])
         f = int(line[3])
@@ -57,12 +52,12 @@ with open("input.code","r") as fd:
 
         torn = move(torn,n,f,t)
 
-print("Part 1")
+print("Part 1: ",end="")
 
 for i in range(1,10):
     torn[i].reverse()
     if len(torn[i]):
-        print(torn[i][0],end="")
+        print(torn[i][0].replace("[","").replace("]",""),end="")
     else:
         print("...",end="")
         
@@ -89,7 +84,6 @@ with open("input.code","r") as fd:
     lines = [x.strip() for x in fd.readlines()]
 
     for line in lines:
-        print(line)
         line = line.split(" ")
         n = int(line[1])
         f = int(line[3])
@@ -97,12 +91,12 @@ with open("input.code","r") as fd:
 
         torn = move9001(torn,n,f,t)
 
-print("Part 2")
+print("Part 2: ",end="")
 
 for i in range(1,10):
     torn[i].reverse()
     if len(torn[i]):
-        print(torn[i][0],end="")
+        print(torn[i][0].replace("[","").replace("]",""),end="")
     else:
         print("...",end="")
         
