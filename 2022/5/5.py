@@ -63,25 +63,6 @@ with open("input.code","r") as fd:
         torn = move(torn,n,f,t)
         tb = move9001(tb,n,f,t)
         
-print("Part 1: ",end="")
-
-for i in range(1,10):
-    torn[i].reverse()
-    if len(torn[i]):
-        print(torn[i][0].replace("[","").replace("]",""),end="")
-    else:
-        print("...",end="")
-        
-print("")
-
-print("Part 2: ",end="")
-
-for i in range(1,10):
-    tb[i].reverse()
-    if len(tb[i]):
-        print(tb[i][0].replace("[","").replace("]",""),end="")
-    else:
-        print("...",end="")
-        
-print("")
+print ("Part 1:","".join([torn[x][-1] for x in torn]).replace("[","").replace("]",""))
+print ("Part 2:","".join([tb[x][-1] for x in tb]).replace("[","").replace("]",""))
 
