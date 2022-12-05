@@ -4,3 +4,6 @@
 2a - shell
 2b - python
 4 - python
+5 - python
+6 - python
+7 - python
