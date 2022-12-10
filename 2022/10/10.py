@@ -1,6 +1,6 @@
 def draw(c,x):
 
-    c = (c+1)%40
+    c = (c)%40
 
     if not c%40:
         print("")
@@ -9,25 +9,27 @@ def draw(c,x):
         print("#",end="")
     elif c==(x+1):
         print("#",end="")
-    elif c==(x+2):
+    elif c==(x-1):
         print("#",end="")
     else:
         print(".",end="")
 
 
 
-with open("input.short","r") as fd:
+with open("input.txt","r") as fd:
 
     lines = [x.strip() for x in fd.readlines()]
 
     c=1
+    p=1
     x=1
     score = 0
     
     for line in lines:
         l =line.split(" ")
         op = l[0]
-        #draw(c,x)
+        draw(p,x)
+        p+=1
 
         if op == "noop":
             c+=1
@@ -35,16 +37,17 @@ with open("input.short","r") as fd:
         elif op == "addx":
             c+=1
             if c==20 or ((c-20)%40) == 0:
-                print (c, x, (c)*x)
+                #print (c, x, (c)*x)
                 score+=(c)*x
             x+=int(l[1])
-            #draw(c,x)
             c+=1
-
+            draw(p,x)
+            p+=1
+            
         if c==20 or (c-20)%40 == 0:
-            print (c, x, c*x)
+            #print (c, x, c*x)
             score+=c*x
-
+print("")
 print("Part 1:", score)
 
         
