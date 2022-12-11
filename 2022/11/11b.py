@@ -162,27 +162,32 @@ with open("input.shortest","r") as fd:
 
             return x
 
+    def cnti(z,n,ac):
+        cnt=0
+        a = nis(z)
+        b = ""
+        while cnt<=n:
+            cnt+=1
+            while True:
+                #print("a",a,"b",b)
+                print("B",z,"->",a)
+                ac[int(a)]+=1
+                print("B",ac)
+                b = nis(z)
+
+                if int(b) < int(a):
+                    print("B -tick")
+                    a=b
+                    break
+                a=b
+        return ac
+        
     # we know the sequences of the items. Now we only have to make the apes toss them in the right order
     # we only have 1 item in the test code
     ac = {x:0 for x in range(len(apes))}
-    cnt=0
-    z = list(items.keys())[0]
-    a = nis(z)
-    b = ""
-    while cnt<=20:
-        cnt+=1
-        while True:
-            #print("a",a,"b",b)
-            print("B",z,"->",a)
-            ac[int(a)]+=1
-            print("B",ac)
-            b = nis(z)
+    print(cnti(list(items.keys())[0],20,ac))
 
-            if int(b) < int(a):
-                print("B -tick")
-                a=b
-                break
-            a=b
+    
 
 print ("B -end")
 #print("B",z,"->",a)
