@@ -6,8 +6,9 @@ from utilities import *
 def ap(fd):
 
     who = fd.readline().strip().split(" ")[1][:-1]
+    l = fd.readline().strip().split(":")
     try:
-        items = [int(x) for x in fd.readline().strip().split(":")[1].split(",")]
+        items = [int(x) for x in l[1].split(",")]
     except:
         items = []
     op = fd.readline().strip().split("=")[1]
@@ -27,17 +28,17 @@ def inspect(apes):
 
             old = items[i]["v"]
             items[i]["ap"][m]+=1
-            new = eval(apes[m]["o"])
+            new = eval(apes[m]["o"])%(19*23*13*17)
             #new = new // 3
             items[i]["v"]=new
             #items[i]["f"]=("("+apes[m]["o"].replace("old",items[i]["f"])+")").replace(" ","")
             if new % apes[m]["t"]:
-                print("A",i,"->",apes[m]["if"])
+                #print("A",i,"->",apes[m]["if"])
                 items[i]["ss"]+=str(apes[m]["if"])
                 apes[m]["fc"]+=1
                 apes[apes[m]["if"]]["i"].append(i)
             else:
-                print("A", i,"->",apes[m]["it"])
+                #print("A", i,"->",apes[m]["it"])
                 items[i]["ss"]+=str(apes[m]["it"])
                 apes[m]["tc"]+=1
                 apes[apes[m]["it"]]["i"].append(i)
@@ -52,48 +53,6 @@ def pap(i,apes):
 
 
 
-# Returns the longest repeating non-overlapping
-# substring in str
-def lrs(str):
- 
-    n = len(str)
-    LCSRe = [[0 for x in range(n + 1)]
-                for y in range(n + 1)]
- 
-    res = "" # To store result
-    res_length = 0 # To store length of result
- 
-    # building table in bottom-up manner
-    index = 0
-    for i in range(1, n + 1):
-        for j in range(i + 1, n + 1):
-             
-            # (j-i) > LCSRe[i-1][j-1] to remove
-            # overlapping
-            if (str[i - 1] == str[j - 1] and
-                LCSRe[i - 1][j - 1] < (j - i)):
-                LCSRe[i][j] = LCSRe[i - 1][j - 1] + 1
- 
-                # updating maximum length of the
-                # substring and updating the finishing
-                # index of the suffix
-                if (LCSRe[i][j] > res_length):
-                    res_length = LCSRe[i][j]
-                    index = max(i, index)
-                 
-            else:
-                LCSRe[i][j] = 0
- 
-    # If we have non-empty result, then insert
-    # all characters from first character to
-    # last character of string
-    if (res_length > 0):
-        for i in range(index - res_length + 1,
-                                    index + 1):
-            res = res + str[i - 1]
- 
-    return res
- 
 
 
 with open("input.short","r") as fd:
@@ -104,7 +63,6 @@ with open("input.short","r") as fd:
             apes.append(ap(fd))
         except:
             break
-
     items = dict()
     
     for i in range(len(apes)):
@@ -120,10 +78,11 @@ with open("input.short","r") as fd:
             ni.append(nin)
         apes[i]["i"]=ni
 
-
-    for i in range(800):
+    for i in range(10000):
         inspect(apes)
-        if i==799:
+        if not i%100:
+            print(i)
+        if i==9999:
             print ("APES 1", [x["cnt"] for x in apes])
             
     #for x in range(1):
@@ -141,9 +100,9 @@ with open("input.short","r") as fd:
         where = items[i]["ss"].index(items[i]["lrs"])
         prefix = items[i]["ss"][:where]
         items[i]["prefix"]=list(items[i]["first"]+prefix)
-        #print(i,prefix,items[i]["lrs"])
+        print(i,prefix,items[i]["lrs"])
         items[i]["pos"]=0
-
+        print("item",i,"prefix",len(prefix),"suffix",len(items[i]["lrs"]))
 
     def nis(i):
         pos = items[i]["pos"]
@@ -170,13 +129,15 @@ with open("input.short","r") as fd:
             cnt+=1
             while True:
                 #print("a",a,"b",b)
-                print("B",z,"->",a)
+                #print("B",z,"->",a)
                 ac[int(a)]+=1
-                print("B",ac)
+                #print("B",ac)
                 b = nis(z)
 
+                # we do the monkeys in order. Hence, if we end up moving an item to a monkey lower than the monkey
+                # the item is located in, we have a new cycle
                 if int(b) < int(a):
-                    print("B -tick")
+                    #print("B -tick")
                     a=b
                     break
                 a=b
@@ -187,13 +148,13 @@ with open("input.short","r") as fd:
     ac = {x:0 for x in range(len(apes))}
 
     for i in items:
-        print(i)
-        ac = cnti(i,800,ac)
-        print(ac)
+        #print(i)
+        ac = cnti(i,1000,ac)
+        #print(ac)
 
     
 
-print ("B -end")
+#print ("B -end")
 #print("B",z,"->",a)
 #ac[int(a)]+=1
 
