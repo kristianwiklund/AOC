@@ -32,12 +32,12 @@ def inspect(apes):
             items[i]["v"]=new
             #items[i]["f"]=("("+apes[m]["o"].replace("old",items[i]["f"])+")").replace(" ","")
             if new % apes[m]["t"]:
-                #print(i,"->",apes[m]["if"])
+                print("A",i,"->",apes[m]["if"])
                 items[i]["ss"]+=str(apes[m]["if"])
                 apes[m]["fc"]+=1
                 apes[apes[m]["if"]]["i"].append(i)
             else:
-                #print(i,"->",apes[m]["it"])
+                print("A", i,"->",apes[m]["it"])
                 items[i]["ss"]+=str(apes[m]["it"])
                 apes[m]["tc"]+=1
                 apes[apes[m]["it"]]["i"].append(i)
@@ -96,7 +96,7 @@ def lrs(str):
  
 
 
-with open("input.short","r") as fd:
+with open("input.shortest","r") as fd:
 
     apes = list()
     while True:
@@ -116,15 +116,16 @@ with open("input.short","r") as fd:
             items[nin]["v"]=j
             items[nin]["f"]=str(j)
             items[nin]["ss"]=""
+            items[nin]["first"]=str(i)
             ni.append(nin)
         apes[i]["i"]=ni
 
 
-    for i in range(200):
-        if not i%100:
-            print(i)
+    for i in range(300):
         inspect(apes)
-
+        if i==20:
+            print ("APES 1", [x["cnt"] for x in apes])
+            
     #for x in range(1):
     #    for i in sorted(items,key=lambda x:x[1]):
     #        print(i,"=",items[i]["ap"])
@@ -132,8 +133,60 @@ with open("input.short","r") as fd:
     #apes = sorted(apes,key=lambda x:-x["cnt"])
     #print("Part 2:", apes[0]["cnt"],apes[1]["cnt"],apes[0]["cnt"]*apes[1]["cnt"])
 
+    
     for i in items:
-        print ("---",i,"---")
-        print (i,items[i]["ss"])
-        print(i,lrs(items[i]["ss"]))
+        #print ("---",i,"---")
+        #print (i,items[i]["ss"])
+        items[i]["lrs"]=lrs(items[i]["ss"])
+        where = items[i]["ss"].index(items[i]["lrs"])
+        prefix = items[i]["ss"][:where]
+        items[i]["prefix"]=list(items[i]["first"]+prefix)
+        #print(i,prefix,items[i]["lrs"])
+        items[i]["pos"]=0
+
+
+    def nis(i):
+        pos = items[i]["pos"]
+        lp = len(items[i]["prefix"])
+        llrs = len(items[i]["lrs"])
+                 
+        if lp:
+            x = items[i]["prefix"].pop(0)
+            #print("pref", items[i]["prefix"])
+            return x
+        else:
+            #print("lrs", items[i]["lrs"], "pos", items[i]["pos"],"X",items[i]["lrs"][pos])
+            x = items[i]["lrs"][pos]
+            pos+=1
+            items[i]["pos"] = pos % llrs
+
+            return x
+
+    # we know the sequences of the items. Now we only have to make the apes toss them in the right order
+    # we only have 1 item in the test code
+    ac = {x:0 for x in range(len(apes))}
+    cnt=0
+    z = list(items.keys())[0]
+    a = nis(z)
+    b = ""
+    while cnt<=20:
+        cnt+=1
+        while True:
+            #print("a",a,"b",b)
+            print("B",z,"->",a)
+            ac[int(a)]+=1
+            print("B",ac)
+            b = nis(z)
+
+            if int(b) < int(a):
+                print("B -tick")
+                a=b
+                break
+            a=b
+
+print ("B -end")
+#print("B",z,"->",a)
+#ac[int(a)]+=1
+
+print("APES 2",ac)
         
