@@ -96,7 +96,7 @@ def lrs(str):
  
 
 
-with open("input.shortest","r") as fd:
+with open("input.short","r") as fd:
 
     apes = list()
     while True:
@@ -121,9 +121,9 @@ with open("input.shortest","r") as fd:
         apes[i]["i"]=ni
 
 
-    for i in range(300):
+    for i in range(800):
         inspect(apes)
-        if i==20:
+        if i==799:
             print ("APES 1", [x["cnt"] for x in apes])
             
     #for x in range(1):
@@ -166,7 +166,7 @@ with open("input.shortest","r") as fd:
         cnt=0
         a = nis(z)
         b = ""
-        while cnt<=n:
+        while cnt<n:
             cnt+=1
             while True:
                 #print("a",a,"b",b)
@@ -185,7 +185,11 @@ with open("input.shortest","r") as fd:
     # we know the sequences of the items. Now we only have to make the apes toss them in the right order
     # we only have 1 item in the test code
     ac = {x:0 for x in range(len(apes))}
-    print(cnti(list(items.keys())[0],20,ac))
+
+    for i in items:
+        print(i)
+        ac = cnti(i,800,ac)
+        print(ac)
 
     
 
@@ -193,5 +197,5 @@ print ("B -end")
 #print("B",z,"->",a)
 #ac[int(a)]+=1
 
-print("APES 2",ac)
+print("APES 2",list(ac.values()))
         
