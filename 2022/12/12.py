@@ -61,9 +61,9 @@ for me in sls:
             lme=me
             lpa=lpc
             print(me,lpa)
-            printpath ((nx.shortest_path(G, source=you, target=me)),background=bg)
     except:
         pass
+printpath ((nx.shortest_path(G, source=you, target=lme)),background=bg)
 
 print ("part 2:",lpa,lme)
 

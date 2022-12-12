@@ -108,12 +108,41 @@ def printpath(path,nonum=True, background=None,bgin=None):
 
     l = len(path)
     l = 2+1 #hack
+
+
+    # preprocess the path to figure out which symbol to use
+
+
+    # ---\
+    #    |
+    #    \---
+    #
+    #   |
+    #   \---\
+    #       |
+
     
+    if nonum:
+        syms = dict()
+        # do all steps except the first and last one
+        for i in range(1, len(path)-1):
+            
+            # check the direction of the next step of the path
+
+            
+            if path[i][0] == path[i+1][0]:
+                # we are moving vertically
+            else:
+                # we are moving vertically
+            
     for y in range(my):
         for x in range(mx):
             if (x,y) in path:
                 if nonum:
-                    print("#",end="")
+                    if (x,y) in syms:
+                        print(syms[(x,y)],end="")
+                    else:
+                        print("#",end="")
                 else:
                     print ("{i: <{width}}|".format(i=path.index((x,y)), width=l),end="")
             else:
