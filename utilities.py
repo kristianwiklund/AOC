@@ -30,7 +30,10 @@ def readarray(fn, split=" ", convert=lambda x:x):
         for line in lines:
             line = line.strip()
 
-            la = [convert(x) for x in line.split(split)]
+            if not split or split=="":
+                la = [convert(x) for x in line]
+            else:
+                la = [convert(x) for x in line.split(split)]
             arr.append(la)
 
         return arr
@@ -88,3 +91,42 @@ def lrs(str):
     return res
  
 
+# print a path (list of tuples) on an array
+
+def printpath(path,nonum=True, background=None,bgin=None):
+
+    if background:
+        mx = len(background[0])
+    else:
+        mx = max([x for x,y in path])
+            
+    if background:
+        my = len(background)
+    else:
+        my = max([y for x,y in path])
+
+
+    l = len(path)
+    l = 2+1 #hack
+    
+    for y in range(my):
+        for x in range(mx):
+            if (x,y) in path:
+                if nonum:
+                    print("#",end="")
+                else:
+                    print ("{i: <{width}}|".format(i=path.index((x,y)), width=l),end="")
+            else:
+                if nonum:
+                    if background==None:
+                        print(".",end="")
+                    else:
+                        if bgin and background[y][x] in bgin:
+                            print(background[y][x],end="")
+                        else:
+                            print(".",end="")
+                else:
+                    print (format("","<"+str(l))+"|",end="")
+
+        print("")
+        
