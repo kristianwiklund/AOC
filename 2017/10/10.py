@@ -24,6 +24,20 @@ class Rope():
 
     def __str__(self):
         return str(self.listan)
+
+    def hash(self):
+
+        l = list()
+        for i in range(16):
+            h = 0
+            for j in range(16):
+                h = h^self.listan[i*16+j]
+            l.append(h)
+
+        x = ""
+        for i in l:
+            x+='{:02x}'.format(i)
+        return str(x)
     
     def __eq__(self,l):
         return self.listan==l
@@ -59,3 +73,24 @@ for i in lengths:
     rope.twist(i)
 
 print("Part 1:",rope.result())
+
+# -- part 
+def convert(s):
+    input = [ord(x) for x in s]
+    return input+[17,31,73,47,23]
+
+def megatwist(s):
+    rope = Rope(256)
+    lengths=convert(s)
+    for i in range(64):
+        for i in lengths:
+            rope.twist(i)
+    return rope.hash()
+
+assert(convert("1,2,3") == [49,44,50,44,51,17,31,73,47,23])
+
+
+assert(megatwist("")=="a2582a3a0e66e6e86e3812dcb672a272")
+assert(megatwist("AoC 2017")=="33efeb34ea91902bb2f59c9920caa6cd")
+
+print("Part 2:",megatwist("83,0,193,1,254,237,187,40,88,27,2,255,149,29,42,100"))
