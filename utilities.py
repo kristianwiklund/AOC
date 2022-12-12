@@ -111,30 +111,48 @@ def printpath(path,nonum=True, background=None,bgin=None):
 
 
     # preprocess the path to figure out which symbol to use
+    # - the item before and the item after are all on the same line
+    # | the item before and the item after are all in the same column
 
-
-    # ---\
-    #    |
-    #    \---
     #
-    #   |
-    #   \---\
-    #       |
+    #    ┏━┓
+    #    ┃ ┃
+    #    ┗━┛
+    #
 
+    draw = {
+        (0,1,0,-1):"┃",
+        (0,-1,0,1):"┃",
+        (1,0,-1,0):"━",
+        (-1,0,1,0):"━",
+        (0,1,1,0):"┏",
+        (1,0,0,1):"┏",
+        (0,-1,-1,0):"┛",
+        (-1,0,0,-1):"┛",
+        (0,-1,1,0):"┗",
+        (1,0,0,-1):"┗",
+        (0,1,-1,0):"┓",
+        (-1,0,0,1):"┓",
+        }
     
     if nonum:
         syms = dict()
         # do all steps except the first and last one
         for i in range(1, len(path)-1):
-            
-            # check the direction of the next step of the path
+            x = path[i][0]
+            y = path[i][1]
 
-            
-            if path[i][0] == path[i+1][0]:
-                # we are moving vertically
+            indx = (path[i-1][0]-x,path[i-1][1]-y,path[i+1][0]-x,path[i+1][1]-y)
+
+            if indx in draw:
+                s = draw[indx]
             else:
-                # we are moving vertically
-            
+                s= "x"
+            syms[path[i]] = s
+
+            syms[path[0]]="B"
+            syms[path[-1]]="E"
+    
     for y in range(my):
         for x in range(mx):
             if (x,y) in path:

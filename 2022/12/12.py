@@ -63,7 +63,10 @@ for me in sls:
             print(me,lpa)
     except:
         pass
-printpath ((nx.shortest_path(G, source=you, target=lme)),background=bg)
+p = nx.shortest_path(G, source=you, target=lme)
+p.reverse()
+
+printpath (p,background=bg)
 
 print ("part 2:",lpa,lme)
 
