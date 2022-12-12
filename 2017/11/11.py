@@ -46,10 +46,14 @@ def axial_distance(o1, o2):
 
 def move(c,l):
     l = l.split(",")
-
+    o = c
+    md = 0
     for i in l:
         c+=moves[i]
-    return c
+        if axial_distance(o,c)>md:
+            md=axial_distance(o,c)
+            
+    return (c,md)
 
 
 x1 = C(0,0)
@@ -60,13 +64,15 @@ x2 =x1+moves["ne"]+moves["ne"]+moves["ne"]
 x2 = x1+moves["ne"]+moves["ne"]+moves["sw"]+moves["sw"]
 assert((axial_distance(x1,x2))==0)
 
-x2=move(x1,"ne,ne")
-x2=move(x1,"s,s")
+(x2,_)=move(x1,"ne,ne")
+(x2,_)=move(x2,"s,s")
 assert(axial_distance(x1,x2)==2)
 
 with open("input.txt","r") as fd:
     arr = fd.readline().strip()
 
-    x2 = move(x1,arr)
+    (x2,md) = move(x1,arr)
     print(x2)
-    print(axial_distance(x1,x2))
+    print("Part 1:",axial_distance(x1,x2))
+    print("Part 2:",md)
+
