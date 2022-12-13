@@ -13,4 +13,6 @@ for i in a:
         G.add_edge(f,t.strip(","))
 
 print("Part 1:",len(nx.node_connected_component(G,"0")))
+sg = list(nx.connected_components(G))
 
+print("Part 2:",len(sg))
