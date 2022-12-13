@@ -2,88 +2,57 @@
 # sys.path.append("../..")
 # from utilities import *
 
-def comp(ls,rs, d=False):
 
-    if d:
-        print("<<>> c",ls,"<<>>",rs,"<<>>")
-
-
-        
-    if isinstance(ls,int) and isinstance(ls,int):
-        if d:
-            print("i-i comp",ls,rs)
-        return ls<rs
-
-    try:
-        l=ls.pop(0)
-    except:
-        if d:
-            print("--- l short")
-        # run out of left first, order good
-        return True
-
-    try:
-        r=rs.pop(0)
-    except:
-        if d:
-            print("--- r short")
-        # run out of right first, order bad
-        return (False)
+def c2(l,r,d=False):
+    # if both values are integer, the lower integer should come first
 
     if isinstance(l,int) and isinstance(r,int):
-        if l>r:
-            if d:
-                print("--- int >")
-            return (False)
         if l<r:
-            if d:
-                print("--- int <")
             return True
-    
-    if isinstance(r,list) and isinstance(l,int):
+        if l>r:
+            return False
+
+    # if exactly one value is an integer, convert the integer to a list
+    if isinstance(l,int):
         l=[l]
-        l.append(ls)
-        r.append(rs)
-        if d:
-            print("--- a",l,r)
-        return comp(l,r)
 
-    if isinstance(l,list) and isinstance(r,int):
+
+    if isinstance(r,int):
         r=[r]
-        l.append(ls)
-        r.append(rs)
-        if d:
-            print("--- a",l,r)        
-        return comp(l,r)
+        
 
-    if isinstance(l,int) and isinstance(r,int):
-        if l==r:
-            if d:
-                print("--- i=i retry",l,r,"-->",ls,rs)
-            return(comp(ls,rs))
+    # if both values are lists, compare the first value of the list, then the second value, and so on
+    # if the left list runs out of values first, the inputs are in the right order
+    # if the right list runs out of values first, the inputs are in the wrong order
+    # if the lists are the same length, and no comparison makes a decision about the order, continue checking the next part of the input
 
-    if d:
-        print("list,list=",isinstance(ls,list),isinstance(rs,list))
-            
-    if comp(l,r,d):
-        return comp(ls,rs,d)
-    else:
-        return False
-    
+    if isinstance(l,list) and isinstance(r,list):
 
+        for i in range(len(l)):
+            # right runs out of values first, wrong order
+            if i>=len(r):
+                return False
 
-    return False
+            if l[i]==r[i]:
+                continue
+            return c2(l[i],r[i])
+        
+    # left runs out of items first
+    return True
 
-assert(comp([1,1,3,1,1], [1,1,5,1,1]))
-assert(comp([[1],[2,3,4]], [[1],4]))
-assert(not comp([9],[[8,7,6]]))
-assert(comp([[4,4],4,4],[[4,4],4,4,4]))
-assert(not comp([7,7,7,7],[7,7,7]))
-assert(comp([],[3]))
-assert(not comp([[[]]],[[]]))
-assert(not comp([1,[2,[3,[4,[5,6,7]]]],8,9],[1,[2,[3,[4,[5,6,0]]]],8,9]))
+assert(c2([1,1,3,1,1], [1,1,5,1,1]))
+assert(c2([[1],[2,3,4]], [[1],4],d=True))
+assert(not c2([9],[[8,7,6]]))
+assert(c2([[4,4],4,4],[[4,4],4,4,4]))
+assert(not c2([7,7,7,7],[7,7,7]))
+assert(c2([],[3]))
+assert(not c2([[[]]],[[]]))
+assert(not c2([1,[2,[3,[4,[5,6,7]]]],8,9],[1,[2,[3,[4,[5,6,0]]]],8,9],d=True))
 
-with open("input.debug") as fd:
+#import sys
+#sys.exit()
+
+with open("input.txt") as fd:
 
     lines = [x.strip() for x in fd.readlines()]
 
@@ -97,9 +66,9 @@ with open("input.debug") as fd:
         r=right
 
         # chomp = i+2
-        print("================================")
+
         try:
-            if comp(l,r, d=True):
+            if c2(l,r, d=True):
                 score+=cnt
         except:
             print("crash")
@@ -110,6 +79,6 @@ with open("input.debug") as fd:
             
 print("Part 1:",score)
             
-
+# 866 too low
         
     
