@@ -55,14 +55,18 @@ assert(not c2([1,[2,[3,[4,[5,6,7]]]],8,9],[1,[2,[3,[4,[5,6,0]]]],8,9],d=True))
 with open("input.txt") as fd:
 
     lines = [x.strip() for x in fd.readlines()]
-
+    klines = list()
+    
+    
     score=0
     cnt=0
     for i in range(0,len(lines),3):
         cnt+=1
         left = eval(lines[i])
+        klines.append(left)
         l=left
         right = eval(lines[i+1])
+        klines.append(right)
         r=right
 
         # chomp = i+2
@@ -78,7 +82,23 @@ with open("input.txt") as fd:
             sys.exit()
             
 print("Part 1:",score)
-            
-# 866 too low
-        
+
+def c3(l,r):
+    if l==r:
+        return 0
     
+    if c2(l,r):
+        return -1
+    else:
+        return 1
+from functools import cmp_to_key
+from pprint import pprint
+
+klines.append([[2]])
+klines.append([[6]])
+
+klines.sort(key=cmp_to_key(c3))
+
+a = klines.index([[2]])
+b = klines.index([[6]])
+print("part 2:",(a+1)*(b+1))
