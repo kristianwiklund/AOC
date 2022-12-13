@@ -7,9 +7,11 @@ def comp(ls,rs, d=False):
     if d:
         print("<<>> c",ls,"<<>>",rs,"<<>>")
 
+
+        
     if isinstance(ls,int) and isinstance(ls,int):
         if d:
-            print("i-i comp")
+            print("i-i comp",ls,rs)
         return ls<rs
 
     try:
@@ -57,15 +59,20 @@ def comp(ls,rs, d=False):
     if isinstance(l,int) and isinstance(r,int):
         if l==r:
             if d:
-                print("--- i=i retry")
+                print("--- i=i retry",l,r,"-->",ls,rs)
             return(comp(ls,rs))
+
     if d:
-        print("list,list=",isinstance(l,list),isinstance(r,list))
-        
+        print("list,list=",isinstance(ls,list),isinstance(rs,list))
+            
     if comp(l,r,d):
         return comp(ls,rs,d)
     else:
         return False
+    
+
+
+    return False
 
 assert(comp([1,1,3,1,1], [1,1,5,1,1]))
 assert(comp([[1],[2,3,4]], [[1],4]))
