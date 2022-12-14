@@ -5,9 +5,9 @@ from utilities import *
 a=readarray("input.txt",split=":",convert=lambda x:int(x))
 a={x[0]:x[1] for x in a}
 #print(a)
-def tick(a):
+def tick(a,dlay=0):
 
-    mp=-1
+    mp=-1-dlay
     sp={x:0 for x in a.keys()}
     dr={x:1 for x in a.keys()}
     
@@ -25,16 +25,10 @@ def tick(a):
         # check if caught
 
         if mp in sp and sp[mp]==0:
-            score+=mp*a[mp]
-           # print("* ",end="")
-        #else:
-        #    print("  ",end="")
-
-        #if mp in sp:
-        #    print(mp,sp)
-        #else:
-        #    print(mp,sp)
+            if dlay:
+                return 1
             
+            score+=mp*a[mp]
         # then move the scanners
 
         for d in a:
@@ -48,3 +42,7 @@ def tick(a):
 
 print("Part 1:",tick(a))
 
+for i in range(10000000):
+    if tick(a,dlay=i)==0:
+        print(i)
+        break
