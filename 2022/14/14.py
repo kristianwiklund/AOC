@@ -1,6 +1,7 @@
 import sys
 sys.path.append("../..")
 from utilities import *
+from copy import deepcopy
 
 p = readarray("input.txt",split="->",convert=lambda y:[int(x) for x in y.split(",")])
 
@@ -12,8 +13,8 @@ miny=min(y)
 maxx=max(x)
 maxy=max(y)
 
-
 plan = dict()
+
 
 def draw(plan,c1,c2):
     x1,y1=c1
@@ -38,21 +39,31 @@ for line in p:
     for c in range(1,len(line)):
         plan = draw(plan,line[c-1],line[c])
 
-def sand(plan,x,y,maxy):
+planb = deepcopy(plan)
+        
+def sand(plan,x,y,maxy,floor=False):
 
-    print("sand",x,y)
+ #   print("sand",x,y)
     
     if (x,y) in plan:
-        print("full cave")
+        
+        print("full cave",x,y,plan[(x,y)])
+
         return False
 
     
     while True:
 
-        if y>=maxy:
-            print("Dropped off",x,y,x,maxy)
-            return False
-        
+        if not floor:
+            if y>=maxy:
+                print("Dropped off",x,y,x,maxy)
+                return False
+        else:
+            if y==maxy+1:
+                plan[(x,y)]="o"
+                return True
+
+            
         if not (x,y+1) in plan:
             y+=1
             continue
@@ -81,7 +92,10 @@ def pp(plan,minx,miny,maxx,maxy):
                 if y==0 and x==500:
                     print("+",end="")
                 else:
-                    print(".",end="")
+                    if y ==maxy:
+                        print("#",end="")
+                    else:
+                        print(".",end="")
         print("")
                 
 from pprint import pprint        
@@ -90,6 +104,13 @@ pp(plan,minx,miny,maxx,maxy)
 cnt=0
 while sand(plan,500,0,maxy):
     cnt+=1
-    pp(plan,minx,0,maxx,maxy)
+#    pp(plan,minx,0,maxx,maxy)
 
-print(cnt)
+print("Part 1:",cnt)
+
+cnt=0
+while sand(planb,500,0,maxy,floor=True):
+    cnt+=1
+#    pp(planb,minx-40,0,maxx+40,maxy+3)
+
+print("Part 2:",cnt)
