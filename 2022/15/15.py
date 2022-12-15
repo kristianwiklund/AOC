@@ -5,9 +5,9 @@ import networkx as nx
 from copy import deepcopy
 from pprint import pprint
 
-arr = readarray("input.short")
-#row = 2000000
-row=10
+arr = readarray("input.txt")
+row = 2000000
+#row=10
 
 beac=list()
 sens=list()
@@ -130,15 +130,23 @@ def merge(line):
     return line
 
 line=sorted(line,key=lambda x:x[0])
-s = 0
-me=line.pop(0)
-s = me[1]-me[0]
-print(me)
-for i in line:
-    print (i)
-    if i[0]<me[1]:
-        s-=me[1]-i[0]
-    s+=i[1]-i[0]
-    me=i
+ma = max([int(y) for x,y in line])
+mi = min([int(x) for x,y in line])
 
-print(s)
+print(mi,ma)
+score=0
+
+def yes(x, line):
+
+    for i in line:
+        if x>=i[0] and x<=i[1]:
+            return True
+
+    return False
+
+for i in range(mi,ma):
+    if yes(i,line):
+        score+=1
+
+print(score)
+
