@@ -7,7 +7,7 @@ from pprint import pprint
 
 arr = readarray("input.txt")
 row = 2000000
-#row=11
+#row=10
 
 beac=list()
 sens=list()
@@ -47,26 +47,24 @@ def cover(s,b,l):
     # side
     side = d-abs(s.imag-l)
     if(side<0):
-        print("bork")
         return None
     
-    print("cover",s,b,"(s)",side,"<<",d,">>",(s.real - abs(side), s.real + abs(side)))
+#    print("cover",s,b,"(s)",side,"<<",d,">>",(s.real - abs(side), s.real + abs(side)))
     return (s.real - abs(side), s.real + abs(side))
 
 
-line=list()
+def lineme(row):
+    line=list()
 
-for i in range(len(sens)):
-    c = cover(sens[i],beac[i],row)
-    if c:
-        line.append(c)
+    for i in range(len(sens)):
+        c = cover(sens[i],beac[i],row)
+        if c:
+            line.append(c)
 
-line=sorted(line,key=lambda x:x[0])
-ma = max([int(y) for x,y in line])
-mi = min([int(x) for x,y in line])
+        line=sorted(line,key=lambda x:x[0])
+    return line
 
-print(mi,ma)
-score=0
+#print(mi,ma)
 
 def yes(x, line):
 
@@ -76,15 +74,32 @@ def yes(x, line):
 
     return False
 
-for i in range(mi,ma):
-    if yes(i,line):
-        score+=1
-        if (ma-mi)<80:
-            print("#",end="")
-    else:
-        if (ma-mi)<80:
-            print(".",end="")    
-            
-print("")
-print("part 1:",score)
+def scoreme(line, maxx=None):
+    score=0
+    ma = max([int(y) for x,y in line])
+    if maxx:
+        ma = max(maxx,ma)
+        
+    mi = min([int(x) for x,y in line])
 
+    
+    for i in range(mi,ma):
+        if yes(i,line):
+            score+=1
+            if (ma-mi)<80:
+                print("#",end="")
+            else:
+                if (ma-mi)<80:
+                    print(".",end="")    
+    return score
+ 
+print("")
+line = lineme(row)
+
+
+print("part 1:",scoreme(line))
+
+for i in range(0,20):
+    line = lineme(row)
+
+    
