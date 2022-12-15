@@ -76,6 +76,7 @@ def yes(x, line):
 
 def scoreme(line, maxx=None):
     score=0
+    
     ma = max([int(y) for x,y in line])
     if maxx:
         ma = max(maxx,ma)
@@ -99,7 +100,49 @@ line = lineme(row)
 
 print("part 1:",scoreme(line))
 
-for i in range(0,20):
-    line = lineme(row)
 
+def overlap(a,b):
+    if a==b:
+        return True
     
+    if a[0]>=b[0] and a[1]<=b[1]:
+        return True
+    else:
+        return False
+
+def cm(a,b):
+
+    if a==b:
+        return 0
+
+    if a[0]==b[0]:
+        if a[1]==b[1]:
+            return 0
+        if a[1]<b[1]:
+            return -1
+        return 1
+    if a[0]<b[0]: 
+        return -1
+    return 1
+    
+
+from functools import cmp_to_key
+
+for i in range(0,4000000):
+    line = lineme(i)
+    line= sorted(list(line),key=cmp_to_key(cm))
+
+    x=0
+    for j in line:
+        if j[0]<x:
+            if j[1]<x:
+                continue
+        if j[0]-x == 2:
+            print ("part 2:", i+(x+1)*4000000,line)
+            import sys
+            sys.exit()
+        
+        x=j[1]
+        if x>4000000:
+            break
+        
