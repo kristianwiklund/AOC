@@ -7,7 +7,7 @@ from pprint import pprint
 
 arr = readarray("input.txt")
 row = 2000000
-#row=10
+#row=11
 
 beac=list()
 sens=list()
@@ -46,88 +46,20 @@ def cover(s,b,l):
     # for each distance above this, we get an additional blob on the
     # side
     side = d-abs(s.imag-l)
+    if(side<0):
+        print("bork")
+        return None
+    
     print("cover",s,b,"(s)",side,"<<",d,">>",(s.real - abs(side), s.real + abs(side)))
     return (s.real - abs(side), s.real + abs(side))
 
 
 line=list()
+
 for i in range(len(sens)):
     c = cover(sens[i],beac[i],row)
     if c:
         line.append(c)
-
-
-def overlap(a,b):
-    if a==b:
-        return True
-    
-    if a[0]>=b[0] and a[1]<=b[1]:
-        return True
-    else:
-        return False
-
-def merge(line):
-    
-    pre = len(line)
-    post=0
-
-    while pre!=post:
-
-        line=set(line)
-        line=list(line)
-
-        if len(line)==1:
-            break
-    
-        pre = post
-        line= sorted(line,key=lambda x:x[0])
-
-        print("Merging",line)
-    
-        ll=set()
-        line.reverse()
-    
-        # remove true duplicates
-
-
-        
-        for i in range(len(line)-1):
-            for j in range(i+1,len(line)):
-                # find out if the current item is completely overlapped by the next item
-                if overlap(line[i],line[i+1]):
-                    ll.add(line[i])
-            
-        line=set(line)
-        line=line-ll
-
-        
-        line= sorted(list(line),key=lambda x:x[0])
-
-        if len(line)==1:
-            print("down to 1, break")
-            break
-        
-        ll = set()
-
-        # merge things
-        for i in range(len(line)-1):
-            for j in range(i+1,len(line)):
-                if line[i][0]<=line[i+1][0]:
-                    if line[i][1]>=line[i+1][0] and line[i][1]<=line[i+1][1]:
-                        print(line[i],"merge with",line[i+1])
-                        ll.add((line[i][0],line[i+1][1]))
-                    else:
-                        ll.add(line[i])
-                        ll.add(line[i+1])
-                else:
-                    ll.add(line[i])
-                    ll.add(line[i+1])
-
-        line = list(ll)
-        post = len(line)
-        print("merged:",line)
-
-    return line
 
 line=sorted(line,key=lambda x:x[0])
 ma = max([int(y) for x,y in line])
@@ -147,6 +79,12 @@ def yes(x, line):
 for i in range(mi,ma):
     if yes(i,line):
         score+=1
-
-print(score)
+        if (ma-mi)<80:
+            print("#",end="")
+    else:
+        if (ma-mi)<80:
+            print(".",end="")    
+            
+print("")
+print("part 1:",score)
 
