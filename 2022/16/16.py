@@ -5,7 +5,9 @@ import networkx as nx
 from copy import deepcopy
 from pprint import pprint
 
-arr = readarray("input.short",split=" ")
+# 1645 too low
+
+arr = readarray("input.txt",split=" ")
 
 G = nx.DiGraph()
 valves = set()
@@ -50,7 +52,7 @@ def weighter(x,y):
     remx = rem-timex
     remy = rem-timey
     
-    print (x[0],"f",flowx,"t",(timex,remx),"r",remx*flowx,"--",y[0],"f",flowy,"t",(timey,remy),"r",remy*flowy)
+    #print (x[0],"f",flowx,"t",(timex,remx),"r",remx*flowx,"--",y[0],"f",flowy,"t",(timey,remy),"r",remy*flowy)
     
     return cmp(remx*flowx,remy*flowy)
 
@@ -62,7 +64,7 @@ def cmp(a, b):
 def go(G, node, opened, valves, time):
 
     if time>=30 or len(valves)==0:
-        print("Boom",opened)
+        print("Boom",opened,end=" ")
         score=0
         for i in opened:
             score+=(30-i[2])*i[1]
@@ -70,8 +72,8 @@ def go(G, node, opened, valves, time):
         print("score",score)
         return
     
-    SG = deepcopy(G)
-    SG.remove_node(node)
+#    SG = deepcopy(G)
+#    SG.remove_node(node)
     
     children = nx.descendants(G,node)
     if len(children)==0:
@@ -86,25 +88,23 @@ def go(G, node, opened, valves, time):
 
     from functools import cmp_to_key
     distance = sorted(distance, key=cmp_to_key(weighter),reverse=True)
-    print("goodness",distance)
-    print(valves)
+    #    print("goodness",distance)
+    #    print(valves)
 
-    # the first one in the list is the best to pick
-
-    path = list(nx.shortest_path(G,node,distance[0][0]))
-    path.pop(0)
-    for i in path:
-        print("== Minute",time,"==")
-        print ("You move to valve",i)
-        time+=1
-    print("== Minute",time,"==")
-    print("You open the valve")
-    opened.append((i,G.nodes[i]["rate"],time))
-    valves = deepcopy(valves)
-    valves.remove((distance[0][0],distance[0][1]))
-    print("nv",valves)
+    # test the things in order
+    otime=time
+    for v in range(len(distance)):
+        time=otime
+        path = list(nx.shortest_path(G,node,distance[v][0]))
+        path.pop(0)
+        #        for i in path:
+        #            time+=1
+        time+=len(path)
+        
+        nvalves = deepcopy(valves)
+        nvalves.remove((distance[v][0],distance[v][1]))
     
-    go(G,distance[0][0],opened,valves,time+1)
+        go(G,distance[v][0],opened+[(distance[v][0],G.nodes[distance[v][0]]["rate"],time)],nvalves,time+1)
 
 go(G,"AA",[],valves,1)
 
