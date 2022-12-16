@@ -14,9 +14,10 @@ for i in arr:
 #    G.add_node(i[1],rate=rate)
     for j in i[9:]:
         j=j.strip(",")
-        G.add_edge(i[1],j,capacity=0,weight=1)
-        G.add_edge(i[1],i[1]+"O",capacity=rate,weight=1)
-        G.add_edge(i[1]+"O",j,capacity=0,weight=1)
+        G.add_edge(i[1],j,weight=1)
+        if rate>0:
+            G.add_edge(i[1],i[1]+"O",capacity=rate,weight=1)
+        G.add_edge(i[1]+"O",j,weight=1)
 
 start="AA"
 print(G)
@@ -35,31 +36,43 @@ def go(G, node, clock, bleedtime, visited):
         print("timeout",bleedtime,visited)
         return (bleedtime, visited)
 
-    children = nx.descendants(G, node)
-
+    children = set(nx.descendants(G, node))
+    children-=set(visited)
+    
+    if children==[]:
+        print("Hit the bottom, returning",bleedtime,visited)
+        return (bleedtime, visited)
+    
     highscore=0
     highpath=visited
     highbleed=bleedtime
+
+    print ("== Minute",clock,"==")
+    print ("Valves:",bleedtime)
     
     for child in children:
 
-        if child in visited:
+        if child in visited or child[0:2] in visited:
             continue
 
         d = G.get_edge_data(node, child)
         if d and "capacity" in d:
-            bleedtime.append((clock, d["capacity"]))
+            bleedtime.append((clock, d["capacity"], child))
             #print(bleedtime)
-            
-        result = go(G, child, clock, bleedtime, visited+[child])
+        
+
+        print ("Try valve",child[0:2],"which never is visited in",visited)
+        result = go(G, child, clock, bleedtime, visited+[child[0:2]])
+        
         score = scoreme(result[0], clock)
 
         if score>highscore:
             highscore=score
             highpath=result[1]
             highbleed=result[0]
-            
-    print("res",highpath, highscore)
+
+    if highbleed != []:
+        print("res",highbleed)
     return(highbleed, highpath)
         
 
