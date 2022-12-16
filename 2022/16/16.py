@@ -20,21 +20,4 @@ for i in arr:
 
 start="AA"
 
-def go(G, node, cost, benefit, visited):
-
-    c = nx.descendants(G, node)
-    print(c, visited)
-
-    # move costs 1
-    cost+=1
-    if cost>30:
-        return None
-
-    p = 0
-    for i in c:
-        if not i in visited:
-            r = go(G, i, cost, visited+[i])
-        
-
-go(G, start, 0, 0, [])
-
+print(nx.simple_cycles(G))
