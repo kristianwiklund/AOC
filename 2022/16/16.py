@@ -27,7 +27,7 @@ for i in arr:
 
 
 start="AA"
-
+cache = dict()
 
 # keep moving until either the time runs out
 # or all valves are open
@@ -41,14 +41,14 @@ def weighter(x,y):
     timex=x[2]
     timey=y[2]
 
-    now = 30-y[3]
+    now = y[3]
     
     # we sort based on opportunity cost
 
     if timex == timey:
         return cmp(flowx,flowy)
 
-    rem = now
+    rem = 30-now
     remx = rem-timex
     remy = rem-timey
     
@@ -61,16 +61,32 @@ def cmp(a, b):
 
 # ('HH', 22, 6, 0), ('CC', 2, 3, 0), ('EE', 3, 3, 0), ('JJ', 21, 3, 0), ('BB', 13, 2, 0), ('DD', 20, 2, 0)
 
-def go(G, node, opened, valves, time):
 
+hits=0
+misses=0
+
+def go(G, node, opened, valves, time):
+    global hits
+    global misses
+    
+    if node+str(opened) in cache:
+        hits+=1
+        if hits%100 == 0:
+            print(hits,misses)
+        return cache[node+str(opened)]
+
+    misses+=1
+    if misses%100 == 0:
+        print(hits,misses)
+    
     if time>=30 or len(valves)==0:
-        print("Boom",opened,end=" ")
+        #print("Boom",opened,valves,end=" ")
         score=0
         for i in opened:
             score+=(30-i[2])*i[1]
 
-        print("score",score)
-        return
+        #print("score",score)
+        return score
     
 #    SG = deepcopy(G)
 #    SG.remove_node(node)
@@ -93,6 +109,9 @@ def go(G, node, opened, valves, time):
 
     # test the things in order
     otime=time
+    smax=0
+    bmax=None
+    
     for v in range(len(distance)):
         time=otime
         path = list(nx.shortest_path(G,node,distance[v][0]))
@@ -103,8 +122,23 @@ def go(G, node, opened, valves, time):
         
         nvalves = deepcopy(valves)
         nvalves.remove((distance[v][0],distance[v][1]))
-    
-        go(G,distance[v][0],opened+[(distance[v][0],G.nodes[distance[v][0]]["rate"],time)],nvalves,time+1)
 
-go(G,"AA",[],valves,1)
+        score=go(G,distance[v][0],opened+[(distance[v][0],G.nodes[distance[v][0]]["rate"],time)],nvalves,time+1)
+        if score>smax:
+            smax=score
+            #print("win",score)
+            bmax=v
+
+    if bmax!=None:
+        cache[node+str(opened)]=smax
+
+        return smax
+    
+    print("didnae find anything for node",node,distance)
+    return -1
+    
+score=go(G,"AA",[],valves,1)
+#key = next(key for key, value in cache.items() if value == score)
+#key = eval(key[2:-5])
+print(score)
 
