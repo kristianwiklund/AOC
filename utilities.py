@@ -50,6 +50,8 @@ def factors(n):
 
 # Returns the longest repeating non-overlapping
 # substring in str
+# from https://www.geeksforgeeks.org/longest-repeating-and-non-overlapping-substring/
+
 def lrs(str):
  
     n = len(str)
