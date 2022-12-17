@@ -144,7 +144,7 @@ th = dict()
 ph =0
 rh=dict()
 ip=-1
-for i in range(5000):
+for i in range(10000):
 #    print(i,wind)
     #Pattern:     ###    ###    ###    ####     #     ###     #
     (chamber,wind) = drop(chamber,i%5,wind)
@@ -261,13 +261,13 @@ def banana(s):
         a = s[:i]
         v = s[i:].index(a)
         
-        print("l =",i,v,a)
-        print("l =",i,v,s[i+v:v+2*i])
+        #print("l =",i,v,a)
+        #print("l =",i,v,s[i+v:v+2*i])
 
         # gotcha
         if v==0:
-            print("Test sequence starts at",i)
-            print("Test sequence is",a)
+            #print("Test sequence starts at",i)
+            #print("Test sequence is",a)
 
             return len(a)
 
@@ -285,17 +285,19 @@ for j in range(len(s)):
 print("Height:",height)
 vq=""
 
-pstart=j
+pstart=j//7
+#pprint(rh)
 
 print("pstart",pstart,"ulen",len(s))
 #pstart=175
 #print(rh)
-pstartcount = rh[pstart]
+pstartcount = rh[int(pstart)]
 
 # calculate this in a smart way later
-pheight=pheight/7
+pheight=pheight//7
 print("got pheight",pheight)
-pendcount = rh[pstart+pheight]
+
+pendcount = rh[int(pstart+pheight)]
 #plen=35 ## 54 - number of stones are 35
 plen=(pendcount-pstartcount)
 print("plen",plen)
@@ -316,3 +318,4 @@ print((1514285714288-spill-pstart)/npat)
 
 # 1799999999916 too high
 # 1400000000005 too low
+# 1553665688647 too low
