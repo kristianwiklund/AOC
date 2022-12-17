@@ -257,7 +257,7 @@ def banana(s):
     # the hypothesis is that it stabilizes towards the end
     #s = s[::-1] # reverse the string
 
-    for i in range(100,len(s)):
+    for i in range(100,len(s),7):
         a = s[:i]
         v = s[i:].index(a)
         
