@@ -8,6 +8,9 @@ from functools import lru_cache
 
 # 1645 too low
 # 1614 too low
+# 1548 is too low as well I assume
+# 1513 likely too low as well then...
+
 arr = readarray("input.txt",split=" ")
 
 G = nx.DiGraph()
@@ -28,7 +31,20 @@ for i in arr:
 
 
 start="AA"
-cache = dict()
+#cache = dict()
+
+import pygraphviz
+from networkx.drawing.nx_agraph import write_dot
+#print(G.edges(data=True))
+#print(G.nodes)
+
+#labels = nx.get_edge_attributes(G,'weight')
+#nx.draw_networkx_edge_labels(G,pos=nx.spring_layout(G),edge_labels=labels)
+
+cnt=0
+cache=dict()
+write_dot(G, "maze.dot")
+
 
 # keep moving until either the time runs out
 # or all valves are open
@@ -49,7 +65,7 @@ def weighter(x,y):
     if timex == timey:
         return cmp(flowx,flowy)
 
-    rem = 30-now
+    rem = 31-now
     remx = rem-timex
     remy = rem-timey
     
@@ -99,7 +115,7 @@ misses=0
 
 #@listToTuple
 #@lru_cache(maxsize=None)
-def go(G, node, opened, valves, time):
+def go(G, node, opened, valves, time, mmax):
     global hits
     global misses
     
@@ -118,10 +134,10 @@ def go(G, node, opened, valves, time):
         for i in opened:
             score+=(30-i[2])*i[1]
 
-        if score==1614:
-            print("Boom",opened,end=" ")
-            print("score",score)
-            pp(G,opened)
+        #if score==1614:
+        #    print("Boom",opened,end=" ")
+        #    print("score",score)
+        #    pp(G,opened)
         return (score,opened)
     
 #    SG = deepcopy(G)
@@ -149,9 +165,10 @@ def go(G, node, opened, valves, time):
     bmax=None
     gmax=[]
     
-    for v in range(len(distance)):
+    for v in range(len(distance)-1,-1,-1):
         time=otime
         path = list(nx.shortest_path(G,node,distance[v][0]))
+
         path.pop(0)
         #        for i in path:
         #            time+=1
@@ -163,21 +180,23 @@ def go(G, node, opened, valves, time):
         nvalves=list(nvalves)
         nvalves.remove((distance[v][0],distance[v][1]))
 
-        (score,gpath)=go(G,distance[v][0],list(opened)+[(distance[v][0],G.nodes[distance[v][0]]["rate"],time)],nvalves,time+1)
+        (score,gpath)=go(G,distance[v][0],list(opened)+[(distance[v][0],G.nodes[distance[v][0]]["rate"],time)],nvalves,time+1,smax)
         if score>smax:
             smax=score
             #print("win",score)
             bmax=v
             gmax=gpath
     if bmax!=None:
-        cache[node+str(opened)]=smax
+        #cache[node+str(opened)]=smax
 
+        #if smax>mmax:
+        #    print(smax)
         return (smax, gmax)
     
     #print("didnae find anything for node",node,distance)
     return (-1,[])
     
-score=go(G,"AA",[],valves,1)
+score=go(G,"MU",[],valves,1,0)
 
 
 #key = next(key for key, value in cache.items() if value == score)

@@ -6,7 +6,6 @@ from copy import deepcopy
 from pprint import pprint
 
 wind = readarray("input.short",split="")[0]
-#print(wind)
 owind = deepcopy(wind)
 
 #The rocks fall in the order shown above: first the - shape, then the + shape, and so on. Once the end of the list is reached, the same order repeats: the - shape falls first, sixth, 11th, 16th, etc.
@@ -27,7 +26,7 @@ def pp(chamber,alt=False):
     global minx
     global maxx
 
-    print("+-------+")
+    print("    +-------+")
     
     maxy = max([y for x,y in chamber])
     
@@ -57,7 +56,7 @@ def pp(chamber,alt=False):
             print (l,end=",")
             
     if not alt:
-        print("+-------+")
+        print("    +-------+")
         print("")
 
 def collide(chamber, shape, nx, ny):
@@ -136,128 +135,72 @@ def drop(chamber, shape, wind):
             chamber = draw(chamber, shape, x, y)
 
             return (chamber,wind)
-            
 
-cnt=0
+hmap=dict()
 
-th = dict()
-ph =0
-rh=dict()
-ip=-1
-for i in range(10000):
-#    print(i,wind)
-    #Pattern:     ###    ###    ###    ####     #     ###     #
+for i in range(300):
     (chamber,wind) = drop(chamber,i%5,wind)
     height = max([y for (x,y) in chamber])
-    th[i]=height
+    hmap[i]=height
     
-    if ph<=height:
-        rh[ph]=i
-        ph=height
-
-    #if not (i+1)%1000:
-    #    print(i+1,height,height*1000/(i+1),height/17)
-
-    if i==2021:
-        print("Part 1:",height)
-
-    # the recurring pattern in the test thingy starts at 175
-    # and is 35 stones long
-    #if height==175:
-    #    print("ps:",height, i)
-        
-    #if not (height-175)%53:
-    #    ho=height-175
-    #    if ho:
-#            print (ip,i,i-ip,(i+175)/(ho))
-    #        ip=i
+pp(chamber)
 
 
-#pp(chamber)
-    
-print("Finding pattern")
-# find recurring pattern
-s=""
-for y in range(1,height):
+# create different representations of the chamber
+
+height = max([y for (x,y) in chamber])
+
+
+# a string
+scham=""
+for y in range(2,height):
     for x in range(maxx+1):
         if (x,y) in chamber:
-            s=s+"#"
+            scham=scham+"#"
         else:
-            s=s+" "
-#print(s)
-#print("Converting to numbers")
-#u=[]
-#while len(s):
-#    p = s[:7]
-#    q = s[7:]
-#    t = sum([1 if x=='#' else 0 for x in p])
-#    s=q
-#    u.append(chr(t+ord('1')))
+            scham=scham+" "
+# number of tjohej per row
 
-#u="".join(u)
-#print (u)
-#import sys
-#sys.exit()
+x=scham
 
-#print(u)
-#sq=lrs(s)
-#print(sq)
-#print(u)
+def bobtonum(x):
+    scham=deepcopy(x)
+    print("Converting to numbers")
+    num=[]
+    while len(scham):
+        p = scham[:7]
+        q = scham[7:]
+        t = sum([1 if x=='#' else 0 for x in p])
+        scham=q
+        num.append(chr(t+ord('1')))
+    num="".join(num)
+        
+    return(num)
 
-def computeLPSArray(string, M, lps):
-    length = 0        # length of the previous longest prefix suffix
-    i = 1
-  
-    lps[0] = 0    # lps[0] is always 0
-  
-    # the loop calculates lps[i] for i = 1 to M-1
-    while i < M:
-        if string[i] == string[length]:
-            length += 1
-            lps[i] = length
-            i += 1
-        else:
-            if length != 0:            
-                # This is tricky. Consider the example AAACAAAA 
-                # and i = 7.
-                length = lps[length-1]
-  
-                # Also, note that we do not increment i here
-            else:
-                lps[i] = 0
-                i += 1
-  
-# Returns true if string is repetition of one of its substrings
-# else return false.
-def isRepeat(string):
-    # Find length of string and create an array to
-    # store lps values used in KMP
-    n = len(string)
-    lps = [0] * n
-  
-    # Preprocess the pattern (calculate lps[] array)
-    computeLPSArray(string, n, lps)
-  
-    # Find length of longest suffix which is also
-    # prefix of str.
-    length = lps[n-1]
-  
-    # If there exist a suffix which is also prefix AND
-    # Length of the remaining substring divides total
-    # length, then str[0..n-len-1] is the substring that
-    # repeats n/(n-len) times (Readers can print substring
-    # and value of n/(n-len) for more clarity.
-    if length > 0 and n%(n-length) == 0:
-        return True
-    else:
-        False
-  
+def bobtobin(x):
+    # binary
+    bnum=[]
+    scham=deepcopy(x)
+    while len(scham):
+        p = scham[:7]
+        q = scham[7:]
+        p = p.replace("#","1").replace(" ","0")
+        scham=q
+        bnum.append(int(p,2))
+
+    return (bnum)
+
+num = bobtonum(x)
+bnum=bobtobin(x)
+#print (num)
+#print (bnum)
+
 def banana(s):
     # find recurring pattern in banana
     # the hypothesis is that it stabilizes towards the end
     #s = s[::-1] # reverse the string
 
-    for i in range(100,len(s),7):
+    for i in range(11,len(s)):
         a = s[:i]
         v = s[i:].index(a)
         
@@ -270,52 +213,51 @@ def banana(s):
             #print("Test sequence is",a)
 
             return len(a)
+s=num
 
 for j in range(len(s)):
     try:
         pheight=banana(s[j:])
         print ("offset",j)
+        offset=j
+        print ("pheight",pheight)
         break
     except:
         continue
-    
 
+# --
 
-#print("Pattern:",sq)
-print("Height:",height)
-vq=""
+# reset the chamber, drop again
 
-pstart=j//7
-#pprint(rh)
+chamber = {(0,0):"#",(1,0):"#",(2,0):"#",(3,0):"#",(4,0):"#",(5,0):"#",(6,0):"#"}
+pstartcount=-1
+for i in range(300):
+    (chamber,wind) = drop(chamber,i%5,wind)
+    height = max([y for (x,y) in chamber])
+    if height==offset and pstartcount<0:
+        print("recording drop at offset",offset,"which required",i,"stones")
+        pstartcount=i+1
+    if height==offset+pheight:
+        print("recording drop at pattern end",height,"which required",i,"stones")
+        pendcount=i+1
+        break
 
-print("pstart",pstart,"ulen",len(s))
-#pstart=175
-#print(rh)
-pstartcount = rh[int(pstart)]
+plen = pendcount-pstartcount
+print("pattern height is",pheight,"created by",plen,"stones")
 
-# calculate this in a smart way later
-pheight=pheight//7
-print("got pheight",pheight)
-
-pendcount = rh[int(pstart+pheight)]
-#plen=35 ## 54 - number of stones are 35
-plen=(pendcount-pstartcount)
-print("plen",plen)
 scount=1000000000000
-pcount = scount-pstartcount
-npat = pcount // plen
-print("npat",npat)
+pcount = scount-pstartcount # this is where the recurrence starts
+npat = pcount // plen # this is the number of patterns in the recurrence
+print("npat",npat)  
 spill = pcount % plen
 print(spill)
 
-height=npat*pheight+pstart+spill+1
+height=npat*pheight+offset+spill
 
 print("Part 2:", height)
 print("The example answer is 1514285714288")
 
-print(npat*pheight+pstart+spill)
-print((1514285714288-spill-pstart)/npat)
+#print(npat*pheight+pstart+spill)
+#print((1514285714288-spill-pstart)/npat)
 
-# 1799999999916 too high
-# 1400000000005 too low
-# 1553665688647 too low
+
