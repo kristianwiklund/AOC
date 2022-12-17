@@ -49,7 +49,7 @@ def weighter(x,y):
     if timex == timey:
         return cmp(flowx,flowy)
 
-    rem = 31-now
+    rem = 30-now
     remx = rem-timex
     remy = rem-timey
     
