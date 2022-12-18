@@ -5,7 +5,7 @@ import networkx as nx
 from copy import deepcopy
 from pprint import pprint
 
-wind = readarray("input.short",split="")[0]
+wind = readarray("input.txt",split="")[0]
 owind = deepcopy(wind)
 
 #The rocks fall in the order shown above: first the - shape, then the + shape, and so on. Once the end of the list is reached, the same order repeats: the - shape falls first, sixth, 11th, 16th, etc.
@@ -138,7 +138,7 @@ def drop(chamber, shape, wind):
 
 hmap=dict()
 
-for i in range(300):
+for i in range(30000):
     (chamber,wind) = drop(chamber,i%5,wind)
     height = max([y for (x,y) in chamber])
     hmap[i]=height
@@ -192,7 +192,7 @@ def bobtobin(x):
 
 num = bobtonum(x)
 bnum=bobtobin(x)
-#print (num)
+print (num)
 #print (bnum)
 
 def banana(s):
@@ -231,7 +231,7 @@ for j in range(len(s)):
 
 chamber = {(0,0):"#",(1,0):"#",(2,0):"#",(3,0):"#",(4,0):"#",(5,0):"#",(6,0):"#"}
 pstartcount=-1
-for i in range(300):
+for i in range(30000):
     (chamber,wind) = drop(chamber,i%5,wind)
     height = max([y for (x,y) in chamber])
     if height==offset and pstartcount<0:
@@ -256,7 +256,16 @@ height=npat*pheight+offset+spill
 
 print("Part 2:", height)
 print("The example answer is 1514285714288")
+if height==1514285714288:
+    import sys
+    sys.exit()
+    
+if height>1799999999916:
+    print ("too high")
 
+if height<1553665688647:
+    print("too low")
+    
 #print(npat*pheight+pstart+spill)
 #print((1514285714288-spill-pstart)/npat)
 

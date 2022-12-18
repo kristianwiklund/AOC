@@ -68,7 +68,6 @@ class Box:
     
     def __repr__(self):
         s= self.state+" x="+str(self.x1)+".."+str(self.x2-1)+",y="+str(self.y1)+".."+str(self.y2-1)+",z="+str(self.z1)+".."+str(self.z2-1)
-#        s= self.state+" x="+str(self.x1)+".."+str(self.x2)+",y="+str(self.y1)+".."+str(self.y2)+",z="+str(self.z1)+".."+str(self.z2)
 #        if self.id:
 #            s = s + " = "+str(self.size())
 #            s = s + " ("+self.id+")"
