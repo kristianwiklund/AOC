@@ -28,5 +28,6 @@ for i in arr:
         else:
             world.remove(t)
 
-print(len(world))
-    
+print("Part 1:",len(world))
+print(world)
+

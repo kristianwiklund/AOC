@@ -179,3 +179,11 @@ def printpath(path,nonum=True, background=None,bgin=None):
 
         print("")
         
+# --
+from collections import defaultdict
+# https://stackoverflow.com/questions/12720151/simple-way-to-group-items-into-buckets
+def partition(seq, key):
+    d = defaultdict(list)
+    for x in seq:
+        d[key(x)].append(x)
+    return d
