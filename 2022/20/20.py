@@ -57,9 +57,11 @@ def  qmix(sss,nr):
     
     # calculate new position
     np = pos+nr
-#    while np<0:
-#        np+=(len(sss))
-        
+
+    
+    while np<0:
+        np+=(len(sss))
+    
     np = np%(len(sss))
     
    # print("inserting item",nr,"at",np)
@@ -82,7 +84,7 @@ def  qmix(sss,nr):
     return vvv
     
 def mix(seq,nr):
-    print("=================")
+#    print("=================")
    # print("mixing",nr)
     if nr==0:
         return seq
@@ -120,8 +122,11 @@ seq2=qmix(seq2,2)
 assert(seq==[1,-3,2,3,-2,0,4])
 assert(seq==seq2)
 
+print(seq,-3)
 seq=mix(seq,-3)
 seq2=qmix(seq2,-3)
+print(seq)
+print(seq2)
 assert(seq==seq2)
 assert(seq==[1,2,3,-2,-3,0,4])
 
@@ -166,15 +171,16 @@ except:
 
 seq.append(-4711)
 seq2.append(-4711)
+print("mixing",seq,-4711)
 seq=mix(seq,-4711)
-seq2=mix(seq2,-4711)
+seq2=qmix(seq2,-4711)
 
 try:
     assert(seq==seq2)
 except:
     print("seq!=seq2")
-    print(seq)
-    print(seq2)
+    print("mix",seq)
+    print("qmix",seq2)
     import sys
     sys.exit()
 
@@ -182,15 +188,16 @@ except:
 seq.append(4711)
 seq2=deepcopy(seq)
 seq=mix(seq,4711)
-seq2=mix(seq2,4711)
+seq2=qmix(seq2,4711)
 seq=mix(seq,-4711)
-seq2=mix(seq2,-4711)
+seq2=qmix(seq2,-4711)
 seq=mix(seq,4)
-seq2=mix(seq2,4)
+seq2=qmix(seq2,4)
 seq=mix(seq,-4711)
-seq2=mix(seq2,-4711)
+seq2=qmix(seq2,-4711)
 seq=mix(seq,4711)
-seq2=mix(seq2,4711)
+seq2=qmix(seq2,4711)
+
 
 try:
     assert(seq==seq2)
@@ -200,6 +207,30 @@ except:
     print(seq2)
     import sys
     sys.exit()
+
+import random
+seq=list(range(0,1000))
+seq.append(4711)
+seq.append(-4711)
+random.shuffle(seq)
+
+seq2=deepcopy(seq)
+assert(seq2==seq)
+
+
+seq2=deepcopy(seq)
+seq=mix(seq,4711)
+seq2=qmix(seq2,4711)
+seq=mix(seq,-4711)
+seq2=qmix(seq2,-4711)
+seq=mix(seq,4)
+seq2=qmix(seq2,4)
+seq=mix(seq,-4711)
+seq2=qmix(seq2,-4711)
+seq=mix(seq,4711)
+seq2=qmix(seq2,4711)
+
+assert(seq==seq2)
 
 
 print("Tests passed")
@@ -233,29 +264,29 @@ for i in arr:
     
     print("seq2 length",len(seq2))
 
-#    try:
-#        assert(seq==seq2)
-#    except:
-#        print("s,s2 len:",len(seq),len(seq2))
-#        for i in range(max(len(seq),len(seq2))):
-#            if seq[i]!=seq2[i]:
-#                print ("differs at",i)
-#                print ("break was done at",(len(seq)+i)%len(seq))
-#                print((oseq[i-1],seq[i-1],seq2[i-1]),(oseq[i],seq[i],seq2[i]),(oseq[i+1],seq[i+1],seq2[i+1]),(oseq[i+2],seq[i+2],seq2[i+2]))
-#                print("Found",seq[i],"at",i,"in seq")
-#                print("Found",seq2[i],"at",i,"in seq2")
-               
-#                try:
-#                    print(seq[i],"is at ",seq2.index(seq[i]),"in seq2")
-#                except:
-#                    print(seq[i],"is gone from seq2")
-#                    import sys
-#                    sys.exit()
-#                break
+    try:
+        assert(seq==seq2)
+    except:
+        print("s,s2 len:",len(seq),len(seq2))
+        for i in range(max(len(seq),len(seq2))):
+            if seq[i]!=seq2[i]:
+                print ("differs at",i)
+                print ("break was done at",(len(seq)+i)%len(seq))
+                print((oseq[i-1],seq[i-1],seq2[i-1]),(oseq[i],seq[i],seq2[i]),(oseq[i+1],seq[i+1],seq2[i+1]),(oseq[i+2],seq[i+2],seq2[i+2]))
+                print("Found",seq[i],"at",i,"in seq")
+                print("Found",seq2[i],"at",i,"in seq2")
+              
+                try:
+                    print(seq[i],"is at ",seq2.index(seq[i]),"in seq2")
+                except:
+                    print(seq[i],"is gone from seq2")
+                    import sys
+                    sys.exit()
+                break
                    
-#        print("assert exception, exiting")
-#        import sys
-#        sys.exit()
+        print("assert exception, exiting")
+        import sys
+        sys.exit()
    
 print("---")
 p=seq2.index(0)
