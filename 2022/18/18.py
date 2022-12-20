@@ -5,7 +5,7 @@ import networkx as nx
 from copy import deepcopy
 from pprint import pprint
 
-arr = readarray("input.short",split=",",convert=lambda x:int(x))
+
 
 def sides(l):
 
@@ -20,6 +20,8 @@ def sides(l):
 
 world = set()
 
+arr = readarray("input.txt",split=",",convert=lambda x:int(x))
+
 for i in arr:
     s = sides(i)
     for t in s:
@@ -29,5 +31,5 @@ for i in arr:
             world.remove(t)
 
 print("Part 1:",len(world))
-print(world)
+
 

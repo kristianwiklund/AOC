@@ -4,7 +4,7 @@ from utilities import *
 import networkx as nx
 from copy import deepcopy
 from pprint import pprint
-from functools import lru_cache
+from functools import cache
 
 # 1645 too low
 # 1614 too low
@@ -42,7 +42,7 @@ from networkx.drawing.nx_agraph import write_dot
 #nx.draw_networkx_edge_labels(G,pos=nx.spring_layout(G),edge_labels=labels)
 
 cnt=0
-cache=dict()
+
 write_dot(G, "maze.dot")
 
 
@@ -115,7 +115,9 @@ misses=0
 
 #@listToTuple
 #@lru_cache(maxsize=None)
-def go(G, node, opened, valves, time, mmax):
+@listToTuple
+@cache
+def go(G,node, opened, valves, time, mmax):
     global hits
     global misses
     
@@ -181,6 +183,7 @@ def go(G, node, opened, valves, time, mmax):
         nvalves.remove((distance[v][0],distance[v][1]))
 
         (score,gpath)=go(G,distance[v][0],list(opened)+[(distance[v][0],G.nodes[distance[v][0]]["rate"],time)],nvalves,time+1,smax)
+        
         if score>smax:
             smax=score
             #print("win",score)
@@ -195,7 +198,7 @@ def go(G, node, opened, valves, time, mmax):
     
     #print("didnae find anything for node",node,distance)
     return (-1,[])
-    
+
 score=go(G,"MU",[],valves,1,0)
 
 
