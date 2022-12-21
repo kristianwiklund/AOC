@@ -4,7 +4,7 @@ from utilities import *
 import networkx as nx
 from copy import deepcopy
 from pprint import pprint
-from functools import cache,lru_cache
+#from functools import cache,lru_cache
 arr = readarray("input.short",split=".",convert=lambda x:x)
 
 bp=list()
@@ -22,7 +22,6 @@ for i in arr:
 
 cnt=0
 
-@cache
 def tick(bp, store, robots, time):
     global cnt
 
@@ -50,7 +49,7 @@ def tick(bp, store, robots, time):
     bot=False
     v=dict()
 
-        
+
     if store[0]>=bp[3][0] and store[2]>=bp[3][1]:
         ts=list(store)
         tr=list(robots)
@@ -62,7 +61,7 @@ def tick(bp, store, robots, time):
         mx=max(mx,v["geode"])
         rx="geode"
 
-    elif store[0]>=bp[2][0] and store[1]>=bp[2][1]:
+    if store[0]>=bp[2][0] and store[1]>=bp[2][1]:
         ts=list(store)
         tr=list(robots)
         ts[0]-=bp[2][0]
@@ -72,30 +71,29 @@ def tick(bp, store, robots, time):
         mx=max(mx,v["obsidian"])
         rx="obsidian"
         
-    else:
-        if store[0]>=bp[1]:
-            ts=list(store)
-            tr=list(robots)
-            ts[0]-=bp[1]
-            tr[1]+=1
-            v["clay"] = tick(bp, tuple(ts), tuple(tr), time+1)
-            mx=max(mx,v["clay"])
-            rx="clay"
-
-        if store[0]>=bp[0]:
-            ts=list(store)
-            tr=list(robots)
-            ts[0]-=bp[0]
-            tr[0]+=1
-            v["ore"] = tick(bp, tuple(ts), tuple(tr), time+1)
-            mx=max(mx,v["ore"])
-            rx="ore"
+    if store[0]>=bp[1]:
+        ts=list(store)
+        tr=list(robots)
+        ts[0]-=bp[1]
+        tr[1]+=1
+        v["clay"] = tick(bp, tuple(ts), tuple(tr), time+1)
+        mx=max(mx,v["clay"])
+        rx="clay"
+        
+    if store[0]>=bp[0]:
+        ts=list(store)
+        tr=list(robots)
+        ts[0]-=bp[0]
+        tr[0]+=1
+        v["ore"] = tick(bp, tuple(ts), tuple(tr), time+1)
+        mx=max(mx,v["ore"])
+        rx="ore"
         
 
-        v["none"] = tick(bp,store,robots,time+1)
-        mx=max(mx,v["none"])
-        rx="none"
-        # select the best path
+    v["none"] = tick(bp,store,robots,time+1)
+    mx=max(mx,v["none"])
+    rx="none"
+    # select the best path
 
 
     return mx
