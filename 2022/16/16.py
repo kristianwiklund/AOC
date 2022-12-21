@@ -4,7 +4,8 @@ from utilities import *
 import networkx as nx
 from copy import deepcopy
 from pprint import pprint
-from functools import cache
+#from functools import cache
+import functools
 
 # 1645 too low
 # 1614 too low
@@ -115,8 +116,8 @@ misses=0
 
 #@listToTuple
 #@lru_cache(maxsize=None)
-@listToTuple
-@cache
+#@listToTuple
+#@cache
 def go(G,node, opened, valves, time, mmax):
     global hits
     global misses
