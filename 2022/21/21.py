@@ -65,17 +65,17 @@ G=readG()
 G.nodes["humn"]["expr"]="HUMN"
 del G.nodes["humn"]["value"]
 G.nodes["root"]["expr"]=G.nodes["root"]["expr"].replace("+","=")
-print(bal(G,"root")) 
+bal(G,"root")
 
 v=list()
 for i in G.successors("root"):
      v.append(G.nodes[i]["value"])
 
-pprint (v)
+#pprint (v)
 
 ex = str(v[0])+"-"+str(v[1])
 
 from sympy import *
 
 HUMN=symbols("HUMN")
-print("Part 2:",solve(eval(ex),HUMN))
+print("Part 2:",int(solve(eval(ex),HUMN)[0]))
