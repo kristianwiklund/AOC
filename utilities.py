@@ -193,3 +193,23 @@ def partition(seq, key):
     for x in seq:
         d[key(x)].append(x)
     return d
+
+# --
+
+# convert an array into a sparse array dict
+def arr2sparse(arr,ignore=""):
+    s = dict()
+
+    for y in range(len(arr)):
+        for x in range(len(arr[y])):
+            if arr[y][x] not in ignore:
+                s[(x,y)] = arr[y][x]
+    return (s)
+
+# add a and b, which are tuples, item for item
+def addtuples(a,b):
+    return tuple([sum(x) for x in zip (a,b)])
+
+assert(addtuples((1,0),(0,1))==(1,1))
+assert(addtuples((-1,0),(1,0))==(0,0))
+assert(addtuples((0,0),(0,0))==(0,0))
