@@ -5,7 +5,7 @@ import networkx as nx
 from copy import deepcopy
 from pprint import pprint
 
-wind = readarray("input.txt",split="")[0]
+wind = readarray("input.short",split="")[0]
 owind = deepcopy(wind)
 
 #The rocks fall in the order shown above: first the - shape, then the + shape, and so on. Once the end of the list is reached, the same order repeats: the - shape falls first, sixth, 11th, 16th, etc.
@@ -138,7 +138,7 @@ def drop(chamber, shape, wind):
 
 hmap=dict()
 
-for i in range(30000):
+for i in range(3000):
     (chamber,wind) = drop(chamber,i%5,wind)
     height = max([y for (x,y) in chamber])
     hmap[i]=height
@@ -190,9 +190,9 @@ def bobtobin(x):
 
     return (bnum)
 
-num = bobtonum(x)
-bnum=bobtobin(x)
-print (num)
+#num = bobtonum(x)
+#bnum=bobtobin(x)
+#print (num)
 #print (bnum)
 
 def banana(s):
@@ -213,21 +213,27 @@ def banana(s):
             #print("Test sequence is",a)
 
             return len(a)
-s=num
+s=scham
 
-for j in range(len(s)):
-    try:
-        pheight=banana(s[j:])
-        print ("offset",j)
-        offset=j
-        print ("pheight",pheight)
-        break
-    except:
-        continue
+print("searching for pattern")
+
+#for j in range(len(s)):
+#    try:
+#        pheight=banana(s[j:])
+#        print ("offset",j)
+#        offset=j
+#        print ("pheight",pheight)
+#        break
+#    except:
+#        continue
 
 # --
 
 # reset the chamber, drop again
+
+kv = lrs(s)
+pheight=len(kv)
+offset=s.index(kv)
 
 chamber = {(0,0):"#",(1,0):"#",(2,0):"#",(3,0):"#",(4,0):"#",(5,0):"#",(6,0):"#"}
 pstartcount=-1
@@ -235,7 +241,7 @@ for i in range(30000):
     (chamber,wind) = drop(chamber,i%5,wind)
     height = max([y for (x,y) in chamber])
     if height==offset and pstartcount<0:
-        print("recording drop at offset",offset,"which required",i,"stones")
+        print("starting to record drop at offset",offset,"which required",i,"stones")
         pstartcount=i+1
     if height==offset+pheight:
         print("recording drop at pattern end",height,"which required",i,"stones")
@@ -250,12 +256,13 @@ pcount = scount-pstartcount # this is where the recurrence starts
 npat = pcount // plen # this is the number of patterns in the recurrence
 print("npat",npat)  
 spill = pcount % plen
-print(spill)
+print("spill",spill)
 
 height=npat*pheight+offset+spill
 
 print("Part 2:", height)
 print("The example answer is 1514285714288")
+print("diff:",1514285714288-height)
 if height==1514285714288:
     import sys
     sys.exit()
