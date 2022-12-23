@@ -18,10 +18,12 @@ fixzor(A,B) when A>=B ->
 fixzor(A,_) ->
     A.
 
-strip(B) when B>999999999->
-    strip(B-1000000000);
-strip(B) when B<(-999999999) ->
-    strip(B+1000000000);
+strip(B) when B>99999999999999999999->
+    io:format("."),
+    strip(B-100000000000000000000);
+strip(B) when B<(-99999999999999999999) ->
+    io:format("."),
+    strip(B+100000000000000000000);
 strip(B) ->
     B.
 	  
@@ -104,14 +106,16 @@ tests() ->
     test3(),
     test4().
 
-magic(R) -> 
+magic(R2) -> 
+    I = index_of(0,R2),
+    {R1,R2} = lists:split(I,R2),
+    R = R2++R1,
     I2 = index_of(0,R),
-    
     io:format("I2 is ~p in ~p~n",[I2,R]),
     io:format("~p ~p ~p~n",[(I2+1000) rem length(R),(I2+2000) rem length(R),(I2+3000) rem length(R)]),
-    A =	strip(lists:nth(fixzor(I2+1000,length(R)),R)),
-    B =	strip(lists:nth(fixzor(I2+2000,length(R)),R)),
-    C =	strip(lists:nth(fixzor(I2+3000,length(R)),R)),
+    A =	strip(lists:nth((I2+1000),R)),
+    B =	strip(lists:nth((I2+2000),R)),
+    C =	strip(lists:nth((I2+3000),R)),
     {A,B,C,A+B+C}.
 
 readfile(FileName) ->

@@ -5,42 +5,59 @@ import networkx as nx
 from copy import deepcopy
 from pprint import pprint
 import numpy as np
+from draw import *
 
 fn="input.txt"
 
 arr = readarray(fn,split=",",convert=lambda x:int(x)+1)
-maxx=max([x for x,y,z in arr])+1
-maxy=max([y for x,y,z in arr])+1
-maxz=max([z for x,y,z in arr])+1
+maxx=max([x for x,y,z in arr])+2
+maxy=max([y for x,y,z in arr])+2
+maxz=max([z for x,y,z in arr])+2
 
 
-w=[[[False for x in range(maxx)] for y in range(maxy)] for z in range(maxz)]
+
+w=[[[0 for x in range(maxx)] for y in range(maxy)] for z in range(maxz)]
 
 for x,y,z in arr:
 #    print(x,y,z)
-    w[z][y][x] = True
+    w[z][y][x] = 1
 
 w=np.array(w)
 #print(w)
+ow=deepcopy(w)
 
-# 1958 is too low
-# 1963 is too low as well
-# 1966 too low
-# 2651 is wrong
-# (0,0,0) is guaranteed to be in a place where the thing have free space around itself
+class Bob():
+
+    def __init__(self):
+        self.list=[]
+        self.set=set()
+
+    def pop(self,x):
+        t = self.list.pop(x)
+        self.set.remove(t)
+        return t
+
+    def add(self,x):
+        if not x in self.set:
+            self.set.add(x)
+            self.list.append(x)
+
+    def __len__(self):
+        return len(self.list)
 
 q = list()
-def bfs(pos):
+def bfs(pos,value=1):
     global maxx
     global maxy
     global maxz
     print(pos)
+    cnt=0
     
     while len(pos):
-        t=pos.pop()
+        t=pos.pop(0)
         x,y,z=t
     
-        w[z][y][x] = True
+        w[z][y][x] = value
         
         if z+1<maxz and not w[z+1][y][x]:
             pos.add((x,y,z+1))
@@ -54,23 +71,23 @@ def bfs(pos):
             pos.add((x,y-1,z))
         if x-1>=0 and not w[z][y][x-1]:
             pos.add((x-1,y,z))
+        #savefig(w,serial=cnt)
+        cnt+=1
+        print(sum(w==0))
+        #print(cnt, "queue:",len(pos))
 
 
-v=set()
+v=Bob()
 v.add((0,0,0))
 bfs(v)
-w=np.invert(w)
-#print(21-sum(w))
-# w is a hole.
+
 
 barr=[]
 for z in range(maxz):
     for y in range(maxy):
         for x in range(maxx):
-            if w[z][y][x]:
+            if w[z][y][x]==0:
                 barr.append((x,y,z))
-
-#print(arr)
 
 
 def sides(l):
@@ -86,7 +103,7 @@ def sides(l):
 
 world = set()
 
-arr = readarray(fn,split=",",convert=lambda x:int(x))
+arr = readarray(fn,split=",",convert=lambda x:int(x)+1)
 
 for i in arr:
     s = sides(i)
@@ -96,6 +113,7 @@ for i in arr:
         else:
             world.remove(t)
 
+print("Part 1:",len(world))
 
 for i in barr:
     s = sides(i)
@@ -106,6 +124,5 @@ for i in barr:
             pass
 
 print("Part 2:",len(world))
-#print(world)
-#print(len(world))
-#print(sum(w))
+
+

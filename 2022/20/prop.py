@@ -4,7 +4,7 @@ with open("input.txt","r") as fd:
     bop = set()
     for i in lines:
         while i in bop:
-            i+=1000000000 if i>0 else -10000
+            i+=100000000000000000000 if i>0 else -100000000000000000000
 
         bop.add(i)
         print(i)
