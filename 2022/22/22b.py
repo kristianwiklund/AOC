@@ -23,9 +23,9 @@ w2wt = {(1,4):0,
        (2,5):-2,
        (2,6):-1,
        (3,4):0,
-       (3,5):1,
+       (3,5):-1,
        (4,5):0,
-       (4,6):-1,
+       (4,6):1,
        (5,6):0
        }
 w2wc = {1:[6,4,3,2],
@@ -67,34 +67,38 @@ def wrapmove(fullmap, world,x,y,facing):
     print("checking for wrapmove")
     ox=x
     oy=y
-    
+
+    print("Taking a giant leap for mankind from",(x,y),"to",end="")
     x+=dd[facing][0]
     y+=dd[facing][1]
+    print((x,y))
 
     while True:
-    
+
+        newworld=world
         # wraparound, this is where we need to swap worlds and rotate the movement
         # there are two steps to this change - one is to change the direction, the other
         # is to change the coordinates
         
         if y<0:
             # we move to the world in [3] in the list
-            #y = len(mymap)-1
+            y = len(mymap)-1
             newworld = w2wc[world][3]
-            
+        
         if x<0:
             # we move to the world in [2]
-            #x = len(mymap[y])-1
+            x = len(mymap[y])-1
             newworld = w2wc[world][2]
 
         if y>=len(mymap):
             # we move to the world in [1]
             #y=0
             newworld = w2wc[world][1]
+            y=0
 
         if x>=len(mymap[y]):
             # we move to the world in [0]
-            #x=0
+            x=0
             newworld = w2wc[world][0]
 
             
@@ -109,39 +113,53 @@ def wrapmove(fullmap, world,x,y,facing):
                 facing = (facing-fd)
                 if facing<0:
                     facing=facing+4
-
+            print("from",world,"to",newworld)
+            oldworld=world
             world = newworld
             mymap = fullmap[world]
 
             # rotate the coordinates
             if fd==1:
+
                 print ("rotate world right, coord left")
-                nx = y
-                ny = len(mymap)-x
+#                nx = y
+                ny = x
+                nx = len(mymap)-y-1
+                print((x,y),"-->",(nx,ny))
+                printpath([(ox,oy)],background=fullmap[oldworld],bgin="#")
+                print("")
+                printpath([(nx,ny)],background=fullmap[world],bgin="#")
+                print("--")
             elif fd==2 or fd==-2:
+
                 print ("rotate world 180 degrees")
                 print ("(x,y)",(x,y))
                 print("map dim",len(mymap))
-                nx = len(mymap)-x
-                ny = len(mymap)-y
+                nx = len(mymap)-x-1
+                ny = len(mymap)-y-1
                 print ("(nx,ny)",(nx,ny))
             elif fd==-1:
+
                 print("rotate world left, coord right")
-                nx = len(mymap)-y
-                ny = nx
+                nx = y
+                ny = len(mymap)-x-1
             else:
                 # do nothing
-                pass
+                print("No rotation, new coordinates are",(x,y))
+
+                nx=x
+                ny=y
 
             x=nx
             y=ny
 
         try:
             if mymap[y][x]=="#":
-                print("Hit something",mymap[ny][nx])
+                print("Hit something",mymap[y][x])
                 return None
         except:
-            print("bad range for mymap",(x,y))
+            print("bad range for mymap",(x,y),"or",(nx,ny))
+            print("max range is",(len(mymap[0]),len(mymap)))
             import sys
             sys.exit()
 
@@ -152,9 +170,11 @@ def wrapmove(fullmap, world,x,y,facing):
         ox=x
         oy=y
 
+        print("Happily moving around in the world, from",(x,y),end="")
+
         x+=dd[facing][0]
         y+=dd[facing][1]
-        print("+1 in the wrap",(x,y))
+        print("to +1 in the wrap",(x,y))
         
     return ((x,y), world)
             
@@ -184,16 +204,17 @@ with open("input.short","r") as fd:
     # "begin the path in the leftmost open tile of the top row of tiles"
     # "initially you are facing right"
     
-    x = mymap[0].index(".")
+    x = fullmap[1][0].index(".")
     y = 0
     
     facing = 0
-    mypath = [(x,y,facing,None)]
+
     
     steps=re.split(r"[A-Z]",cmd)
     dirs=re.split(r"[0-9][0-9]|[0-9]",cmd)[1:]
     walk= zip(steps,dirs)
     world=1
+    mypath = [(x,y,facing,world)]
     
     for s,d in walk:
         print("facing",facing,"moving",(s,d))
@@ -211,7 +232,7 @@ with open("input.short","r") as fd:
                     x=v[0][0]
                     y=v[0][1]
                     world=v[1]
-                    
+                    assert(world!=0)
 #                    print("moved to",(x,y))
                     mypath.append((x,y,facing,world))
 
@@ -229,11 +250,16 @@ with open("input.short","r") as fd:
 
 
     # need updating to plot right
-    path = [(x,y) for x,y,z,v in mypath]
+#    path = [(x,y) for x,y,z,v in mypath]
 #    print (path)
-    printpath(path,background=mymap,bgin=".# ",end="|")
+#    printpath(path,background=mymap,bgin=".# ",end="|")
                 
     print("row",y+1,"col",x+1,"facing",facing)
     print("Part 1:",1000*(y+1)+4*(x+1)+facing)
-    # 164074 not right
+
+        
     
+    newpath=transmogrif(mypath, fullmap)
+    path = [(x,y) for x,y,z,v in newpath]
+    
+    printpath(path,background=mymap,bgin=".# ",end="|")

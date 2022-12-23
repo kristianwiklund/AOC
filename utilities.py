@@ -146,20 +146,24 @@ def printpath(path,nonum=True, background=None,bgin=None,end=""):
     if nonum:
         syms = dict()
         # do all steps except the first and last one
-        for i in range(1, len(path)-1):
-            x = path[i][0]
-            y = path[i][1]
+        if len(path)>1:
+            for i in range(1, len(path)-1):
+                x = path[i][0]
+                y = path[i][1]
 
-            indx = (path[i-1][0]-x,path[i-1][1]-y,path[i+1][0]-x,path[i+1][1]-y)
+                indx = (path[i-1][0]-x,path[i-1][1]-y,path[i+1][0]-x,path[i+1][1]-y)
 
-            if indx in draw:
-                s = draw[indx]
-            else:
-                s= "x"
-            syms[path[i]] = s
-
+                if indx in draw:
+                    s = draw[indx]
+                else:
+                    s= "x"
+                syms[path[i]] = s
+                
+                syms[path[0]]="B"
+                syms[path[-1]]="E"
+        else:
             syms[path[0]]="B"
-            syms[path[-1]]="E"
+            
     
     for y in range(my):
         for x in range(mx):
