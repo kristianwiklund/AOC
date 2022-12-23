@@ -6,16 +6,22 @@
 # from utilities import *
 
 # reads a block of lines separated with empty lines from a file
-def readblock(fd):
+def readblock(fd,convert=lambda x:x,strip=True):
     elf = list()
-    x = fd.readline().strip()
-    
-    while x:
-        if x=="":
-            return elf
-        elf.append(int(x))
-        
+    if strip:
         x = fd.readline().strip()
+    else:
+        x= fd.readline()
+        
+    while x:
+        if x.strip()=="":
+            return elf
+        elf.append(convert(x))
+
+        if strip:
+            x = fd.readline().strip()
+        else:
+            x = fd.readline()
 
     return elf
 
@@ -95,7 +101,7 @@ def lrs(str):
 
 # print a path (list of tuples) on an array
 
-def printpath(path,nonum=True, background=None,bgin=None):
+def printpath(path,nonum=True, background=None,bgin=None,end="",thex=None):
 
     if background:
         mx = len(background[0])
@@ -140,20 +146,28 @@ def printpath(path,nonum=True, background=None,bgin=None):
     if nonum:
         syms = dict()
         # do all steps except the first and last one
-        for i in range(1, len(path)-1):
-            x = path[i][0]
-            y = path[i][1]
+        if len(path)>1:
+            for i in range(1, len(path)-1):
+                x = path[i][0]
+                y = path[i][1]
 
-            indx = (path[i-1][0]-x,path[i-1][1]-y,path[i+1][0]-x,path[i+1][1]-y)
+                indx = (path[i-1][0]-x,path[i-1][1]-y,path[i+1][0]-x,path[i+1][1]-y)
 
-            if indx in draw:
-                s = draw[indx]
-            else:
-                s= "x"
-            syms[path[i]] = s
-
+                if indx in draw:
+                    s = draw[indx]
+                else:
+                    if thex:
+                        s = thex[i]
+                    else:
+                        s= "x"
+                        
+                syms[path[i]] = s
+                
+                syms[path[0]]="B"
+                syms[path[-1]]="E"
+        else:
             syms[path[0]]="B"
-            syms[path[-1]]="E"
+            
     
     for y in range(my):
         for x in range(mx):
@@ -177,7 +191,7 @@ def printpath(path,nonum=True, background=None,bgin=None):
                 else:
                     print (format("","<"+str(l))+"|",end="")
 
-        print("")
+        print(""+end)
         
 # --
 from collections import defaultdict
@@ -187,3 +201,23 @@ def partition(seq, key):
     for x in seq:
         d[key(x)].append(x)
     return d
+
+# --
+
+# convert an array into a sparse array dict
+def arr2sparse(arr,ignore=""):
+    s = dict()
+
+    for y in range(len(arr)):
+        for x in range(len(arr[y])):
+            if arr[y][x] not in ignore:
+                s[(x,y)] = arr[y][x]
+    return (s)
+
+# add a and b, which are tuples, item for item
+def addtuples(a,b):
+    return tuple([sum(x) for x in zip (a,b)])
+
+assert(addtuples((1,0),(0,1))==(1,1))
+assert(addtuples((-1,0),(1,0))==(0,0))
+assert(addtuples((0,0),(0,0))==(0,0))
