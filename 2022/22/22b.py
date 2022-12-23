@@ -33,7 +33,7 @@ w2wc = {1:[6,4,3,2],
         3:[4,5,2,1],
         4:[6,5,3,1],
         5:[6,2,3,4],
-        6:[1,2,6,4]}
+        6:[1,2,5,4]}
        
 def checkstep(fullmap, world,x,y,facing):
     global d
@@ -89,7 +89,7 @@ def wrapmove(fullmap, world,x,y,facing):
             # we move to the world in [2]
             x = len(mymap[y])-1
             newworld = w2wc[world][2]
-
+            
         if y>=len(mymap):
             # we move to the world in [1]
             #y=0
@@ -165,7 +165,7 @@ def wrapmove(fullmap, world,x,y,facing):
 
         if mymap[y][x]==".":
             print("Done wrapping")
-            return ((x,y),newworld)
+            return ((x,y),newworld, facing)
 
         ox=x
         oy=y
@@ -176,12 +176,12 @@ def wrapmove(fullmap, world,x,y,facing):
         y+=dd[facing][1]
         print("to +1 in the wrap",(x,y))
         
-    return ((x,y), world)
+    return ((x,y), world, facing)
             
 
         
 #arr = readarray("input.short",split="",convert=lambda x:x)
-with open("input.short","r") as fd:
+with open("input.txt","r") as fd:
     mymap = [x.rstrip() for x in readblock(fd,strip=False)]
     mypath= list()
  #   print(mymap)
@@ -217,13 +217,14 @@ with open("input.short","r") as fd:
     mypath = [(x,y,facing,world)]
     
     for s,d in walk:
-        print("facing",facing,"moving",(s,d))
         
         for i in range(int(s)):
-
+            print("facing",facing,"moving",(s,d))
+        
             if checkstep(fullmap, world, x,y,facing):
                 x+=dd[facing][0]
                 y+=dd[facing][1]
+                printpath([(x,y)],background=fullmap[world],bgin="#")
 #                print("moved to",(x,y))
                 mypath.append((x,y,facing,world))
             else:
@@ -232,6 +233,7 @@ with open("input.short","r") as fd:
                     x=v[0][0]
                     y=v[0][1]
                     world=v[1]
+                    facing=v[2]
                     assert(world!=0)
 #                    print("moved to",(x,y))
                     mypath.append((x,y,facing,world))
@@ -255,7 +257,7 @@ with open("input.short","r") as fd:
 #    printpath(path,background=mymap,bgin=".# ",end="|")
                 
     print("row",y+1,"col",x+1,"facing",facing)
-    print("Part 1:",1000*(y+1)+4*(x+1)+facing)
+
 
         
     
@@ -263,3 +265,6 @@ with open("input.short","r") as fd:
     path = [(x,y) for x,y,z,v in newpath]
     
     printpath(path,background=mymap,bgin=".# ",end="|")
+
+    x,y,z,v=newpath[-1]
+    print("Part 2:",1000*(y+1)+4*(x+1)+facing)
