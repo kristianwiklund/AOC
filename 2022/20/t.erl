@@ -1,5 +1,5 @@
 -module(t).
--export([t/0,move/2,calcmove/3,index_of/2, run/2, tst/0]).
+-export([t/0,move/2,calcmove/3,index_of/2, run/2, tst/0, t2/0]).
 -include_lib("stdlib/include/assert.hrl").
 
 index_of(Item, List) -> index_of(Item, List, 1).
@@ -18,19 +18,25 @@ fixzor(A,B) when A>=B ->
 fixzor(A,_) ->
     A.
 
-calcmove(XP,I,B) when B<0 ->
+strip(B) when B>999999999->
+    strip(B-1000000000);
+strip(B) when B<(-999999999) ->
+    strip(B+1000000000);
+strip(B) ->
+    B.
+	  
+calcmove(XP,I,B) ->
     V=(I+B),
-    fixzor(V, length(XP));
-calcmove(XP,I,B) when B>=0 ->
-    fixzor((I+B), length(XP)).
+    fixzor(V, length(XP)).
 
-move(X,B) ->
+move(X,BB) ->
     L = abs(length(X)-1),
+    B = strip(BB),
     if 
 	(L==B) or (L==B) ->
 	    X;
 	true ->
-	    I = index_of(B,X),
+	    I = index_of(BB,X),
 	    {X1,[_|X2]}=lists:split(I-1,X),
 	    XP1=X1++X2,
     
@@ -40,11 +46,11 @@ move(X,B) ->
 
 	    if 
 		Y1==[] ->
-		    Y2++[B];
+		    Y2++[BB];
 		Y2==[] ->
-		    [B]++Y1;
+		    [BB]++Y1;
 		true ->
-		    Y1++[B]++Y2
+		    Y1++[BB]++Y2
 	    end
     end.
 
@@ -58,6 +64,7 @@ run(X,[Y|YS]) ->
 
 run(X,_) ->
     X.
+
 
 test1() ->
     D=[1, 2, -3, 3, -2, 0, 4],
@@ -97,16 +104,14 @@ tests() ->
     test3(),
     test4().
 
-magic(RX) -> 
-    io:format("R is ~p long~n",[length(RX)]),
-    I = index_of(0,RX),
-    {R1,R2}=lists:split(I,RX),
-    R = R2++R1,
+magic(R) -> 
     I2 = index_of(0,R),
-    io:format("I2 is ~p ~n",[I2]),
-    A = lists:nth((1000) rem length(R),R),
-    B =	lists:nth((2000) rem length(R),R),
-    C =	lists:nth((3000) rem length(R),R),
+    
+    io:format("I2 is ~p in ~p~n",[I2,R]),
+    io:format("~p ~p ~p~n",[(I2+1000) rem length(R),(I2+2000) rem length(R),(I2+3000) rem length(R)]),
+    A =	strip(lists:nth(fixzor(I2+1000,length(R)),R)),
+    B =	strip(lists:nth(fixzor(I2+2000,length(R)),R)),
+    C =	strip(lists:nth(fixzor(I2+3000,length(R)),R)),
     {A,B,C,A+B+C}.
 
 readfile(FileName) ->
@@ -118,8 +123,20 @@ readfile(FileName) ->
 	      Lines).
 
 
+srun(D,0) ->
+    D;
+srun(D,N) ->
+    srun(run(D,D),N-1).
+
+
 t()->
     tests(),
-    D = readfile("input.txt"),
+    D = readfile("pp.txt"),
     R = run(D,D),
+    magic(R).
+
+t2()->
+    tests(),
+    D = readfile("pp2.txt"),
+    R = srun(D,10),
     magic(R).
