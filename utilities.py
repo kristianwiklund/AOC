@@ -101,7 +101,7 @@ def lrs(str):
 
 # print a path (list of tuples) on an array
 
-def printpath(path,nonum=True, background=None,bgin=None,end=""):
+def printpath(path,nonum=True, background=None,bgin=None,end="",thex=None):
 
     if background:
         mx = len(background[0])
@@ -156,7 +156,11 @@ def printpath(path,nonum=True, background=None,bgin=None,end=""):
                 if indx in draw:
                     s = draw[indx]
                 else:
-                    s= "x"
+                    if thex:
+                        s = thex[i]
+                    else:
+                        s= "x"
+                        
                 syms[path[i]] = s
                 
                 syms[path[0]]="B"

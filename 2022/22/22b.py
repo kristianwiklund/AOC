@@ -34,7 +34,33 @@ w2wc = {1:[6,4,3,2],
         4:[6,5,3,1],
         5:[6,2,3,4],
         6:[1,2,5,4]}
-       
+
+
+w2wtreal = {
+    (1,2):0,
+    (1,3):0,
+    (1,2):0,
+    (1,6):1,
+    (1,4):2,
+    (2,3):1,
+    (2,5):2,
+    (2,6):0,
+    (3,5):0,
+    (3,4):-1,
+    (4,5):0,
+    (4,6):0,
+    (5,6):1
+       }
+w2wcreal = {1:[2,3,4,6],
+        2:[5,3,1,6],
+        3:[2,5,4,1],
+        4:[5,6,1,3],
+        5:[2,6,4,3],
+        6:[5,2,1,4]}
+
+w2wt = w2wtreal
+w2wc = w2wcreal
+
 def checkstep(fullmap, world,x,y,facing):
     global d
 
@@ -64,14 +90,14 @@ def wrapmove(fullmap, world,x,y,facing):
 
     mymap = fullmap[world]
     
-    print("checking for wrapmove")
+ #   print("checking for wrapmove")
     ox=x
     oy=y
 
-    print("Taking a giant leap for mankind from",(x,y),"to",end="")
+ #   print("Taking a giant leap for mankind from",(x,y),"to",end="")
     x+=dd[facing][0]
     y+=dd[facing][1]
-    print((x,y))
+ #   print((x,y))
 
     while True:
 
@@ -108,12 +134,18 @@ def wrapmove(fullmap, world,x,y,facing):
             try:
                 fd = w2wt[(world, newworld)]
                 facing = (facing+fd)%4
+                assert(facing>=0 and facing<4)
             except:
                 fd = w2wt[(newworld,world)]
                 facing = (facing-fd)
+                facing = facing%4
                 if facing<0:
                     facing=facing+4
-            print("from",world,"to",newworld)
+
+                assert(facing>=0 and facing<4)
+
+
+#            print("from",world,"to",newworld,"facing",facing)
             oldworld=world
             world = newworld
             mymap = fullmap[world]
@@ -121,31 +153,31 @@ def wrapmove(fullmap, world,x,y,facing):
             # rotate the coordinates
             if fd==1:
 
-                print ("rotate world right, coord left")
+#                print ("rotate world right, coord left")
 #                nx = y
                 ny = x
                 nx = len(mymap)-y-1
-                print((x,y),"-->",(nx,ny))
-                printpath([(ox,oy)],background=fullmap[oldworld],bgin="#")
-                print("")
-                printpath([(nx,ny)],background=fullmap[world],bgin="#")
-                print("--")
+#                print((x,y),"-->",(nx,ny))
+#                printpath([(ox,oy)],background=fullmap[oldworld],bgin="#")
+#                print("")
+#                printpath([(nx,ny)],background=fullmap[world],bgin="#")
+#                print("--")
             elif fd==2 or fd==-2:
 
-                print ("rotate world 180 degrees")
-                print ("(x,y)",(x,y))
-                print("map dim",len(mymap))
+#                print ("rotate world 180 degrees")
+#                print ("(x,y)",(x,y))
+#                print("map dim",len(mymap))
                 nx = len(mymap)-x-1
                 ny = len(mymap)-y-1
-                print ("(nx,ny)",(nx,ny))
+#                print ("(nx,ny)",(nx,ny))
             elif fd==-1:
 
-                print("rotate world left, coord right")
+#                print("rotate world left, coord right")
                 nx = y
                 ny = len(mymap)-x-1
             else:
                 # do nothing
-                print("No rotation, new coordinates are",(x,y))
+#                print("No rotation, new coordinates are",(x,y))
 
                 nx=x
                 ny=y
@@ -155,26 +187,26 @@ def wrapmove(fullmap, world,x,y,facing):
 
         try:
             if mymap[y][x]=="#":
-                print("Hit something",mymap[y][x])
+#                print("Hit something",mymap[y][x])
                 return None
         except:
-            print("bad range for mymap",(x,y),"or",(nx,ny))
-            print("max range is",(len(mymap[0]),len(mymap)))
+#            print("bad range for mymap",(x,y),"or",(nx,ny))
+#            print("max range is",(len(mymap[0]),len(mymap)))
             import sys
             sys.exit()
 
         if mymap[y][x]==".":
-            print("Done wrapping")
+#            print("Done wrapping")
             return ((x,y),newworld, facing)
 
         ox=x
         oy=y
 
-        print("Happily moving around in the world, from",(x,y),end="")
+#        print("Happily moving around in the world, from",(x,y),end="")
 
         x+=dd[facing][0]
         y+=dd[facing][1]
-        print("to +1 in the wrap",(x,y))
+#        print("to +1 in the wrap",(x,y))
         
     return ((x,y), world, facing)
             
@@ -219,12 +251,12 @@ with open("input.txt","r") as fd:
     for s,d in walk:
         
         for i in range(int(s)):
-            print("facing",facing,"moving",(s,d))
+ #           print("facing",facing,"moving",(s,d))
         
             if checkstep(fullmap, world, x,y,facing):
                 x+=dd[facing][0]
                 y+=dd[facing][1]
-                printpath([(x,y)],background=fullmap[world],bgin="#")
+#                printpath([(x,y)],background=fullmap[world],bgin="#")
 #                print("moved to",(x,y))
                 mypath.append((x,y,facing,world))
             else:
@@ -257,14 +289,17 @@ with open("input.txt","r") as fd:
 #    printpath(path,background=mymap,bgin=".# ",end="|")
                 
     print("row",y+1,"col",x+1,"facing",facing)
-
-
-        
     
     newpath=transmogrif(mypath, fullmap)
-    path = [(x,y) for x,y,z,v in newpath]
+    path = [(x,y) for x,y,z,w in newpath]
+    theex = [w for x,y,z,w in mypath][1:]+[0]
     
-    printpath(path,background=mymap,bgin=".# ",end="|")
+    
+    printpath(path,background=mymap,bgin=".# ",end="|",thex=theex)
 
     x,y,z,v=newpath[-1]
-    print("Part 2:",1000*(y+1)+4*(x+1)+facing)
+    # 161060 high
+    # 128019 high
+    print(newpath[-1])
+    print("Part 2:",1000*(y+1)+4*(x+1)+z)
+#    print(theex)
