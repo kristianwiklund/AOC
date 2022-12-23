@@ -6,16 +6,22 @@
 # from utilities import *
 
 # reads a block of lines separated with empty lines from a file
-def readblock(fd):
+def readblock(fd,convert=lambda x:x,strip=True):
     elf = list()
-    x = fd.readline().strip()
-    
-    while x:
-        if x=="":
-            return elf
-        elf.append(int(x))
-        
+    if strip:
         x = fd.readline().strip()
+    else:
+        x= fd.readline()
+        
+    while x:
+        if x.strip()=="":
+            return elf
+        elf.append(convert(x))
+
+        if strip:
+            x = fd.readline().strip()
+        else:
+            x = fd.readline()
 
     return elf
 
@@ -95,7 +101,7 @@ def lrs(str):
 
 # print a path (list of tuples) on an array
 
-def printpath(path,nonum=True, background=None,bgin=None):
+def printpath(path,nonum=True, background=None,bgin=None,end=""):
 
     if background:
         mx = len(background[0])
@@ -177,7 +183,7 @@ def printpath(path,nonum=True, background=None,bgin=None):
                 else:
                     print (format("","<"+str(l))+"|",end="")
 
-        print("")
+        print(""+end)
         
 # --
 from collections import defaultdict
