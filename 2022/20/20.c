@@ -222,7 +222,7 @@ int main() {
   pp();
   for (int i=0;i<INPUT;i++) {
     //    printf("%ld\n",sl[i]);
-    shuffle(sl[i]);
+    shoffle(sl[i]);
     pp();
   }
   //pp();
