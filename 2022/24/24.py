@@ -9,7 +9,7 @@ from pprint import pprint
 import numpy as np
 from functools import cache
 
-arr = readarray("input.txt",split="",convert=lambda x:x)
+arr = readarray("input.short",split="",convert=lambda x:x)
 b=arr2sparse(arr,ignore="#.")
 #print(b)
 
@@ -155,58 +155,62 @@ except:
 startz=0
 import sys
 sys.setrecursionlimit(3500)
+# 814 too high for part 2 (but a nice try...)
+# 812 is too low
+# hence, it is 813...
 
 @cache
-def solve(x,y,zz):
+def solve(x,y,zz,ex,ey):
+#    print("solving",x,y,zz,ex,ey)
     # z always have to increase and will wrap around once the cycle is complete
-
-    # recursion error...
-    if zz>3000:
-        return None
-    
-    z=zz%len(maze)
+    z=zz%(len(maze))
 
     if maze[z][y][x]!=".":
         return None
     
     maze[z][y][x]="O"
-    #print(maze[z][y][x])
 
-    
-    #    print("trying",(x,y,z))
- #   pp(maze[z],None,me=(x,y))
- #   print(zz)
-            
-    if (x,y)==(stopx,stopy):
-        print("Found the end after",zz,"minutes!")
+    if (x,y)==(ex,ey):
         maze[z][y][x]="."
-        return (zz,[(x,y)])
+        return (zz,[(x,y,zz)])
 
 
-    # down, left, right, up, wait
-    ds=[(0,-1,1), (-1,0,1), (1,0,1), (0,1,1), (0,0,1)] # last resort is to wait one step
+    # down, up, left, right, wait
+    ds=[(0,-1,1), (0,1,1), (-1,0,1), (1,0,1), (0,0,1)]
 
     mi=-1
     mp=None
     
     for d in ds:
         try:
-            v = solve(x+d[0],y+d[1],zz+d[2])
+            v = solve(x+d[0],y+d[1],zz+d[2],ex,ey)
         except:
+            # ignore recursion, out of bounds, etc, errors
+#            print("b0rk",x,y,z,d)
             continue
             
         if v:
             i,p=v
-            if i<mi or mi==-1:
-                mp=[d]+p
+            if i<=mi or mi==-1:
+                mp=[(x+d[0],y+d[1],zz+d[2])]+p
                 mi=i
+
+    maze[z][y][x]="."
+
     if mp:
-        maze[z][y][x]="."
         return (mi,mp)
     else:
-        maze[z][y][x]="."
         return None
 
 maze=dim
-print(solve(startx,starty,0))
+#print("the maze is looping after",len(maze),"steps")
+one=solve(startx,starty,0,stopx,stopy)
+#print(one)
+solve.cache_clear()
+two=solve(stopx,stopy,one[0],startx,starty)
+#print(two)
+#pp(maze[one[0]%len(maze)],[],(startx,starty))
+solve.cache_clear()
+three=solve(startx,starty,two[0],stopx,stopy)
+print(three)
 
