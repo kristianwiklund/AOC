@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IN=pp.txt
-python3 prop.py > $IN
+#python3 prop.py > $IN
 
 echo "long int bop[] = {" > input.h
 head -n -1 $IN | sed 's/$/,/' >> input.h
