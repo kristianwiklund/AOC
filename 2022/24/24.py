@@ -1,3 +1,5 @@
+#!/usr/bin/python3.9
+
 import sys
 sys.path.append("../..")
 from utilities import *
@@ -5,6 +7,7 @@ import networkx as nx
 from copy import deepcopy
 from pprint import pprint
 import numpy as np
+from functools import cache
 
 arr = readarray("input.txt",split="",convert=lambda x:x)
 b=arr2sparse(arr,ignore="#.")
@@ -129,7 +132,7 @@ try:
         bliz=tick(bliz)
         cnt+=1
         t = kodde(arr,bliz)
-        u = "".join(["".join(x) for x in t])            
+        u = str(bliz)
         if not u in rows:
             rows.add(u)
             print(len(rows))
@@ -150,18 +153,22 @@ except:
 # (0,0,1), (-1,0,1), (0,-1,1), (1,0,1), (0,1,1)
 
 startz=0
+import sys
+sys.setrecursionlimit(3500)
 
-def solve(x,y,zz,maze):
+@cache
+def solve(x,y,zz):
     # z always have to increase and will wrap around once the cycle is complete
 
     # recursion error...
-    if zz>900:
+    if zz>3000:
         return None
     
     z=zz%len(maze)
 
     if maze[z][y][x]!=".":
         return None
+    
     maze[z][y][x]="O"
     #print(maze[z][y][x])
 
@@ -171,7 +178,7 @@ def solve(x,y,zz,maze):
  #   print(zz)
             
     if (x,y)==(stopx,stopy):
-#        print("Found the end after",zz,"minutes!")
+        print("Found the end after",zz,"minutes!")
         maze[z][y][x]="."
         return (zz,[(x,y)])
 
@@ -183,7 +190,11 @@ def solve(x,y,zz,maze):
     mp=None
     
     for d in ds:
-        v = solve(x+d[0],y+d[1],zz+d[2],maze)
+        try:
+            v = solve(x+d[0],y+d[1],zz+d[2])
+        except:
+            continue
+            
         if v:
             i,p=v
             if i<mi or mi==-1:
@@ -196,5 +207,6 @@ def solve(x,y,zz,maze):
         maze[z][y][x]="."
         return None
 
-print(solve(startx,starty,0,dim))
+maze=dim
+print(solve(startx,starty,0))
 
