@@ -131,8 +131,9 @@ def go(G,node, opened, valves, time, mmax):
     misses+=1
     if misses%10000 == 0:
         print(hits,misses)
-    
-    if time>=30 or len(valves)==0:
+
+    children = list(G.successors(node))
+    if len(children)==0 or time>=30 or len(valves)==0:
         score=0
         for i in opened:
             score+=(30-i[2])*i[1]
@@ -146,10 +147,8 @@ def go(G,node, opened, valves, time, mmax):
 #    SG = deepcopy(G)
 #    SG.remove_node(node)
     
-    children = nx.descendants(G,node)
-    if len(children)==0:
-        print("The end",path)
-        return
+
+
 
     # idea.
     # sort the remaining valves in order of benefit - magnitude vs "lost time"
@@ -200,7 +199,7 @@ def go(G,node, opened, valves, time, mmax):
     #print("didnae find anything for node",node,distance)
     return (-1,[])
 
-score=go(G,"MU",[],valves,1,0)
+score=go(G,"AA",[],valves,1,0)
 
 
 #key = next(key for key, value in cache.items() if value == score)

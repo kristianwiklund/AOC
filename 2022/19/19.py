@@ -1,3 +1,5 @@
+
+
 import sys
 sys.path.append("../..")
 from utilities import *
@@ -116,17 +118,7 @@ print(optimize(bp[0]))
 # the optimal construction of robots is to maximize the construction of geode robots
 # that is, we can construct a tree leading up to what we need to construct such a thing
 
-# geode = A*ore + B*obsidian
-# obsidian = C*ore + D*clay
-# clay = E*ore
-# ore = F*ore
 
-# pattern
-
-# geode = 2*ore+7*obsidian
-# obsidian = 3*ore + 14*clay
-# clay = 2*ore
-# ore = 4*ore
 
 # question: How do we maximize geode and minimize waste?
 
