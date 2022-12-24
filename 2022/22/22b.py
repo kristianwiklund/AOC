@@ -240,7 +240,7 @@ def pp():
     printpath(path,background=mymap,bgin=".# ",end="|",thex=theex)
 
         
-with open("input.txt","r") as fd:
+with open("input.short","r") as fd:
     mymap = [x.rstrip() for x in readblock(fd,strip=False)]
     mypath= list()
  #   print(mymap)
