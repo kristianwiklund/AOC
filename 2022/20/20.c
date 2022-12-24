@@ -10,14 +10,14 @@ void insert(int x, int position) {
   
   if (position==0) {
     //    printf("insert memmove\n");
-    memmove(bop+1,bop,INPUT*sizeof(int));
+    memmove(bop+1,bop,INPUT*sizeof(long int));
     *bop=x;
     return;
   }
 
   len=1+INPUT-position;
   
-  memmove(bop+position+1,bop+position,len*sizeof(int));
+  memmove(bop+position+1,bop+position,len*sizeof(long int));
   *(bop+position)=x;    
 }
 
@@ -27,7 +27,7 @@ void kill(int position) {
   int len=INPUT-position+1;
   //  printf("memmove\n");
   //  pp();
-  memmove(bop+position,bop+position+1,len*sizeof(int));
+  memmove(bop+position,bop+position+1,len*sizeof(long int));
   //pp();
     
 }
@@ -35,7 +35,7 @@ void kill(int position) {
 // move the int at position old to position new
 // no error checking whatsoever
 void move(int old, int new) {
-  int t;
+  long int t;
 
   t = bop[old];
   //  printf("Kill old %d\n",old);
@@ -47,14 +47,15 @@ void move(int old, int new) {
 
 }
 
-void shoffle(int what) {
+void shoffle(long int what) {
   //printf("Shuffle %d\n",what);
   
-  int pos=-1, newpos;
-
+  long int pos=-1, newpos;
+  long where=what;
+  
   if (what==0)
     return;
-  
+
   for (int i=0;i<INPUT;i++) {
     if (bop[i]==what) {
       pos=i;
@@ -64,7 +65,15 @@ void shoffle(int what) {
   if (pos<0) // fail
     return;
 
-  newpos=(pos+what);
+  while(where<-OFFSET)
+    where+=OFFSET;
+  
+  while(where>OFFSET)
+    where-=OFFSET;
+
+  //  printf("%ld was decoded to %ld\n",what,where);
+
+  newpos=(pos+where);
   //  printf("Newpos %d\n",newpos);
   while(newpos<0) {
     newpos = newpos+INPUT-1;
@@ -96,10 +105,11 @@ void shoffle(int what) {
 
 }
 
-void shuffle(int what) {
+void shuffle(long int what) {
 
   int pos;
-
+  long int where=what;
+  
   if(INPUT<10)
     printf("shuffle %d\n",what);
   
@@ -114,6 +124,16 @@ void shuffle(int what) {
   }
   if (pos<0) // fail
     exit(-1);
+
+  while(where<-OFFSET)
+    where+=OFFSET;
+  
+  while(where>OFFSET)
+    where-=OFFSET;
+
+  //  printf("%ld was decoded to %ld\n",what,where);
+
+
   
   if (what>0) {
     for(int i=0;i<what;i++) {
@@ -195,12 +215,13 @@ int main() {
   int zero;
   int i,cnt,a,b,c;
   
-  int sl[INPUT];
-  memmove(sl,bop,INPUT*sizeof(int));
+  long int sl[INPUT];
+  memmove(sl,bop,INPUT*sizeof(long int));
 
   printf("The input is %d words long\n",INPUT);
   pp();
   for (int i=0;i<INPUT;i++) {
+    //    printf("%ld\n",sl[i]);
     shuffle(sl[i]);
     pp();
   }
