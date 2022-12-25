@@ -1,10 +1,12 @@
+#!/usr/bin/python3.9
+
 import sys
 sys.path.append("../..")
 from utilities import *
 import networkx as nx
 from copy import deepcopy
 from pprint import pprint
-#from functools import cache
+from functools import cache
 import functools
 
 # 1645 too low
@@ -12,7 +14,7 @@ import functools
 # 1548 is too low as well I assume
 # 1513 likely too low as well then...
 
-arr = readarray("input.txt",split=" ")
+arr = readarray("input.short",split=" ")
 
 G = nx.DiGraph()
 valves = []
@@ -39,8 +41,8 @@ from networkx.drawing.nx_agraph import write_dot
 #print(G.edges(data=True))
 #print(G.nodes)
 
-#labels = nx.get_edge_attributes(G,'weight')
-#nx.draw_networkx_edge_labels(G,pos=nx.spring_layout(G),edge_labels=labels)
+labels = nx.get_edge_attributes(G,'weight')
+nx.draw_networkx_edge_labels(G,pos=nx.spring_layout(G),edge_labels=labels)
 
 cnt=0
 
@@ -116,8 +118,8 @@ misses=0
 
 #@listToTuple
 #@lru_cache(maxsize=None)
-#@listToTuple
-#@cache
+@listToTuple
+@cache
 def go(G,node, opened, valves, time, mmax):
     global hits
     global misses
@@ -205,5 +207,4 @@ score=go(G,"AA",[],valves,1,0)
 #key = next(key for key, value in cache.items() if value == score)
 #key = eval(key[2:-5])
 print(score)
-print(go.cache_info())
 pp(score[1])
