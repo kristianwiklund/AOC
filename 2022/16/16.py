@@ -14,7 +14,7 @@ import functools
 # 1548 is too low as well I assume
 # 1513 likely too low as well then...
 
-arr = readarray("input.short",split=" ")
+arr = readarray("input.txt",split=" ")
 
 G = nx.DiGraph()
 valves = []
@@ -101,7 +101,8 @@ def pp(G,opened):
         sm+=score
         print("releasing",score,"pressure")
         time+=1
-    print("-- Total",sm)
+    
+    print("-- Total",sm+(30-time)*score)
 
         
 # Boom (('RI', 4, 3), ('KV', 13, 6), ('NS', 23, 9), ('YA', 21, 12), ('HR', 11, 16), ('DT', 16, 23), ('GG', 12, 26), ('SU', 19, 29)) score 1614  
@@ -207,4 +208,4 @@ score=go(G,"AA",[],valves,1,0)
 #key = next(key for key, value in cache.items() if value == score)
 #key = eval(key[2:-5])
 print(score)
-pp(score[1])
+pp(G,score[1])
