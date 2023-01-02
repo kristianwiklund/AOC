@@ -6,7 +6,7 @@ from utilities import *
 import networkx as nx
 from copy import deepcopy
 from pprint import pprint
-from functools import cache
+#from functools import cache
 import functools
 
 # 1645 too low
@@ -55,22 +55,25 @@ write_dot(G, "maze.dot")
 # this calculates the relative difference between node x and node y
 def weighter(x,y):
 
+    # this is the flow we get if we open the valves
     flowx=x[1]
     flowy=y[1]
-
+    
+    # this is the time it takes us to move to the valves and open them
     timex=x[2]
     timey=y[2]
 
+    # this is the time, now
     now = y[3]
     
     # we sort based on opportunity cost
-
+    
     if timex == timey:
         return cmp(flowx,flowy)
 
-    rem = 31-now
-    remx = rem-timex
-    remy = rem-timey
+    rem = 31-now      # remaining time to make things flow
+    remx = rem-timex  # remaining time after opening valve x
+    remy = rem-timey  # remaining time after opening valve y
     
     #print (x[0],"f",flowx,"t",(timex,remx),"r",remx*flowx,"--",y[0],"f",flowy,"t",(timey,remy),"r",remy*flowy)
     
@@ -79,23 +82,42 @@ def weighter(x,y):
 def cmp(a, b):
     return (a > b) - (a < b)
 
-def pp(G,opened):
+def gf(node, valves, time):
+    # which node, what the flow is, what time it takes to open the valve, current time, the benefit
+    distance = [(x,y,len(nx.shortest_path(G,node, x))-1,time, y*(31-time-len(nx.shortest_path(G,node,x)))) for x,y in valves]
+    
+    from functools import cmp_to_key
+    distance = sorted(distance, key=cmp_to_key(weighter),reverse=True)
+    
+    return distance
+
+def pp(G,opened, valves):
     time=1
     score=0
     sm=0
 #    print ("No valves are open.")
     prev="AA"
     for i in opened:
+
         print ("== Minute",time,"==")
+
+        goodness = gf(prev, valves, time)
+        print("Remaining benefit valves",goodness)
+        
         p = nx.shortest_path(G,prev,i[0])[1:]
         for x in p:
-            print ("You move to valve",x+".")
+            print ("You move to valve",x)
             sm+=score
             time+=1
             print("")
             print ("== Minute",time,"==")
             
         prev=i[0]
+        for j in range(len(valves)):
+            if valves[j][0]==prev:
+                del valves[j]
+                break
+        
         print("You open valve",i[0])
         score+=G.nodes[i[0]]["rate"]
         sm+=score
@@ -119,8 +141,8 @@ misses=0
 
 #@listToTuple
 #@lru_cache(maxsize=None)
-@listToTuple
-@cache
+#@listToTuple
+#@cache
 def go(G,node, opened, valves, time, mmax):
     global hits
     global misses
@@ -151,18 +173,11 @@ def go(G,node, opened, valves, time, mmax):
 #    SG.remove_node(node)
     
 
-
-
     # idea.
     # sort the remaining valves in order of benefit - magnitude vs "lost time"
     # (if it is too expensive to move, we have a problem)
 
-    distance = [(x,y,len(nx.shortest_path(G,node, x))-1,time) for x,y in valves]
-
-    from functools import cmp_to_key
-    distance = sorted(distance, key=cmp_to_key(weighter),reverse=True)
-    #    print("goodness",distance)
-    #    print(valves)
+    distance = gf(node, valves, time)
 
     # test the things in order
     otime=time
@@ -202,10 +217,11 @@ def go(G,node, opened, valves, time, mmax):
     #print("didnae find anything for node",node,distance)
     return (-1,[])
 
+vv=deepcopy(valves)
 score=go(G,"AA",[],valves,1,0)
 
 
 #key = next(key for key, value in cache.items() if value == score)
 #key = eval(key[2:-5])
 print(score)
-pp(G,score[1])
+pp(G,score[1],vv)

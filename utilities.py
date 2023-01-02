@@ -142,6 +142,13 @@ def printpath(path,nonum=True, background=None,bgin=None,end="",thex=None):
         (0,1,-1,0):"┓",
         (-1,0,0,1):"┓",
         }
+
+    # we may also turn back the same path, this is not covered by the table above
+
+    draw[(1,0,1,0)] = "⮎" #⮎ ⮌ ⮏ ⮍
+    draw[(-1,0,-1,0)] = "⮌"
+    draw[(0,-1,0,-1)] = "⮍"
+    draw[(0,1,0,1)] = "⮏"
     
     if nonum:
         syms = dict()
@@ -156,8 +163,11 @@ def printpath(path,nonum=True, background=None,bgin=None,end="",thex=None):
                 if indx in draw:
                     s = draw[indx]
                 else:
+                    print(indx)
+                        
                     if thex:
                         s = thex[i]
+
                     else:
                         s= "x"
                         

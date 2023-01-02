@@ -51,8 +51,8 @@ w2wtreal = {
     (4,3):1,
     (4,5):0,
     (4,6):0,
-    (5,6):-1,
-    (6,5):1
+    (5,6):1,
+    (6,5):-1
        }
 w2wcreal = {1:[2,3,4,6],
         2:[5,3,1,6],
@@ -240,7 +240,7 @@ def pp():
     printpath(path,background=mymap,bgin=".# ",end="|",thex=theex)
 
         
-with open("input.short","r") as fd:
+with open("input.txt","r") as fd:
     mymap = [x.rstrip() for x in readblock(fd,strip=False)]
     mypath= list()
  #   print(mymap)
@@ -322,8 +322,7 @@ with open("input.short","r") as fd:
     newpath=transmogrif(mypath, fullmap)
     path = [(x,y) for x,y,z,w in newpath]
     theex = [w for x,y,z,w in mypath][1:]+[0]
-    
-    
+        
     pp()
     x,y,z,v=newpath[-1]
 
@@ -332,4 +331,4 @@ with open("input.short","r") as fd:
 # high: 128019
 # 25309
 
-# inte heller 103245
+# inte heller 103245, eller 126020
