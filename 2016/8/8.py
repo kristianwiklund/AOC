@@ -59,3 +59,12 @@ for i in arr:
             rotcolby(board,x,n)            
 
 print("Part 1:",int(sum(sum(board))))
+
+for y in range(6):
+    print("")
+    for x in range(50):
+        if board[y][x]:
+            print("#",end="")
+        else:
+            print(" ",end="")
+    
