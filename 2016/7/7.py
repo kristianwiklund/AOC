@@ -42,9 +42,21 @@ def supportstls(x):
 assert(supportstls("abba[mnop]qrst")==True)
 assert(supportstls("aaaa[qwer]tyui")==False)
 
-
-
 print("TLS IPs:",sum([supportstls(x) for x in lines]))
-    
 
+def supportssl(s):
+    (s1,s2)=splitme(s)
+    for x in range(len(s1)):
+        ss = s1[x:x+3]
+        if len(ss)==3:
+            if ss[0]==ss[2] and ss[0]!=ss[1]:
+                # ABA
+                bab = ss[1]+ss[0]+ss[1]
+                if bab in s2:
+                    return True
+    return False
+
+# there were working unit tests here but I changed the API
+
+print("SSL IPs:",sum([supportssl(x) for x in lines]))
     
