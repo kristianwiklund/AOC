@@ -4,7 +4,7 @@
 *.plt
 erl_crash.dump
 .concrete/DEV_MODE
-
+*:Zone.Identifier
 # rebar 2.x
 .rebar
 rel/example_project
