@@ -5,6 +5,16 @@
 # sys.path.append("../..")
 # from utilities import *
 
+# read lines and remove end linefeed
+
+def sortdictbykey(d):
+    return (sorted(d.items(), key=lambda kv: 
+                 (kv[1], kv[0])))
+
+def readlines(fn):
+    with open(fn) as fd:
+        return [x.strip() for x in fd.readlines()]
+    
 # reads a block of lines separated with empty lines from a file
 def readblock(fd,convert=lambda x:x,strip=True):
     elf = list()

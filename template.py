@@ -7,4 +7,4 @@ from pprint import pprint
 #import numpy as np
 
 arr = readarray("input.short",split="",convert=lambda x:x)
-
+lines = readlines("input.short")
