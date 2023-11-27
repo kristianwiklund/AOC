@@ -5,16 +5,26 @@
 # sys.path.append("../..")
 # from utilities import *
 
-# read lines and remove end linefeed
 
+# get all integers from a string
+def ints(s, separator=" "):
+    v = [int(x) for x in s.split(" ") if x.isdigit()]
+    return v
+
+assert(ints("5 lions ate 3 sheep")==[5,3])
+
+# deprecated:
+# can be replaced by sortedcontainers
 def sortdictbykey(d):
     return (sorted(d.items(), key=lambda kv: 
                  (kv[1], kv[0])))
 
+# read lines and remove end linefeed
+
 def readlines(fn):
     with open(fn) as fd:
         return [x.strip() for x in fd.readlines()]
-    
+
 # reads a block of lines separated with empty lines from a file
 def readblock(fd,convert=lambda x:x,strip=True):
     elf = list()
