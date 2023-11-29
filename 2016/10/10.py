@@ -9,6 +9,11 @@ from sortedcontainers import SortedDict
 from sortedcontainers import SortedSet
 #import numpy as np
 
-arr = readarray("input.short",split="",convert=lambda x:x)
+#arr = readarray("input.short",split="",convert=lambda x:x)
 lines = readlines("input.short")
 
+for line in lines:
+    i = ints(line)
+    if "value" in line:
+        print(i)
+        
