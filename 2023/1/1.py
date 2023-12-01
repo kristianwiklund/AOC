@@ -15,29 +15,22 @@ v = [ints(" ".join(x)) for x in arr]
 s = [int(str(x[0])+str(x[-1])) for x in v]
 print(sum(s))
 
-lines=readlines("input.short.2")
+lines=readlines("input.txt")
 arr=list()
 n = ["skoltröttsomfan","one","two","three","four","five","six","seven","eight","nine"]
-#54091 is too high
-#46381 is too low
-#46402 is too low
-for l in lines:
-    a = sorted([(x,l.find(x)) for x in n if l.find(x)>-1], key=lambda x:x[1])
-    b = list(reversed(sorted([(x,l.rfind(x)) for x in n if l.find(x)>-1], key=lambda x:x[1])))
-    
-    if len(a):
-        print(l)
-        x,y = a[0]
-        l = l.replace(x,str(n.index(x)))
-        x,y = b[0]
-        reverse_replacement=str(n.index(x))
-        reverse_removal=x[::-1]
-        l = l[::-1].replace(reverse_removal, reverse_replacement, 1)[::-1]
-        print(l)
-        arr.append(" ".join(list(l)))
 
-#print(arr)
+for l in lines:
+    s=""
+    a = sorted([(x,l.find(x)) for x in n if l.find(x)>-1], key=lambda x:x[1])
+    while a:
+        x,y = a[0]
+        s+=l[0:y]
+        s+=str(n.index(x))
+        l = l[y+len(x):]
+        a = sorted([(x,l.find(x)) for x in n if l.find(x)>-1], key=lambda x:x[1])
+        
+    arr.append(s+l)
+
 v = [ints(" ".join(x)) for x in arr]
-#print(v)
 s = [int(str(x[0])+str(x[-1])) for x in v]
 print(sum(s))
