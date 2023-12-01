@@ -8,6 +8,7 @@ from sortedcontainers import SortedList
 from sortedcontainers import SortedDict
 from sortedcontainers import SortedSet
 #import numpy as np
+#import scipy
 
 arr = readarray("input.short",split="",convert=lambda x:x)
 lines = readlines("input.short")
