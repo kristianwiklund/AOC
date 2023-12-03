@@ -5,10 +5,11 @@
 # sys.path.append("../..")
 # from utilities import *
 
+import re
 
 # get all integers from a string
 def ints(s, separator=" "):
-    v = [int(x) for x in s.split(" ") if x.isdigit()]
+    v = [int(x) for x in re.split(r'\D+',s) if x.isdigit()]
     return v
 
 assert(ints("5 lions ate 3 sheep")==[5,3])
