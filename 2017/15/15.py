@@ -62,3 +62,25 @@ for i in range(40000000):
         c+=1
 
 print("1:",c)
+
+aa=[]
+bb=[]
+
+while True:
+    a = gen1(a, af)
+    b = gen1(b, bf)
+    if not a&3:
+        aa.append(a)
+
+    if not b&7:
+        bb.append(b)
+
+    if len(aa)>=5000000 and len(bb)>=5000000:
+        break
+
+cnt=0
+for i in range(min(len(aa), len(bb))):
+    if aa[i]&0xffff == bb[i]&0xffff:
+        cnt+=1
+
+print("Part 2:", cnt)
