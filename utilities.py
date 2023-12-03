@@ -196,7 +196,8 @@ def printpath(path,nonum=True, background=None,bgin=None,end="",thex=None):
                 syms[path[0]]="B"
                 syms[path[-1]]="E"
         else:
-            syms[path[0]]="B"
+            if len(path)==1:
+                syms[path[0]]="B"
             
     
     for y in range(my):
@@ -251,3 +252,55 @@ def addtuples(a,b):
 assert(addtuples((1,0),(0,1))==(1,1))
 assert(addtuples((-1,0),(1,0))==(0,0))
 assert(addtuples((0,0),(0,0))==(0,0))
+
+# def check a position in an array to see if it fulfills the lambda function
+# outofbounds is the value used if we are out of the array
+
+def checkpos(arr, x, y, fun, outofbounds=True):
+    if x<0:
+        return outofbounds
+
+    if y<0:
+        return outofbounds
+
+    if x>=len(arr[0]):
+        return outofbounds
+
+    if y>=len(arr):
+        return outofbounds
+
+    return fun(arr[y][x])
+    
+# check position around an item in an array to see if they fulfill the lambda function
+def checkallaround(arr, x, y, fun, outofbounds=True):
+    v = True
+    v &= checkpos(arr,x-1,y-1,fun, outofbounds=outofbounds)
+    v &= checkpos(arr,x-1,y,fun, outofbounds=outofbounds)
+    v &= checkpos(arr,x-1,y+1,fun, outofbounds=outofbounds)
+    v &= checkpos(arr,x,y-1,fun, outofbounds=outofbounds)
+    v &= checkpos(arr,x,y+1,fun, outofbounds=outofbounds)
+    v &= checkpos(arr,x+1,y-1,fun, outofbounds=outofbounds)
+    v &= checkpos(arr,x+1,y,fun, outofbounds=outofbounds)
+    v &= checkpos(arr,x+1,y+1,fun, outofbounds=outofbounds)
+
+    return v
+
+def checkanyaround(arr, x, y, fun, outofbounds=False):
+    v = False
+    v |= checkpos(arr,x-1,y-1,fun, outofbounds=outofbounds)
+    v |= checkpos(arr,x-1,y,fun, outofbounds=outofbounds)
+    v |= checkpos(arr,x-1,y+1,fun, outofbounds=outofbounds)
+    v |= checkpos(arr,x,y-1,fun, outofbounds=outofbounds)
+    v |= checkpos(arr,x,y+1,fun, outofbounds=outofbounds)
+    v |= checkpos(arr,x+1,y-1,fun, outofbounds=outofbounds)
+    v |= checkpos(arr,x+1,y,fun, outofbounds=outofbounds)
+    v |= checkpos(arr,x+1,y+1,fun, outofbounds=outofbounds)
+
+    return v    
+
+
+arr=[['4', '6', '7', '', '', '1', '1', '4', '', ''], ['', '', '', '*', '', '', '', '', '', ''], ['', '', '3', '5', '', '', '6', '3', '3', ''], ['', '', '', '', '', '', '#', '', '', ''], ['6', '1', '7', '*', '', '', '', '', '', ''], ['', '', '', '', '', '+', '', '5', '8', ''], ['', '', '5', '9', '2', '', '', '', '', ''], ['', '', '', '', '', '', '7', '5', '5', ''], ['', '', '', '$', '', '*', '', '', '', ''], ['', '6', '6', '4', '', '5', '9', '8', '', '']]
+
+assert(checkanyaround(arr, 0, 0, lambda x:x!=''))
+
+    
