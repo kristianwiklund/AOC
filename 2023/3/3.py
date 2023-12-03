@@ -34,4 +34,21 @@ for i in t:
     i = [str(x-10) if x else " " for x in i]
     narr.append(ints("".join(i)))
 
-print(sum([sum(x) for x in narr]))
+print("Part 1:", sum([sum(x) for x in narr]))
+
+sum=0
+for i in range(numl+1):
+    a = arr*(labels==i)
+    if (a==(ord('*')+10)).any():
+        a = f(a)
+        # adjacent to _exactly two_ part numbers
+        a = a*(a<=19)
+        b = ""
+        for i in a:
+            b+="".join([str(x-10) if x else " " for x in i])
+        
+        nums = ints(b)
+        if len(nums)==2:
+            sum+=(nums[0]*nums[1])
+
+print("Part 2:",sum)
