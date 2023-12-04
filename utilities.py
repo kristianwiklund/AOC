@@ -8,11 +8,18 @@
 import re
 
 # get all integers from a string
-def ints(s, separator=" "):
-    v = [int(x) for x in re.split(r'\D+',s) if x.isdigit()]
+# if negative is True, also handles negative numbers
+def ints(s, negative=True):
+    if not negative:
+        v = [int(x) for x in re.split(r'\D+',s) if x.isdigit()]
+    else:
+        pattern = r"[+-]?\d+"
+        v = [int(x) for x in re.findall(pattern, s)]
+
     return v
 
 assert(ints("5 lions ate 3 sheep")==[5,3])
+assert(ints("it is usally -10 or -100 or 50 degrees outside")==[-10,-100,50])
 
 # deprecated:
 # can be replaced by sortedcontainers

@@ -47,7 +47,7 @@ for i in range(numl+1):
         for i in a:
             b+="".join([str(x-10) if x else " " for x in i])
         
-        nums = ints(b)
+        nums = ints(b, negative=False)
         if len(nums)==2:
             sum+=(nums[0]*nums[1])
 
