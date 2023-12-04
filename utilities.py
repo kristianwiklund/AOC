@@ -20,6 +20,7 @@ def ints(s, negative=True):
 
 assert(ints("5 lions ate 3 sheep")==[5,3])
 assert(ints("it is usally -10 or -100 or 50 degrees outside")==[-10,-100,50])
+assert(ints("banana 5 nabana 5")==[5,5])
 
 import functools
 import time
