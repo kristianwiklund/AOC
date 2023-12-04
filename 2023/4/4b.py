@@ -5,7 +5,7 @@ from utilities import *
 #from copy import deepcopy
 from pprint import pprint
 #from sortedcontainers import SortedList
-#from sortedcontainers import SortedDict
+from sortedcontainers import SortedDict
 #from sortedcontainers import SortedSet
 #import numpy as np
 #import scipy
@@ -14,14 +14,24 @@ from pprint import pprint
 arr = readarray("input.txt",split="|",convert=lambda x:x)
 #lines = readlines("input.short")
 
-sum=0
-yarr=[]
-for l in arr:
+yarr=SortedDict()
+
+for i in range(len(arr)):
+    yarr[i] = 1
+
+for i in range(len(yarr)):
+    n = yarr[i]
+    l = arr[i]
     win = set(ints(l[0].split(":")[1]))
     have = set(ints(l[1]))
-    points = 0 if len(have&win)==0 else 2**(len(have&win)-1)
-    sum+=points
-#    print(win,have,points)
+    ntick = len(have&win)
 
-print("Part 1:",sum)
+    for v in range(ntick):
+        yarr[i+v+1]+=n
+
+print("Part B:",sum(list(yarr.values())))
+    
+
+    
+
 
