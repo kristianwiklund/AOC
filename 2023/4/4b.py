@@ -12,13 +12,14 @@ from sortedcontainers import SortedDict
 #import scipy
 #from functools import cache
 
-arr = readarray("input.txt",split="|",convert=lambda x:x)
-#lines = readlines("input.short")
-
-yarr=SortedDict()
 
 @timer
 def runme():
+    arr = readarray("input.txt",split="|",convert=lambda x:x)
+    #lines = readlines("input.short")
+
+    yarr=SortedDict()
+
     for i in range(len(arr)):
         yarr[i] = 1
 
