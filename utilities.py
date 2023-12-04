@@ -21,6 +21,21 @@ def ints(s, negative=True):
 assert(ints("5 lions ate 3 sheep")==[5,3])
 assert(ints("it is usally -10 or -100 or 50 degrees outside")==[-10,-100,50])
 
+import functools
+import time
+
+def timer(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.perf_counter_ns()
+        value = func(*args, **kwargs)
+        end_time = time.perf_counter_ns()
+        run_time = end_time - start_time
+        print("Finished {} in {} ms".format(repr(func.__name__), run_time/1000000))
+        return value
+    
+    return wrapper
+
 # deprecated:
 # can be replaced by sortedcontainers
 def sortdictbykey(d):
