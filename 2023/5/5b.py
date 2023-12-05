@@ -9,7 +9,7 @@ from pprint import pprint
 #from sortedcontainers import SortedSet
 #import numpy as np
 #import scipy
-#from functools import cache
+from functools import cache
 
 #arr = readarray("input.short",split="",convert=lambda x:x)
 #lines = readlines("input.short")
@@ -30,7 +30,9 @@ with open("input.txt") as fd:
         
 print(them)
 
-def link(them, frm, to, n):
+@cache
+def link(frm, to, n):
+    global them
     what = frm+"-to-"+to
 
     for x in them[what]:
@@ -48,31 +50,34 @@ def link(them, frm, to, n):
 
 # test data
 if len(them["seed-to-soil"])==2:
-    assert(link(them, "seed", "soil", 98)==50)
-    assert(link(them, "seed", "soil", 99)==51)
-    assert(link(them, "seed", "soil", 53)==55)
-    assert(link(them, "fertilizer", "water", 20)==9)
+    assert(link( "seed", "soil", 98)==50)
+    assert(link( "seed", "soil", 99)==51)
+    assert(link( "seed", "soil", 53)==55)
+    assert(link( "fertilizer", "water", 20)==9)
 
 
 def doit(them):
 
     lowloc=None
-    for i in them["seeds"][0]:
-#        print ("seed", i)
-        a = link(them, "seed","soil",i)
-        b = link(them, "soil", "fertilizer", a)
-        c = link(them, "fertilizer", "water", b)
-        d = link(them, "water", "light", c)
-        e = link(them, "light", "temperature", d)
-        f = link(them, "temperature", "humidity", e)
-        g = link(them, "humidity", "location", f)
+    for j in range(int(len(them["seeds"][0])/2)):
+#        print(j,them["seeds"][0][j*2],them["seeds"][0][j*2+1])
+        for i in range(them["seeds"][0][j*2],them["seeds"][0][j*2]+them["seeds"][0][j*2+1]):
+#            print ("seed", i)
+            a = link( "seed","soil",i)
+            b = link( "soil", "fertilizer", a)
+            c = link( "fertilizer", "water", b)
+            d = link( "water", "light", c)
+            e = link( "light", "temperature", d)
+            f = link( "temperature", "humidity", e)
+            g = link( "humidity", "location", f)
         
-#        print(i,a,b,c,d,e,f,g)
+#            print(i,a,b,c,d,e,f,g)
 
-        if not lowloc or g<lowloc:
-            lowloc = g
+            if not lowloc or g<lowloc:
+                lowloc = g
+                print ("new low",g)
 
-    print (lowloc)
+    print ("Final low",lowloc)
 
 doit(them)
 
