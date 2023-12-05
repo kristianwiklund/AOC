@@ -15,7 +15,7 @@ from functools import cache
 #lines = readlines("input.short")
 
 them = dict()
-with open("input.txt") as fd:
+with open("input.short") as fd:
     while fd:
         v = readblock(fd)
         if not v:
@@ -26,58 +26,52 @@ with open("input.txt") as fd:
         else:
             s = [(v[0].split(":")[1]).strip()]+v[1:]
 
-        them[what] = [ints(x) for x in s]
+        them[what] = sorted([ints(x) for x in s])
         
-print(them)
 
-@cache
-def link(frm, to, n):
-    global them
-    what = frm+"-to-"+to
+ns=[]
+for i in range(int(len(them["seeds"][0])/2)):
+    ns.append(range(them["seeds"][0][i*2],them["seeds"][0][i*2]+them["seeds"][0][i*2+1]))
 
-    for x in them[what]:
-        dr = x[0]
-        sr = x[1]
-        l = x[2]
-#        print(what, "n=",n, "source range=",(sr, sr+l), "dest=",dr)
-        i = range(sr, sr+l).index(n) if n in range(sr, sr+l) else -1
-        if i>-1:
-#            print (i, dr, i+dr)
-            return i+dr
+them["seeds"]=ns
+#print(them)
 
-    # any.. not mapped... same number
-    return n
+def rangify(i):
+    return (range(i[1],i[1]+i[2]), range(i[0],i[0]+i[2]))
 
-# test data
-if len(them["seed-to-soil"])==2:
-    assert(link( "seed", "soil", 98)==50)
-    assert(link( "seed", "soil", 99)==51)
-    assert(link( "seed", "soil", 53)==55)
-    assert(link( "fertilizer", "water", 20)==9)
+for x in them:
+    if x=="seeds":
+        continue
 
+    v = them[x]
+    v = [rangify(y) for y in v]
+    them[x] = v
 
-def doit(them):
-
-    lowloc=None
-    for j in range(int(len(them["seeds"][0])/2)):
-#        print(j,them["seeds"][0][j*2],them["seeds"][0][j*2+1])
-        for i in range(them["seeds"][0][j*2],them["seeds"][0][j*2]+them["seeds"][0][j*2+1]):
-#            print ("seed", i)
-            a = link( "seed","soil",i)
-            b = link( "soil", "fertilizer", a)
-            c = link( "fertilizer", "water", b)
-            d = link( "water", "light", c)
-            e = link( "light", "temperature", d)
-            f = link( "temperature", "humidity", e)
-            g = link( "humidity", "location", f)
+def transform(them, frm, to, r):
+    t = them[frm+"-to-"+to]
+    print("to transform:",r)
+    a= []
+    for x in t:
+        # check if r matches any ranges in x
+        fr = x[0]
+        tr = x[1]
+        print(r,fr,tr)
         
-#            print(i,a,b,c,d,e,f,g)
+        if overlap(r, fr):
+            print(r,"overlaps",fr)
+            print("slicing...")
+            i = range_intersect(r, fr)
 
-            if not lowloc or g<lowloc:
-                lowloc = g
-                print ("new low",g)
+            print(r,fr,i,tr)
+        
 
-    print ("Final low",lowloc)
+    print(a)
 
-doit(them)
+        
+            
+            
+            
+transform(them, "seed", "soil", them["seeds"][0])
 
+
+    

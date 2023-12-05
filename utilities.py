@@ -29,6 +29,31 @@ assert(ints("banana 5 nabana 5", negative=False)==[5,5])
 import functools
 import time
 
+# intersection between two ranges
+# https://stackoverflow.com/questions/6821156/how-to-find-range-overlap-in-python
+def range_intersect(range_x,range_y):
+    if len(range_x) == 0 or len(range_y) == 0:
+        return []
+    # find the endpoints
+    x = (range_x[0], range_x[-1]) # from the first element to the last, inclusive
+    y = (range_y[0], range_y[-1])
+    # ensure min is before max
+    # this can be excluded if the ranges must always be increasing
+    x = tuple(sorted(x))
+    y = tuple(sorted(y))
+    # the range of the intersection is guaranteed to be from the maximum of the min values to the minimum of the max values, inclusive
+    z = (max(x[0],y[0]),min(x[1],y[1]))
+    if z[0] < z[1]:
+        return range(z[0], z[1] + 1) # to make this an inclusive range
+    else:
+        return [] # no intersection
+                                                                
+# check if two ranges overlap
+def overlap(x, y):
+    if x.start == x.stop or y.start == y.stop:
+        return False
+    return x.start <= y.stop and y.start <= x.stop
+
 def timer(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
