@@ -24,16 +24,23 @@ r = [[50,242],
      [85,1252]]
 
 factor = 1
-sc=[]
 
-for x in r:
-    a=0
-    for t in range(x[0]+1):
-        v = t*factor
-        d = (x[0]-t)*v
-        if d>x[1]:
-            a+=1
-    sc.append(a)
 
-print(sc,np.prod(sc))
+def doit(r):
+    sc=[]
 
+    for x in r:
+        a=0
+        for t in range(x[0]+1):
+            v = t*factor
+            d = (x[0]-t)*v
+            if d>x[1]:
+                a+=1
+        sc.append(a)
+
+    print(sc,np.prod(sc))
+
+
+doit(r)
+#doit([[71530,940200]])
+doit([[50748685,242101716911252]])
