@@ -23,7 +23,7 @@ def checkseed(ns, s):
     return False
     
 them = dict()
-with open("input.txt") as fd:
+with open("luxia-input.txt") as fd:
     while fd:
         v = readblock(fd)
         if not v:
@@ -64,7 +64,7 @@ if len(them["seed-to-soil"])==2:
     assert(link(them, "soil", "seed", 81)==79)
     assert(link(them, "water", "fertilizer", 81)==81)
 
-
+@timer
 def doit(them):
 
     lowloc=None
