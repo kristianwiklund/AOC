@@ -15,7 +15,7 @@ from functools import cache
 #lines = readlines("input.short")
 
 them = dict()
-with open("input.short") as fd:
+with open("input.txt") as fd:
     while fd:
         v = readblock(fd)
         if not v:
@@ -49,29 +49,30 @@ for x in them:
 
 def transform(them, frm, to, r):
     t = them[frm+"-to-"+to]
-    print("to transform:",r)
     a= []
     for x in t:
         # check if r matches any ranges in x
         fr = x[0]
         tr = x[1]
-        print(r,fr,tr)
-        
-        if overlap(r, fr):
-            print(r,"overlaps",fr)
-            print("slicing...")
-            i = range_intersect(r, fr)
 
-            print(r,fr,i,tr)
-        
+        v = range_intersect(r, fr)
+        # v is the part we transform to something else
+        if len(v):
+            
+            a.append(v)
 
-    print(a)
-
-        
+                
+    a = sorted(a, key=lambda x:x.start)
+            
+    b = merge(a)
+    if r!=b[0]:
+        print (r,"!=",b, "unmerged", a)
             
             
-            
-transform(them, "seed", "soil", them["seeds"][0])
-
+for i in them["seeds"]:
+    print("----")
+    print(i)
+    transform(them, "seed", "soil", i)
+    print("----")
 
     
