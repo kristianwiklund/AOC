@@ -10,7 +10,7 @@ from pprint import pprint
 #import numpy as np
 #import scipy
 from functools import cache
-
+from Ranges import Ranges
 #arr = readarray("input.short",split="",convert=lambda x:x)
 #lines = readlines("input.short")
 
@@ -37,7 +37,7 @@ them["seeds"]=ns
 #print(them)
 
 def rangify(i):
-    return (range(i[1],i[1]+i[2]), range(i[0],i[0]+i[2]))
+    return (Ranges(range(i[1],i[1]+i[2])), Ranges(range(i[0],i[0]+i[2])))
 
 for x in them:
     if x=="seeds":
@@ -55,7 +55,7 @@ def transform(them, frm, to, r):
         fr = x[0]
         tr = x[1]
 
-        v = range_intersect(r, fr)
+        v = fr & tr
         # v is the part we transform to something else
         if len(v):
             
