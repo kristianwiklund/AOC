@@ -21,6 +21,10 @@ _checkouts/
 \#*\#
 *.tmp
 tmp
+*.pdf
+*.jpg
+*.mp4
+
 
 __pycache__
 *.DS_Store*
