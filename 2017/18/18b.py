@@ -10,6 +10,8 @@ from pprint import pprint
 #import numpy as np
 #import scipy
 #from functools import cache
+from threading import Thread
+from queue import Queue
 
 arr = readarray("input",split=" ",convert=lambda x:x)
 
@@ -23,21 +25,24 @@ def getval(reg, val):
         except:
             return 0
 
-pipe={0:[],
-      1:[]}
+pipe={0:Queue(),
+      1:Queue()}
+
+sc = {0:0,1:0}
 
 def send(pipe, me, value):
-    pipe[me].append(value)
+    global sc
+    pipe[me].put(value)
+    sc[me]+=1
+    print("Sent: 0=",sc[0],", 1=",sc[1])
+                    
 
 def receive(pipe, me):
-    return pipe[1-me].pop()
-
-send(pipe, 0, 100)
-assert(pipe=={0:[100],1:[]})
-assert(receive(pipe, 1)==100)
-assert(pipe=={0:[],1:[]})
+    global rc
+    return pipe[1-me].get()
 
 
+@timer
 def runprog(arr,prognum=0):
     global pipe
     pc=0
@@ -52,7 +57,6 @@ def runprog(arr,prognum=0):
             print ("END")
             break
 
-        print(arr[pc])
         i =arr[pc][0]
         o1 = arr[pc][1]
         if len(arr[pc])>2:
@@ -63,7 +67,6 @@ def runprog(arr,prognum=0):
             case "snd":
                 sound=getval(reg, o1)
                 send(pipe, prognum, sound)
-                print(prognum,"sends",sound)
             case "set":
                 reg[o1]=getval(reg, o2)
             case "add":
@@ -84,5 +87,9 @@ def runprog(arr,prognum=0):
         pc+=1
 
 
-runprog(arr, prognum=1)
+#runprog(arr, prognum=1)
 
+a = Thread(target=runprog,args=(arr,0))
+b = Thread(target=runprog,args=(arr,1))
+a.start()
+b.start()
