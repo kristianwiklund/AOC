@@ -59,7 +59,7 @@ def readblock(fd,convert=lambda x:x,strip=True):
     if strip:
         x = fd.readline().strip()
     else:
-        x= fd.readline()
+        x= fd.readline().strip("\n")
         
     while x:
         if x.strip()=="":
@@ -74,7 +74,7 @@ def readblock(fd,convert=lambda x:x,strip=True):
     return elf
 
 # reads a file to an array
-def readarray(fn, split=" ", convert=lambda x:x):
+def readarray(fn, split=" ", convert=lambda x:x, strip=True):
 
     arr = []
     
@@ -82,8 +82,11 @@ def readarray(fn, split=" ", convert=lambda x:x):
         lines = fd.readlines()
 
         for line in lines:
-            line = line.strip()
-
+            if strip:
+                line = line.strip()
+            else:
+                line = line.strip("\n")
+                
             if not split or split=="":
                 la = [convert(x) for x in line]
             else:
@@ -160,7 +163,6 @@ def printpath(path,nonum=True, background=None,bgin=None,end="",thex=None):
         my = len(background)
     else:
         my = max([y for x,y in path])
-
 
     l = len(path)
     l = 2+1 #hack
@@ -242,11 +244,15 @@ def printpath(path,nonum=True, background=None,bgin=None,end="",thex=None):
                 if nonum:
                     if background==None:
                         print(".",end="")
-                    else:
+                    else:                        
                         if bgin and background[y][x] in bgin:
                             print(background[y][x],end="")
                         else:
-                            print(".",end="")
+                            try:
+                                print(background[y][x],end="")
+                            except:
+                                pass
+                            #                            print(".",end="")
                 else:
                     print (format("","<"+str(l))+"|",end="")
 
