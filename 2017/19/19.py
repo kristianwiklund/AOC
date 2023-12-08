@@ -81,3 +81,4 @@ while True:
 printpath(p,background=arr)
 print("Part 1:","".join(acc))
 print("Part 2:",len(p))
+
