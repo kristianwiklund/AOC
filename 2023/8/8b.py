@@ -8,7 +8,7 @@ from pprint import pprint
 #from sortedcontainers import SortedList
 #from sortedcontainers import SortedDict
 #from sortedcontainers import SortedSet
-#import numpy as np
+import numpy as np
 #import scipy
 #from functools import cache
 
@@ -54,19 +54,44 @@ def step(graph, pos, steps, c):
         
     return (pos, steps, c)
     
-p = [x[0] for x in graph.keys() if x[0][2]=='A']
+p = list(set([x[0] for x in graph.keys() if x[0][2]=='A']))
 cnt=[0 for x in p]
 stp=[copy(steps) for x in p]
 
 t=[]
 
-while len(t)!=len(stp):
-    print(p)
-    for i in range(len(p)):
+print(p)
 
+def runone(i):
+
+    while True:
+#        print(p)
         (p[i], stp[i], cnt[i]) = step(graph, p[i], stp[i], cnt[i])
+        if p[i][2]=='Z':
+            break
+#        print(cnt)
 
-        t = [p[i] for x in p if x[2]=='Z']
+for x in range(len(p)):
+    runone(x)
 
 print(cnt)
-    
+
+cs = copy(cnt)
+# again, to see if we have found the correct period
+
+for x in range(len(p)):
+    runone(x)
+
+for x in range(len(cnt)):
+    if int(cnt[x]/2)!=cs[x]:
+        print(x," has the incorrect period",cnt,cs)
+
+from math import gcd, lcm
+
+cnt = sorted(cs)
+print(cnt)
+v=[]
+for i in range(len(cnt)-1):
+    v.append(cnt[i+1]-cnt[i])
+
+print("Part 2:", lcm(*cnt))
