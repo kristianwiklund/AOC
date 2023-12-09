@@ -44,8 +44,10 @@ def doit(arr):
 
     print(s)
 
-
+print("Part 1: ",end="")
 doit(arr)
-        
-    
+
+barr=[list(reversed(x)) for x in arr]
+print("Part 2: ",end="")
+doit(barr)
 
