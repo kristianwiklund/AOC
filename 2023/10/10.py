@@ -8,7 +8,7 @@ from pprint import pprint
 #from sortedcontainers import SortedDict
 #from sortedcontainers import SortedSet
 import numpy as np
-#import scipy
+import scipy.ndimage
 #from functools import cache
 
 arr = readarray("input",split="",convert=lambda x:x)
@@ -96,5 +96,30 @@ while len(p)==1 or arr[y][x]!='S':
 
 #print(p)
 
-#printpath(p, background=arr)
+printpath(p, background=arr)
 print("Part 1:",int(len(p)/2)    )
+p.append((x,y))
+#print(p)
+
+from matplotlib import path
+
+pp = path.Path(p)
+#print(pp)
+
+r = [(x,y) for x in range(len(arr[0])) for y in range(len(arr)) if pp.contains_points([(x,y)])[0]]
+print(r)
+
+g = np.zeros_like(arr,dtype=np.int8)
+print(g)
+for x,y in r:
+    g[y][x]=1
+
+print(g)
+h = np.ones_like(arr,dtype=np.int8)
+print(h)
+for i in range(len(p)-1):
+    drawline(h,p[i][0],p[i][1],p[i+1][0],p[i+1][1],0)
+
+print(h*g)
+printpath([],background=arr)
+print(sum(sum(h*g)))

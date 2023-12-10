@@ -148,7 +148,23 @@ def lrs(str):
             res = res + str[i - 1]
  
     return res
- 
+
+
+# draw a line between two points in an array
+def drawline(ap, x1,y1,x2,y2,d):
+
+    xx1 = min(x1,x2)
+    yy1 = min(y1,y2)
+
+    xx2 = max(x1,x2)
+    yy2 = max(y1,y2)
+    
+    
+    for x in range(xx1,xx2+1):
+        for y in range(yy1,yy2+1):
+            ap[y][x]=d
+
+
 
 # print a path (list of tuples) on an array
 
