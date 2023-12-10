@@ -16,6 +16,7 @@ arr = readarray("input",split="",convert=lambda x:x)
 
 #pprint(arr)
 
+ttt= time.perf_counter_ns()
 
 
 orr = ["|7F","-J7","|LJ","-LF"]
@@ -99,6 +100,8 @@ while len(p)==1 or arr[y][x]!='S':
 #printpath(p, background=arr)
 print("Part 1:",int(len(p)/2)    )
 #print(p)
+print("Part 1 time:", (time.perf_counter_ns()-ttt)/1000000,"ms")
+ttt=time.perf_counter_ns()
 
 from matplotlib import path
 
@@ -122,3 +125,5 @@ for i in range(len(p)-1):
 #print(h*g)
 #printpath([],background=arr)
 print("Part 2:",sum(sum(h*g)))
+print("Part 2 time:", (time.perf_counter_ns()-ttt)/1000000,"ms")
+
