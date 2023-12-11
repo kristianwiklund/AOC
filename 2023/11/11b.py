@@ -23,7 +23,7 @@ pts = [(x,y) for x in range(len(a[0])) for y in range(len(a)) if a[y][x]]
 cols = list(SortedSet([x[0] for x in pts]))
 rows = list(SortedSet([x[1] for x in pts]))
 
-print(cols,rows)
+#print(cols,rows)
 ocols=[0]+[cols[x+1]-cols[x]-1 for x in range(len(cols)-1)]
 orows=[0]+[rows[x+1]-rows[x]-1 for x in range(len(rows)-1)]
 
@@ -35,8 +35,8 @@ def boffe(tx, p, mf):
     v = sum([tx[x]*mf for x in tx if x<=p])
     return v
 
-print(tc,tr)
-print(boffe(tc,6,1))
+#print(tc,tr)
+#print(boffe(tc,6,1))
 
 s=0
 mf=1000000-1
@@ -55,4 +55,4 @@ for j in range(len(pts)-1):
         
         
 
-print(s)
+print("Part 2:",s)

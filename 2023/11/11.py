@@ -13,11 +13,11 @@ import scipy.ndimage
 #import scipy
 #from functools import cache
 
-arr = readarray("input.short",split="",convert=lambda x:1 if x=='#' else 0)
+arr = readarray("input",split="",convert=lambda x:1 if x=='#' else 0)
 #lines = readlines("input.short")
 
 a =np.array(arr)
-print(a)
+#print(a)
 print("---")
 labels,  numl = scipy.ndimage.label(a, structure=[[0,0,0],[0,1,0],[0,0,0]])
 
@@ -37,10 +37,10 @@ for v in a:
     p.append(v)
 
 a = np.array(p)
-print(p)
+#print(p)
 
 pts = [(x,y) for x in range(len(a[0])) for y in range(len(a)) if a[y][x]]
-print(pts)
+#print(pts)
 
 s=0
 for j in range(len(pts)-1):
