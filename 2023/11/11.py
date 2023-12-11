@@ -13,7 +13,7 @@ import scipy.ndimage
 #import scipy
 #from functools import cache
 
-arr = readarray("input",split="",convert=lambda x:1 if x=='#' else 0)
+arr = readarray("input.short",split="",convert=lambda x:1 if x=='#' else 0)
 #lines = readlines("input.short")
 
 a =np.array(arr)
