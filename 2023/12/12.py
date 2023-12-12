@@ -11,22 +11,41 @@ from pprint import pprint
 #import scipy
 #from functools import cache
 
-arr = [[x[0],ints(x[1])] for x in readarray("input.short",split=" ",convert=lambda x:x)]
+arr = [[[p for p in x[0].split(".") if len(p)],ints(x[1])] for x in readarray("input.short",split=" ",convert=lambda x:x)]
 print(arr)
 
 # 0 is the string of broken springs, # is broken, . is not broken, ? is unknown
 # 1 is the list of numbers of broken springs in the order they appear
 
-def ref(l):
-    s=[]
+def rf(x):
+    n=x[1]
+    s=x[0]
+    y = []
+
+    print("---------")
     
-    for i in l:
-        s.append(i*"#")
+    for v in s:
+        t = n[0]        
+        print (v,s,t)
 
-    s="\.\.*".join(s)
+        if not "?" in v:
+            if t!=len(v):
+                print("bork",t,v,len(v))
+                return None
+            else:
+                y.append(v)
+                n.pop(0)
+        else:
+            # absolute match
+            if len(v)==t:
+                y.append("#"*t)
+                n.pop(0)
+            else:
+                if not "#" in v:
+                    # find how many will fit. it is the sum of the items plus (n-1) where n is the number of items
+                    pass
 
-    return s
+    return y
+            
 
-print ([ref(x[1]) for x in arr])
-
-    
+print([rf(x) for x in arr])
