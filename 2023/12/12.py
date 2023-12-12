@@ -42,7 +42,22 @@ def rf(x):
                 n.pop(0)
             else:
                 if not "#" in v:
+                    # only ???
                     # find how many will fit. it is the sum of the items plus (n-1) where n is the number of items
+                    l = len(v)
+                    fl=False
+                    for z in range(len(n)):
+                        if l-(sum(n[:z+1])+z)<0:
+                            fl=True
+                            break
+
+                    if not fl:
+                        return None
+
+                    print(z, "of the things",n," fit in",v)
+                else:
+                    # mix
+                    print("mix of items",v)
                     pass
 
     return y
