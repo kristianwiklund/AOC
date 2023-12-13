@@ -10,81 +10,102 @@ from pprint import pprint
 #import numpy as np
 #import scipy
 #from functools import cache
+import re
 
 arr = [[[p for p in x[0].split(".") if len(p)],ints(x[1])] for x in readarray("input.short",split=" ",convert=lambda x:x)]
 print(arr)
 
 
-# squeeze in as many as possible from n into v
-def trytomatch(n, v):
-    print("trying",n,"vs",v)
+# test if a goes into b
+def tst(a,b):
 
-    # we cannot trivially fit the first item into v, return empty list
-    if len(v)<n[0]:
-        return []
+    if len(a)>len(b):
+        return False
+
+    b=list(b)
+    
+    for i in a:
+        ii = b.pop(0)
+        
+        if i==ii:
+            continue
+        if i=="." and ii=="#":
+            return False
+
+    return True
+    
+# generate all variations of n long springs going into v
+def gs(n, v):
+
+    # we cannot trivially fit the number item into v, return empty list
+    if len(v)<n:
+        return set()
 
     # the length of the blob to fit
     # is in n[0]
 
     # try to fit it
-
-    acc = []
-    for x in range(len(v)-n[0]):
-        print("fitter", v[x:x+len(v)],v[x+len(v):])
-        if re.match("[^.]{"+str(n[0])+"}", v):
-            print ("match for",n[0])
+    # fit variations of the first
     
+    s = "."*(len(v)-1)+"#"*n+"."*(len(v)-1)
+
+    acc = set()
+    for i in range(len(s)-len(v)+1):
+        ss = s[i:i+len(v)]
+        ss = re.sub(r"\.[.]*$",".", ss)
+
+        # remove obvious non-matches
+        if "#"*n in ss:
+
+            # check if the pattern in v is matched by the pattern in ss
+            if tst(ss,v):
+                acc.add(ss)
+
+    return acc
+
+
+assert(gs(1, "???")=={'.#.','#.','..#'})
+assert(gs(2,"???")=={"##.",".##"})
+
+
+assert(tst(".#.","???"))
+assert(tst("###","???"))
+assert(not tst("##.","??#"))
+
     
-# 0 is the string of broken springs, # is broken, . is not broken, ? is unknown
-# 1 is the list of numbers of broken springs in the order they appear
+assert(gs(2,"??#")=={".##"})
+assert(gs(2,"???#")=={"##.","..##"})
 
-def rf(x):
-    n=x[1]
-    s=x[0]
-    y = []
+# push a list (nl) of numbers into the string v
+def ms(nx, v):
 
-#    print("---------")
+    print("----------------")
+    print("checking",nx,"vs",v)
+    if not len(nx) or not len(v):
+        return [""]
+
+    x = gs(nx[0],v)
+    print("gs returned",x)
     
-    for v in s:
-        t = n[0]        
-#        print (v,s,t)
-
-        if not "?" in v:
-            if t!=len(v):
-                print("bork",t,v,len(v))
-                return None
-            else:
-                y.append(v)
-                n.pop(0)
+    # check all possible matches from the first number
+    acc=[]
+    for i in x:
+        if len(v[len(i):]):
+            print("for i=",i,"calling the next level")
+        
+            ops=ms(nx[1:],v[len(i):])
+            print("got alternatives=",ops)
+            for z in ops:
+                acc.append(i+z)
         else:
-            # absolute match
-            if len(v)==t:
-                y.append("#"*t)
-                n.pop(0)
-            else:
-                # generate a list of possible matches
-                trytomatch(n,v)
-                
-#                if not "#" in v:
-#                    # only ???
-#                    # find how many will fit. it is the sum of the items plus (n-1) where n is the number of items
-#                    l = len(v)
-#                    fl=False
-#                    for z in range(len(n)):
-#                        if l-(sum(n[:z+1])+z)<0:
-#                            fl=True
-#                            break#
-#
-#                    if not fl:
-#                        return None#
-#
-#                    print(z, "of the things",n," fit in",v)
-#                else:
-#                    # mix
-#                    print("mix of items",v)
-#                    pass
-
-#    return y
+            acc.append(i)
+            
+    return acc
             
 
-print([rf(x) for x in arr])
+            
+assert(gs(1,"?")=={"#"})
+print(ms([1,1],"???"))
+    
+
+    
