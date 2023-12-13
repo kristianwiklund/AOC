@@ -77,35 +77,43 @@ assert(gs(2,"??#")=={".##"})
 assert(gs(2,"???#")=={"##.","..##"})
 
 # push a list (nl) of numbers into the string v
-def ms(nx, v):
-
-    print("----------------")
-    print("checking",nx,"vs",v)
+def ms(nx, v, zol, acc=""):
+    
+  #  print("----------------")
+ #   print("checking",nx,"vs",v)
     if not len(nx) or not len(v):
-        return [""]
+        zol.append((nx,acc))
 
     x = gs(nx[0],v)
-    print("gs returned",x)
+#    print("gs returned",x)
+
+    if not len(x):
+        return
+    
+#        print ("end of the way and not everything matched")
+#        print ("")
     
     # check all possible matches from the first number
-    acc=[]
     for i in x:
         if len(v[len(i):]):
-            print("for i=",i,"calling the next level")
-        
-            ops=ms(nx[1:],v[len(i):])
-            print("got alternatives=",ops)
-            for z in ops:
-                acc.append(i+z)
+   #         print("for i=",i,"calling the next level")
+            ms(nx[1:],v[len(i):],zol,acc+i)
         else:
-            acc.append(i)
+            zol.append((nx[1:],acc+i))
             
-    return acc
-            
+def mss(nx, v):
+    zol=[]
+    ms(nx,v,zol,"")
 
+    return zol
             
 assert(gs(1,"?")=={"#"})
-print(ms([1,1],"???"))
-    
+#print(mss([1,1],"???"))
 
+for x in arr:
+    v = x[1]
+    for y in x[0]:
+        t=mss(v,y)
+        print(t)
+        
     
