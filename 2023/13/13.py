@@ -86,16 +86,16 @@ def findityh(a):
     
         
 y =[findity([list(i) for i in x]) for x in arr]
-print("y",y)
+#print("y",y)
 
 x =[finditx([list(i) for i in x]) for x in arr]
-print("x",x)   
+#print("x",x)   
 
 check = [(i,y[i],x[i]) for i in range(len(y)) if (y[i]!=None and x[i]!=None)]
-print("check:",check)
+#print("check:",check)
 
-y = [i for i in y if i]
-x = [i for i in x if i]
+yy = [i for i in y if i]
+xx = [i for i in x if i]
 
-s = sum(y)*100+sum(x)
+s = sum(yy)*100+sum(xx)
 print("Part 1:",s)
