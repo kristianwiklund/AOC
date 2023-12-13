@@ -59,12 +59,11 @@ def readblock(fd,convert=lambda x:x,strip=True):
     elf = list()
     x = fd.readline()
     if x=="":
-        return None
-    
+        return None    
     if strip:
-        x = fd.readline().strip()
+        x = x.strip()
     else:
-        x= fd.readline().strip("\n")
+        x= x.strip("\n")
         
     while x:
         if x.strip()=="":

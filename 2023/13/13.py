@@ -16,7 +16,7 @@ import numpy as np
 
 arr = []
 
-with open("input.short") as fd:
+with open("input") as fd:
     
     while True:
         a = readblock(fd)
@@ -31,19 +31,16 @@ with open("input.short") as fd:
 # find symmetry along the y axis in a even sized matrix
 def findit(a):
 
-    if not len(a):
+    if len(a)<2:
         return None
-
-    print("---")
-    print(a)
     
+
+    # create numbers from the chars
     f = np.vectorize(lambda x:1 if x=='#' else 0)
-    
-    l = len(a)
-
     a = f(np.array(a))
-
+    
     # the middle of the matrix
+    l = len(a)
     l = int(l/2)
 
     
@@ -51,74 +48,54 @@ def findit(a):
     a2 = a[l:]
     a1 = np.flipud(a1)
 
-    print(a1)
-    print(a2)
-    print(a1-a2)
-    # if all are zero, we have a mirror at l
     if not np.any(a1-a2):
-        return l+1
+        return l
     else:
         return None
 
     
 def finditx(a):
-    if (int(len(a[0])/2)*2 == len(a[0])):
-        print("even x")    
-
-    a = np.fliplr(np.matrix(a))
-    x = np.matrix.transpose(a)
-#    print(x)
+    x = np.matrix.transpose(np.matrix(a))
+    x = np.fliplr(np.matrix(x))
     
-    # all x are uneven, split in two to check with the same code as y
-
-    x1 = x[0:-1]
-    x2 = x[1:]
-
-    p = findity(x1)
-    if p:
-        print(x1)
-        return p
-    q = findity(x2)
-    if p:
-        print(x2)
-        return p+1
-    return None
+    return findity(x)
 
 def findity(a):
+    v = findityh(a)
+    if v:
+        return v
+
+    # and the other way around
+    v = findityh(np.flipud(a))
+    if v:
+        return len(a)-v
+    else:
+        return None
+
+def findityh(a):
 
     a = np.array(a)
 
-    v = []
-    # slice the matrix until we find something
-    l = int(len(a)/2)
-    
-    for i in range(l-1):
-        print("Checking", i*2)
-        p = findit(a[0:i*2])
-        q = findit(a[i*2:])
-        if q:
-            print((i,"1",len(a),(0,i*2),q+i*2))
-            return q
-
-        else:
-            if p:
-                print((i,"2",len(a),(i*2,l),p))
-
-                return p
+    # cut the matrix in reflectable pieces until we find something
+    for i in range(int(len(a)/2)+1):
+        z = findit(a[0:i*2])
+        if z:
+            return z
 
     return None
-#    print("ve=",v)
-#    return (v[0])
+    
         
-
 y =[findity([list(i) for i in x]) for x in arr]
 print("y",y)
 
 x =[finditx([list(i) for i in x]) for x in arr]
 print("x",x)   
 
+check = [(i,y[i],x[i]) for i in range(len(y)) if (y[i]!=None and x[i]!=None)]
+print("check:",check)
+
 y = [i for i in y if i]
 x = [i for i in x if i]
 
-#s = sum(y)*100+sum(x)
-#assert(s>1748)
+s = sum(y)*100+sum(x)
+print("Part 1:",s)
