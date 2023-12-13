@@ -55,7 +55,12 @@ def readlines(fn):
 
 # reads a block of lines separated with empty lines from a file
 def readblock(fd,convert=lambda x:x,strip=True):
+    
     elf = list()
+    x = fd.readline()
+    if x=="":
+        return None
+    
     if strip:
         x = fd.readline().strip()
     else:
