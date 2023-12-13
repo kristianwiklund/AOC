@@ -29,7 +29,7 @@ with open("input") as fd:
 
 
 # find symmetry along the y axis in a even sized matrix
-def findit(a):
+def findit(a,tresh=0):
 
     if len(a)<2:
         return None
@@ -48,37 +48,43 @@ def findit(a):
     a2 = a[l:]
     a1 = np.flipud(a1)
 
-    if not np.any(a1-a2):
-        return l
-    else:
-        return None
+    if tresh==0:
+        if not np.any(a1-a2):
+            return l
+        else:
+            return None
 
-    
-def finditx(a):
+    if tresh==1:
+        p = abs(a1-a2)
+        if sum(sum(p))==1:
+            return l
+        else:
+            return None
+              
+def finditx(a,tresh=0):
     x = np.matrix.transpose(np.matrix(a))
     x = np.fliplr(np.matrix(x))
-    
-    return findity(x)
+    return findity(x, tresh)
 
-def findity(a):
-    v = findityh(a)
+def findity(a, tresh=0):
+    v = findityh(a, tresh)
     if v:
         return v
 
     # and the other way around
-    v = findityh(np.flipud(a))
+    v = findityh(np.flipud(a), tresh)
     if v:
         return len(a)-v
     else:
         return None
 
-def findityh(a):
+def findityh(a, tresh=0):
 
     a = np.array(a)
 
     # cut the matrix in reflectable pieces until we find something
     for i in range(int(len(a)/2)+1):
-        z = findit(a[0:i*2])
+        z = findit(a[0:i*2], tresh)
         if z:
             return z
 
@@ -99,3 +105,17 @@ xx = [i for i in x if i]
 
 s = sum(yy)*100+sum(xx)
 print("Part 1:",s)
+
+
+
+    
+y =[findity([list(i) for i in x], tresh=1) for x in arr]
+x =[finditx([list(i) for i in x], tresh=1) for x in arr]
+
+yy = [i for i in y if i]
+xx = [i for i in x if i]
+
+
+s = sum(yy)*100+sum(xx)
+print("Part 2:",s)
+
