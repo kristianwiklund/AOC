@@ -83,7 +83,8 @@ def ms(nx, v, zol, acc=""):
  #   print("checking",nx,"vs",v)
     if not len(nx) or not len(v):
         zol.append((nx,acc))
-
+        return
+    
     x = gs(nx[0],v)
 #    print("gs returned",x)
 
@@ -101,19 +102,38 @@ def ms(nx, v, zol, acc=""):
         else:
             zol.append((nx[1:],acc+i))
             
-def mss(nx, v):
+def mss(nx, v,acc=""):
     zol=[]
-    ms(nx,v,zol,"")
+    ms(nx,v,zol,acc)
 
     return zol
             
 assert(gs(1,"?")=={"#"})
 #print(mss([1,1],"???"))
 
-for x in arr:
-    v = x[1]
-    for y in x[0]:
-        t=mss(v,y)
-        print(t)
+def spnk(v,x,acc=""):
+
+    if not len(x) or not len(v):
+        return 1
+    
+    y = x[0]
+    print("--")
+    print(v,y)
+    t=mss(v,y,acc)
+    print(">",t,"<")
+    s=0
+    for i in t:
+        s+=(spnk(i[0],x[1:]))
+        
+    return s
+        
+
+print("")
+print(arr[0])
+vp = spnk(arr[0][1],arr[0][0])
+
+for v in vp:
+    print(v)
+            
         
     
