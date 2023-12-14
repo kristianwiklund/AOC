@@ -11,7 +11,9 @@ import numpy as np
 #import scipy
 #from functools import cache
 
-arr = readarray("input",split="",convert=lambda x:x)
+arr = readarray("input.short",split="",convert=lambda x:x)
+barr = deepcopy(arr)
+
 #lines = readlines("input.short")
 
 dirs = {0:(0,-1),1:(1,0),2:(0,1),3:(-1,0)}
@@ -43,7 +45,13 @@ while True:
 
 #pprint(a)
 
-v = [len(a)-y if a[y][x]=='O' else 0 for y in range (len(a)) for x in range(len(a[9]))]
+v = [len(a)-y if a[y][x]=='O' else 0 for y in range (len(a)) for x in range(len(a[0))]
 #print(v)
 print("Part 1:",sum(v))
+
+
+arr = barr
+
+p = [(x,y) for x in range(len(a[0])) for y in range(len(a)) if a[y][x]=='O']
+print(p)
 
