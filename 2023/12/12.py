@@ -81,28 +81,43 @@ assert(gs(2,"???#")=={"##.","..##"})
 @cache
 def scnt(s):
     return [len(x) for x in s.split(".") if x!='']
-    
+
+ccc={}
 # eat a string and decorate it with v
 #@cache
 def consume(s,v,a,vo):
 
     global xyz
     global ccc
-    
-#    print("  "*d,"consume",s,v,a)
-    
+
+    args=s+v+a+vo
+
     v=ints(v)
     if len(v)==0:
         if not "#" in s:
- #           print(a,scnt(a),vo,s)
+            #           print(a,scnt(a),vo,s)
             if scnt(a)==ints(vo):
                 xyz.add(a+"."*len(s))
 
- #       print("  "*d,"  return 0")
+                #       print("  "*d,"  return 0")
+
+        if args in ccc:
+            if ccc[args]!=0:
+                print("ronk")
+        else:
+            ccc[args]=0
+     
         return 0
 
     if len(s)==0:
  #       print("  "*d,"  return 0")
+
+        if args in ccc:
+            if ccc[args]!=0:
+                print("ronk")
+        else:
+            ccc[args]=0
+        
         return 0
 
     n = v[0]
@@ -135,7 +150,14 @@ def consume(s,v,a,vo):
         if not "#" in b:
             consume(s,str(v),a+"."*len(b),vo)
 
-#    print("  "*d,"  return",len(xyz))
+        #    print("  "*d,"  return",len(xyz))
+        
+    if args in ccc:
+        if ccc[args]!=len(xyz):
+            print("ronk")
+        else:
+            ccc[s+v+a+vo]=len(xyz)
+
     return(len(xyz))
 
 def c(s):
@@ -163,12 +185,14 @@ for i in arr:
     consume(i[0],str(i[1]),"",str(i[1]))
     s+=len(xyz)
 
+print("Part 1:",s)
+
 if len(arr)>900:
     assert(s<8202)
     assert(s>6564)
     assert(s==7260)
     
-print("Part 1:",s)
+
 
 assert(c("???.###????.###????.###????.###????.### 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3")==1)
 #assert(c("?#?#?#?#?#?#?#? 1,3,1,6")==1)
