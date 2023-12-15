@@ -11,7 +11,7 @@ import numpy as np
 #import scipy
 #from functools import cache
 
-arr = [[x[0],ints(x[1])] for x in readarray("input.short.2",split=" ",convert=lambda x:x)]
+arr = [[x[0],ints(x[1])] for x in readarray("input",split=" ",convert=lambda x:x)]
 #lines = readlines("input.short")
 print (arr)
 
@@ -77,19 +77,33 @@ assert(gs(2,"??#")=={".##"})
 assert(gs(2,"???#")=={"##.","..##"})
 
 
+def scnt(s):
+    return [len(x) for x in s.split(".") if x!='']
+    
 # eat a string and decorate it with v
-def consume(s,v,xyz=None,a="",d=0):
+def consume(s,v,xyz=None,a="",d=0,vo=False):
 
     if xyz==None:
         xyz=set()
-    
+        prt=True
+        print(s)
+    else:
+        prt=False
+        
     if len(v)==0:
-        xyz.add(a+"."*len(s))
+        if not "#" in s:
+            print(a,scnt(a),vo,s)
+            if scnt(a)==vo:
+                xyz.add(a+"."*len(s))
+
         return 0
 
     if len(s)==0:
         return 0
 
+    if not vo:
+        vo = v
+    
 #    print("  "*d,"consume",s,v,a)
     
 
@@ -116,12 +130,16 @@ def consume(s,v,xyz=None,a="",d=0):
 
     if len(w)==0:
         if not "#" in b:
-            consume(s,v,xyz,a+"."*len(b),d+1)
-    else:    
+            consume(s,v,xyz,a+"."*len(b),d+1,vo)
+    else:
         for i in w:
             #        print("iabs(b)=",i,a,b,s,b[len(i):]+s)
-            consume(b[len(i):]+s,v[1:],xyz,a+i,d+1)
-
+            consume(b[len(i):]+s,v[1:],xyz,a+i,d+1,vo)
+        if not "#" in b:
+            consume(s,v,xyz,a+"."*len(b),d+1,vo)
+            
+    if prt:
+        print(xyz)
     return(len(xyz))
 
 def c(s):
@@ -139,6 +157,7 @@ assert(consume("??.?......",[2,1,3])==0)
 assert(consume("??.???.?..",[3,1])==1)
 assert(consume("",[1,2,3])==0)
 x=set()
+print("boll")
 print(consume("???.###.???",[3],x))
 print(x)
 
