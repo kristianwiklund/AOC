@@ -135,11 +135,9 @@ def consume(s,v,a="",d=0,vo=False):
         if not "#" in b:
             consume(s,v,a+"."*len(b),d+1,vo)
             
-    if prt:
-        print("s,v",s,v,xyz)
     return(len(xyz))
 
-def c(s,xyz=None):
+def c(s):
     global xyz
     xyz=set()
     print("c on ",s)
@@ -184,7 +182,7 @@ for i in range(len(arr)):
 s=0
 for i in arr:
     xyz=set()
-    consume(i[0],i[1],xyz)
+    consume(i[0],i[1])
     s+=len(xyz)
     print(i[0],i[1],len(xyz))
 
