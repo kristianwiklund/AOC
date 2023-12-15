@@ -180,15 +180,24 @@ assert(c("???.###????.###????.###????.###????.### 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3"
 #assert(c(".??..??...?##..??..??...?##..??..??...?##..??..??...?##..??..??...?##. 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3")==16384)
 
 
-for i in range(len(arr)):
-    arr[i][0]=(arr[i][0]+"?")*4+arr[i][0]
-    arr[i][1]=arr[i][1] + arr[i][1] + arr[i][1] + arr[i][1] + arr[i][1]
+#for i in range(len(arr)):
+#    arr[i][0]=(arr[i][0]+"?")*4+arr[i][0]
+#    arr[i][1]=arr[i][1] + arr[i][1] + arr[i][1] + arr[i][1] + arr[i][1]
 
 s=0
 for i in arr:
-    xyz=    consume(i[0],str(i[1]),"",str(i[1]))
-    print(gs.cache_info())
-    s+=len(xyz)
-    print(i[0],i[1],len(xyz))
+    if True or i[0][0]!=".":
+        a=(i[0]+"?")*4+i[0]
+        b=i[1] + i[1] + i[1] + i[1] + i[1] 
+        xyz=    consume(a,str(b),"",str(b))
+        print(gs.cache_info())
+        s+=len(xyz)
+        print("A", a,b,len(xyz))
+    else:
+        xyz=    consume("?"+i[0],str(i[1]),"",str(i[1]))
+        xya=    consume(i[0],str(i[1]),"",str(i[1]))
+        print(gs.cache_info())
+        s+=(len(xyz)*len(xyz)*len(xyz)*len(xyz)*len(xya))
+        print("B",i[0],i[1],(len(xyz)*len(xyz)*len(xyz)*len(xyz)*len(xya)))
 
 print("Part 2:",s)
