@@ -7,13 +7,13 @@ from pprint import pprint
 #from sortedcontainers import SortedList
 #from sortedcontainers import SortedDict
 #from sortedcontainers import SortedSet
-import numpy as np
+#import numpy as np
 #import scipy
 #from functools import cache
 
 arr = [[x[0],ints(x[1])] for x in readarray("input",split=" ",convert=lambda x:x)]
 #lines = readlines("input.short")
-print (arr)
+#print (arr)
 
 
 # test if a goes into b
@@ -86,13 +86,12 @@ def consume(s,v,xyz=None,a="",d=0,vo=False):
     if xyz==None:
         xyz=set()
         prt=True
-        print(s)
     else:
         prt=False
         
     if len(v)==0:
         if not "#" in s:
-            print(a,scnt(a),vo,s)
+ #           print(a,scnt(a),vo,s)
             if scnt(a)==vo:
                 xyz.add(a+"."*len(s))
 
@@ -103,8 +102,9 @@ def consume(s,v,xyz=None,a="",d=0,vo=False):
 
     if not vo:
         vo = v
+
     
-#    print("  "*d,"consume",s,v,a)
+    #print("  "*d,"consume",s,v,a)
     
 
     
@@ -139,13 +139,14 @@ def consume(s,v,xyz=None,a="",d=0,vo=False):
             consume(s,v,xyz,a+"."*len(b),d+1,vo)
             
     if prt:
-        print(xyz)
+        print("s,v",s,v,xyz)
     return(len(xyz))
 
-def c(s):
+def c(s,xyz=None):
+    print("c on ",s)
     s1,s2=s.split(" ")
     s2=ints(s2)
-    return consume(s1,s2)
+    return consume(s1,s2,xyz=xyz)
 
 assert(consume("???.###",[1,1,3])==1)
 assert(consume(".??..??...?##.",[1,1,3])==4)
@@ -156,12 +157,6 @@ assert(consume("??????????",[])==0)
 assert(consume("??.?......",[2,1,3])==0)
 assert(consume("??.???.?..",[3,1])==1)
 assert(consume("",[1,2,3])==0)
-x=set()
-print("boll")
-print(consume("???.###.???",[3],x))
-print(x)
-
-
 assert(consume("???.###.???",[3])==1)
 
 s=0
@@ -169,11 +164,29 @@ for i in arr:
     xyz=set()
     consume(i[0],i[1],xyz)
     s+=len(xyz)
-    pprint(xyz)
 
 if len(arr)>900:
     assert(s<8202)
     assert(s>6564)
+    assert(s==7260)
+    
+print("Part 1:",s)
 
-print(s)
+assert(c("???.###????.###????.###????.###????.### 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3")==1)
+assert(c("?#?#?#?#?#?#?#? 1,3,1,6")==1)
+#assert(c("????.#...#...????.#...#...????.#...#...????.#...#...????.#...#... 4,1,1,4,1,1,4,1,1,4,1,1,4,1,1")==16)
+#assert(c(".??..??...?##..??..??...?##..??..??...?##..??..??...?##..??..??...?##. 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3")==16384)
 
+
+for i in range(len(arr)):
+    arr[i][0]=(arr[i][0]+"?")*4+arr[i][0]
+    arr[i][1]=arr[i][1] + arr[i][1] + arr[i][1] + arr[i][1] + arr[i][1]
+
+s=0
+for i in arr:
+    xyz=set()
+    consume(i[0],i[1],xyz)
+    s+=len(xyz)
+    print(i[0],i[1],len(xyz))
+
+print("Part 2:",s)
