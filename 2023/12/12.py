@@ -11,12 +11,13 @@ from pprint import pprint
 #import scipy
 #from functools import cache
 
-arr = [[x[0],ints(x[1])] for x in readarray("input",split=" ",convert=lambda x:x)]
+arr = [[x[0],ints(x[1])] for x in readarray("input.short",split=" ",convert=lambda x:x)]
 #lines = readlines("input.short")
 #print (arr)
 
 
 # test if a goes into b
+@cache
 def tst(a,b):
 
     if len(a)>len(b):
@@ -35,6 +36,7 @@ def tst(a,b):
     return True
     
 # generate all variations of n long springs going into v
+@cache
 def gs(n, v):
 
     # we cannot trivially fit the number item into v, return empty list

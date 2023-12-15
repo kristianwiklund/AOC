@@ -4,11 +4,13 @@
 # import sys
 # sys.path.append("../..")
 # from utilities import *
+from functools import cache
 
 import re
 
 # get all integers from a string
 # if negative is True, also handles negative numbers
+@cache
 def ints(s, negative=True):
     if not negative:
         v = [int(x) for x in re.split(r'\D+',s) if x.isdigit()]
