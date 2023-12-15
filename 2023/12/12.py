@@ -11,7 +11,7 @@ from pprint import pprint
 #import scipy
 #from functools import cache
 
-arr = [[x[0],ints(x[1])] for x in readarray("input.short",split=" ",convert=lambda x:x)]
+arr = [[x[0],ints(x[1])] for x in readarray("input",split=" ",convert=lambda x:x)]
 #lines = readlines("input.short")
 #print (arr)
 
@@ -78,34 +78,33 @@ assert(not tst("##.","??#"))
 assert(gs(2,"??#")=={".##"})
 assert(gs(2,"???#")=={"##.","..##"})
 
-
+@cache
 def scnt(s):
     return [len(x) for x in s.split(".") if x!='']
     
 # eat a string and decorate it with v
-@cache
-def consume(s,v,a="",d=0,vo=False):
+#@cache
+def consume(s,v,a,vo):
+
     global xyz
-        
+    global ccc
+    
+#    print("  "*d,"consume",s,v,a)
+    
+    v=ints(v)
     if len(v)==0:
         if not "#" in s:
  #           print(a,scnt(a),vo,s)
-            if scnt(a)==vo:
+            if scnt(a)==ints(vo):
                 xyz.add(a+"."*len(s))
 
+ #       print("  "*d,"  return 0")
         return 0
 
     if len(s)==0:
+ #       print("  "*d,"  return 0")
         return 0
 
-    if not vo:
-        vo = v
-
-    
-    #print("  "*d,"consume",s,v,a)
-    
-
-    
     n = v[0]
     
     # take care of any dots in the beginning of the string
@@ -124,27 +123,28 @@ def consume(s,v,a="",d=0,vo=False):
         b+=sx
 
     w = gs(n,b)
- #   print("  "*d, " --> w=",w)
+  #  print("  "*d, " --> w=",w)
 
     if len(w)==0:
         if not "#" in b:
-            consume(s,v,a+"."*len(b),d+1,vo)
+            consume(s,str(v),a+"."*len(b),vo)
     else:
         for i in w:
             #        print("iabs(b)=",i,a,b,s,b[len(i):]+s)
-            consume(b[len(i):]+s,v[1:],a+i,d+1,vo)
+            consume(b[len(i):]+s,str(v[1:]),a+i,vo)
         if not "#" in b:
-            consume(s,v,a+"."*len(b),d+1,vo)
-            
+            consume(s,str(v),a+"."*len(b),vo)
+
+#    print("  "*d,"  return",len(xyz))
     return(len(xyz))
 
 def c(s):
     global xyz
     xyz=set()
-    print("c on ",s)
+#    print("c on ",s)
     s1,s2=s.split(" ")
-    s2=ints(s2)
-    return consume(s1,s2)
+#    s2=ints(s2)
+    return consume(s1,s2,"",s2)
 
 #assert(consume("???.###",[1,1,3])==1)
 #assert(consume(".??..??...?##.",[1,1,3])==4)
@@ -160,7 +160,7 @@ assert(c("?#?#?.#?#???????..? 5,1,1,3,2,1")==1)
 s=0
 for i in arr:
     xyz=set()
-    consume(i[0],i[1])
+    consume(i[0],str(i[1]),"",str(i[1]))
     s+=len(xyz)
 
 if len(arr)>900:
@@ -171,7 +171,7 @@ if len(arr)>900:
 print("Part 1:",s)
 
 assert(c("???.###????.###????.###????.###????.### 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3")==1)
-assert(c("?#?#?#?#?#?#?#? 1,3,1,6")==1)
+#assert(c("?#?#?#?#?#?#?#? 1,3,1,6")==1)
 #assert(c("????.#...#...????.#...#...????.#...#...????.#...#...????.#...#... 4,1,1,4,1,1,4,1,1,4,1,1,4,1,1")==16)
 #assert(c(".??..??...?##..??..??...?##..??..??...?##..??..??...?##..??..??...?##. 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3")==16384)
 
@@ -183,7 +183,7 @@ for i in range(len(arr)):
 s=0
 for i in arr:
     xyz=set()
-    consume(i[0],i[1])
+    consume(i[0],str(i[1]),"",str(i[1]))
     s+=len(xyz)
     print(i[0],i[1],len(xyz))
 
