@@ -110,10 +110,13 @@ def consume(s,v,a="",d=0):
         
     w = gs(n,b)
     print("  "*d, " --> w=",w)
-    
-    for i in w:
-#        print("iabs(b)=",i,a,b,s,b[len(i):]+s)
-        consume(b[len(i):]+s,v[1:],a+i,d+1)
+
+    if len(w)==0:
+        consume(s,v[1:],a+"."*len(b),d+1)
+    else:    
+        for i in w:
+            #        print("iabs(b)=",i,a,b,s,b[len(i):]+s)
+            consume(b[len(i):]+s,v[1:],a+i,d+1)
     
 
 s=0
