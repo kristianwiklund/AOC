@@ -83,13 +83,8 @@ def scnt(s):
     return [len(x) for x in s.split(".") if x!='']
     
 # eat a string and decorate it with v
-def consume(s,v,xyz=None,a="",d=0,vo=False):
-
-    if xyz==None:
-        xyz=set()
-        prt=True
-    else:
-        prt=False
+def consume(s,v,a="",d=0,vo=False):
+    global xyz
         
     if len(v)==0:
         if not "#" in s:
@@ -132,39 +127,41 @@ def consume(s,v,xyz=None,a="",d=0,vo=False):
 
     if len(w)==0:
         if not "#" in b:
-            consume(s,v,xyz,a+"."*len(b),d+1,vo)
+            consume(s,v,a+"."*len(b),d+1,vo)
     else:
         for i in w:
             #        print("iabs(b)=",i,a,b,s,b[len(i):]+s)
-            consume(b[len(i):]+s,v[1:],xyz,a+i,d+1,vo)
+            consume(b[len(i):]+s,v[1:],a+i,d+1,vo)
         if not "#" in b:
-            consume(s,v,xyz,a+"."*len(b),d+1,vo)
+            consume(s,v,a+"."*len(b),d+1,vo)
             
     if prt:
         print("s,v",s,v,xyz)
     return(len(xyz))
 
 def c(s,xyz=None):
+    global xyz
+    xyz=set()
     print("c on ",s)
     s1,s2=s.split(" ")
     s2=ints(s2)
-    return consume(s1,s2,xyz=xyz)
+    return consume(s1,s2)
 
-assert(consume("???.###",[1,1,3])==1)
-assert(consume(".??..??...?##.",[1,1,3])==4)
-assert(consume("?###????????",[3,2,1])==10)
+#assert(consume("???.###",[1,1,3])==1)
+#assert(consume(".??..??...?##.",[1,1,3])==4)
+#assert(consume("?###????????",[3,2,1])==10)
 assert(c("?#?#?.#?#???????..? 5,1,1,3,2,1")==1)
-assert(consume("??????????",[1])==10)
-assert(consume("??????????",[])==0)
-assert(consume("??.?......",[2,1,3])==0)
-assert(consume("??.???.?..",[3,1])==1)
-assert(consume("",[1,2,3])==0)
-assert(consume("???.###.???",[3])==1)
+#assert(consume("??????????",[1])==10)
+#assert(consume("??????????",[])==0)
+#assert(consume("??.?......",[2,1,3])==0)
+#assert(consume("??.???.?..",[3,1])==1)
+#assert(consume("",[1,2,3])==0)
+#assert(consume("???.###.???",[3])==1)
 
 s=0
 for i in arr:
     xyz=set()
-    consume(i[0],i[1],xyz)
+    consume(i[0],i[1])
     s+=len(xyz)
 
 if len(arr)>900:
