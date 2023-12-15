@@ -7,11 +7,11 @@ from pprint import pprint
 #from sortedcontainers import SortedList
 #from sortedcontainers import SortedDict
 #from sortedcontainers import SortedSet
-#import numpy as np
+import numpy as np
 #import scipy
 #from functools import cache
 
-arr = [[x[0],ints(x[1])] for x in readarray("input.short",split=" ",convert=lambda x:x)]
+arr = [[x[0],ints(x[1])] for x in readarray("input.short.2",split=" ",convert=lambda x:x)]
 #lines = readlines("input.short")
 print (arr)
 
@@ -77,19 +77,22 @@ assert(gs(2,"??#")=={".##"})
 assert(gs(2,"???#")=={"##.","..##"})
 
 
-xyz = set()
 # eat a string and decorate it with v
-def consume(s,v,a="",d=0):
-    global xyz
-    
-    print("  "*d,"consume",s,v,a)
+def consume(s,v,xyz=None,a="",d=0):
+
+    if xyz==None:
+        xyz=set()
     
     if len(v)==0:
-        xyz.add(a)
-        return
+        xyz.add(a+"."*len(s))
+        return 0
 
     if len(s)==0:
-        return
+        return 0
+
+#    print("  "*d,"consume",s,v,a)
+    
+
     
     n = v[0]
     
@@ -107,23 +110,51 @@ def consume(s,v,a="",d=0):
         sx = s[0]
         s= s[1:]
         b+=sx
-        
+
     w = gs(n,b)
-    print("  "*d, " --> w=",w)
+ #   print("  "*d, " --> w=",w)
 
     if len(w)==0:
-        consume(s,v[1:],a+"."*len(b),d+1)
+        if not "#" in b:
+            consume(s,v,xyz,a+"."*len(b),d+1)
     else:    
         for i in w:
             #        print("iabs(b)=",i,a,b,s,b[len(i):]+s)
-            consume(b[len(i):]+s,v[1:],a+i,d+1)
-    
+            consume(b[len(i):]+s,v[1:],xyz,a+i,d+1)
+
+    return(len(xyz))
+
+def c(s):
+    s1,s2=s.split(" ")
+    s2=ints(s2)
+    return consume(s1,s2)
+
+assert(consume("???.###",[1,1,3])==1)
+assert(consume(".??..??...?##.",[1,1,3])==4)
+assert(consume("?###????????",[3,2,1])==10)
+assert(c("?#?#?.#?#???????..? 5,1,1,3,2,1")==1)
+assert(consume("??????????",[1])==10)
+assert(consume("??????????",[])==0)
+assert(consume("??.?......",[2,1,3])==0)
+assert(consume("??.???.?..",[3,1])==1)
+assert(consume("",[1,2,3])==0)
+x=set()
+print(consume("???.###.???",[3],x))
+print(x)
+
+
+assert(consume("???.###.???",[3])==1)
 
 s=0
 for i in arr:
     xyz=set()
-    consume(i[0],i[1])
+    consume(i[0],i[1],xyz)
     s+=len(xyz)
-    print(len(xyz),xyz)
+    pprint(xyz)
+
+if len(arr)>900:
+    assert(s<8202)
+    assert(s>6564)
 
 print(s)
+
