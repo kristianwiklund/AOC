@@ -82,43 +82,31 @@ assert(gs(2,"???#")=={"##.","..##"})
 def scnt(s):
     return [len(x) for x in s.split(".") if x!='']
 
-ccc={}
+@cache
+def krfsm(s):
+
+    s=s.replace(".","0").replace("#","1")
+    return (int("1"+s,2))
+
 # eat a string and decorate it with v
 #@cache
 def consume(s,v,a,vo):
 
     global xyz
-    global ccc
-
-    args=s+v+a+vo
 
     v=ints(v)
     if len(v)==0:
         if not "#" in s:
             #           print(a,scnt(a),vo,s)
             if scnt(a)==ints(vo):
-                xyz.add(a+"."*len(s))
+#                xyz.add(a+"."*len(s))
+#                print ("end string",a+"."*len(s))
+                return set([krfsm(a+"."*len(s))])
 
-                #       print("  "*d,"  return 0")
-
-        if args in ccc:
-            if ccc[args]!=0:
-                print("ronk")
-        else:
-            ccc[args]=0
-     
-        return 0
-
+        return set()
+            
     if len(s)==0:
- #       print("  "*d,"  return 0")
-
-        if args in ccc:
-            if ccc[args]!=0:
-                print("ronk")
-        else:
-            ccc[args]=0
-        
-        return 0
+        return set()
 
     n = v[0]
     
@@ -138,39 +126,32 @@ def consume(s,v,a,vo):
         b+=sx
 
     w = gs(n,b)
-  #  print("  "*d, " --> w=",w)
+    #  print("  "*d, " --> w=",w)
 
+    acc=set()
     if len(w)==0:
         if not "#" in b:
-            consume(s,str(v),a+"."*len(b),vo)
+            acc.update(consume(s,str(v),a+"."*len(b),vo))
     else:
         for i in w:
             #        print("iabs(b)=",i,a,b,s,b[len(i):]+s)
-            consume(b[len(i):]+s,str(v[1:]),a+i,vo)
+            acc.update(consume(b[len(i):]+s,str(v[1:]),a+i,vo))
         if not "#" in b:
-            consume(s,str(v),a+"."*len(b),vo)
+            acc.update(consume(s,str(v),a+"."*len(b),vo))
 
         #    print("  "*d,"  return",len(xyz))
         
-    if args in ccc:
-        if ccc[args]!=len(xyz):
-            print("ronk")
-        else:
-            ccc[s+v+a+vo]=len(xyz)
-
-    return(len(xyz))
+    return(acc)
 
 def c(s):
-    global xyz
-    xyz=set()
-#    print("c on ",s)
     s1,s2=s.split(" ")
-#    s2=ints(s2)
-    return consume(s1,s2,"",s2)
+    xyz=consume(s1,s2,"",s2)
+    print(xyz)
+    return len(xyz)
 
-#assert(consume("???.###",[1,1,3])==1)
 #assert(consume(".??..??...?##.",[1,1,3])==4)
 #assert(consume("?###????????",[3,2,1])==10)
+assert(c("???.### 1,1,3")==1)
 assert(c("?#?#?.#?#???????..? 5,1,1,3,2,1")==1)
 #assert(consume("??????????",[1])==10)
 #assert(consume("??????????",[])==0)
@@ -181,8 +162,7 @@ assert(c("?#?#?.#?#???????..? 5,1,1,3,2,1")==1)
 
 s=0
 for i in arr:
-    xyz=set()
-    consume(i[0],str(i[1]),"",str(i[1]))
+    xyz=    consume(i[0],str(i[1]),"",str(i[1]))
     s+=len(xyz)
 
 print("Part 1:",s)
@@ -206,8 +186,8 @@ for i in range(len(arr)):
 
 s=0
 for i in arr:
-    xyz=set()
-    consume(i[0],str(i[1]),"",str(i[1]))
+    xyz=    consume(i[0],str(i[1]),"",str(i[1]))
+    print(gs.cache_info())
     s+=len(xyz)
     print(i[0],i[1],len(xyz))
 
