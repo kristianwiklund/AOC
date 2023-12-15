@@ -83,6 +83,7 @@ def scnt(s):
     return [len(x) for x in s.split(".") if x!='']
     
 # eat a string and decorate it with v
+@cache
 def consume(s,v,a="",d=0,vo=False):
     global xyz
         
