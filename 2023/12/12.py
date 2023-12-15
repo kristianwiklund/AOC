@@ -181,14 +181,9 @@ for i in arr:
         a = a[::-1]
         b=i[1] + i[1] + i[1] + i[1] + i[1]
         b=list(reversed(b))
-#        xyz=    consume(a,str(b),"",str(b))
         xyz=    consume(a,str(b))
-#        xyz=    consume(a,str(b),"")
-#        print(consume.cache_info())
-#        s+=len(xyz)
         s+=(xyz)
-#        print("A", a,b,(xyz))
-#        print("A", a,b,len(xyz))
+
 
 
 print("Part 2:",s)
