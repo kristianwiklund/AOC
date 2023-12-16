@@ -89,29 +89,19 @@ def krfsm(s):
     return (int("1"+s,2))
 
 # eat a string and decorate it with v
-#def consume(s,v,a,vo):
-
 @cache
-def consume(s,v,a):
-
+def consume(s,v):
     global xyz
 
     v=ints(v)
     if len(v)==0:
         if not "#" in s:
-            #           print(a,scnt(a),vo,s)
-            #if scnt(a)==ints(vo):
-#                xyz.add(a+"."*len(s))
-#                print ("end string",a+"."*len(s))
             return 1
-            return set([krfsm(a+"."*len(s))])
 
         return 0
-#        return set()
             
     if len(s)==0:
         return 0
-    #    return set()
 
     n = v[0]
     
@@ -119,8 +109,6 @@ def consume(s,v,a):
     while len(s) and s[0]==".":
         sx = s[0]
         s= s[1:]
-        a+=sx
-        
 
     # then identify the next block of things
 
@@ -131,37 +119,25 @@ def consume(s,v,a):
         b+=sx
 
     w = gs(n,b)
-    #  print("  "*d, " --> w=",w)
 
-    #    acc=set()
     acc=0
     if len(w)==0:
         if not "#" in b:
-            acc+=(consume(s,str(v),a+"."*len(b)))
-#            acc.update(consume(s,str(v),a+"."*len(b)))
-#            acc.update(consume(s,str(v),a+"."*len(b),vo))
+            acc+=(consume(s,str(v)))
     else:
         for i in w:
-            #        print("iabs(b)=",i,a,b,s,b[len(i):]+s)
-#            acc.update(consume(b[len(i):]+s,str(v[1:]),a+i,vo))
-            acc+=(consume(b[len(i):]+s,str(v[1:]),a+i))
-#            acc.update(consume(b[len(i):]+s,str(v[1:]),a+i))
-        if not "#" in b:
-            acc+=(consume(s,str(v),a+"."*len(b)))
-           # acc.update(consume(s,str(v),a+"."*len(b)))
-#            acc.update(consume(s,str(v),a+"."*len(b),vo))
+            acc+=(consume(b[len(i):]+s,str(v[1:])))
 
-        #    print("  "*d,"  return",len(xyz))
+        if not "#" in b:
+            acc+=(consume(s,str(v)))
         
     return(acc)
 
 def c(s):
     s1,s2=s.split(" ")
-    xyz=consume(s1,s2,"")
-#    xyz=consume(s1,s2,"",s2)
+    xyz=consume(s1,s2)
     print(xyz)
     return xyz
-#    return len(xyz)
 
 #assert(consume(".??..??...?##.",[1,1,3])==4)
 #assert(consume("?###????????",[3,2,1])==10)
@@ -176,9 +152,7 @@ assert(c("?#?#?.#?#???????..? 5,1,1,3,2,1")==1)
 
 s=0
 for i in arr:
-#    xyz=    consume(i[0],str(i[1]),"",str(i[1]))
-    xyz=    consume(i[0],str(i[1]),"")
-    #s+=len(xyz)
+    xyz=    consume(i[0],str(i[1]))
     s+=(xyz)
 
 print("Part 1:",s)
@@ -202,23 +176,14 @@ assert(c("???.###????.###????.###????.###????.### 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3"
 
 s=0
 for i in arr:
-    if True or i[0][0]!=".":
+    if True:
         a=(i[0]+"?")*4+i[0]
         a = a[::-1]
         b=i[1] + i[1] + i[1] + i[1] + i[1]
         b=list(reversed(b))
-#        xyz=    consume(a,str(b),"",str(b))
-        xyz=    consume(a,str(b),"")
-        print(consume.cache_info())
-#        s+=len(xyz)
+        xyz=    consume(a,str(b))
         s+=(xyz)
-        print("A", a,b,(xyz))
-#        print("A", a,b,len(xyz))
-    else:
-        xyz=    consume("?"+i[0],str(i[1]),"",str(i[1]))
-        xya=    consume(i[0],str(i[1]),"",str(i[1]))
-        print(consume.cache_info())
-        s+=(len(xyz)*len(xyz)*len(xyz)*len(xyz)*len(xya))
-        print("B",i[0],i[1],(len(xyz)*len(xyz)*len(xyz)*len(xyz)*len(xya)))
+
+
 
 print("Part 2:",s)
