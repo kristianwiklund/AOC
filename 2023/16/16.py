@@ -18,7 +18,7 @@ p=[(-1,0,1)]
 e=set([(-1,0,1)])
 
 dirs = {0:(0,-1),1:(1,0),2:(0,1),3:(-1,0)}
-op=set()
+
 
 def tick(arr, p, e):
 
@@ -91,6 +91,47 @@ while len(p):
 v = set([(x,y) for (x,y,z) in e])
 #printpath(list(v),background=arr)
 v.remove((-1,0))
-print(len(v))
+#print(len(v))
 #print(v)
-    
+
+a1=len(v)
+
+def doit(arr, xs, ys, d):
+    p=[(xs,ys,d)]
+    e=set([(xs,ys,d)])
+
+    while(len(p)):
+        (p,e)=tick(arr,p,e)
+        v = set([(x,y) for (x,y,z) in e])
+        v.remove((xs,ys))
+    return(len(v))
+
+a2=doit(arr,-1,0,1)
+
+assert(a1==a2)
+print("Part 1:",a1)
+
+acc=[]
+d=2
+y=-1
+for x in range(len(arr[0])):
+    acc.append((x,y,doit(arr, x,y,d)))
+
+d=0
+y=len(arr)
+for x in range(len(arr[0])):
+    acc.append((x,y,doit(arr, x,y,d)))
+               
+
+d=1
+x=-1
+for y in range(len(arr)):
+    acc.append((x,y,doit(arr, x,y,d)))
+
+d=3
+x=len(arr[0])
+for y in range(len(arr)):
+    acc.append((x,y,doit(arr, x,y,d)))
+
+acc=sorted(acc,key=lambda x:-x[2])
+print("Part 2:",acc[0][2])
