@@ -12,42 +12,44 @@ import numpy as np
 from functools import cache, wraps
 from cachetools import cached
 from cachetools.keys import hashkey
+import sys
+sys.setrecursionlimit(10000)
 
-arr = readarray("input",split="",convert=lambda x:int(x))
+arr = readarray("input.short",split="",convert=lambda x:int(x))
 #lines = readlines("input.short")
 
 #dirs = {0:(0,-1),1:(1,0),2:(0,1),3:(-1,0)}
 
-B=(0,0)
-E=(len(arr[0])-1,len(arr)-1)
+#print(arr)
 
-print(arr)
-
+barr=arr
 arr=np.array(arr)
 #barr=np.zeros_like(arr)
 
-mini=None
+mini=2300
 
 #@cache
 #@logged
 
-@cached(cache={}, key=lambda p,x,y,d,st,acc: hashkey(p,x,y,st,acc))
-def walk(p, x, y, d, st, acc):
+#@cached(cache={}, key=lambda p,x,y,d,st,acc: hashkey(p,x,y,st,acc))
+def walk(p, x, y, d, st):
     global E
     global arr
     global mini
-
-    if mini and acc>=mini:
-        return None
+    global barr
+    
+#    if mini and acc>=(mini-abs(len(arr)-y)+abs(len(arr[0])-x)):
+#        return None
 
 #    print("walk", (x,y)==E, x,y,d,p)
     if (x,y)==E:
 #        print (walk.cache_info())
-        print (acc,p)
+        printpath(eval("["+p+"]"),background=barr)
+        print (acc)
         if mini==None or acc<mini:
             mini=acc
                 
-        return acc
+        return arr[y][x]
     
     if st>=3:
 #        print("3:", p)
@@ -63,34 +65,50 @@ def walk(p, x, y, d, st, acc):
 
     dd=d
 
-    a=None
-    b=None
-    c=None
-    if t[dd]:
-        dx = dirs[dd][0]
-        dy = dirs[dd][1]
-        a = walk(p+str((x,y)), x+dx, y+dy, dd, st+1, acc+t[dd])
-        
-    dd = (d+1)if d<3 else 0
-    if t[dd]:
-        dx = dirs[dd][0]
-        dy = dirs[dd][1]
-        b = walk(p+str((x,y)), x+dx, y+dy, dd, 0, acc+t[dd])
+    def canmove(i,d):
+        if i==d:
+            return True
+        if i==d+1 or i==d-1:
+            return True
 
+        if d+1==4 and i==0:
+            return True
+
+        if d-1==-1 and i==3:
+            return True
+
+        return False
+    
+    pp = [i for i in range(4) if (t[i] and canmove(i,d))]
+    pp = sorted(pp,key=lambda i:-t[i])
+#    print(pp,t)
+#    import sys
+#    sys.exit()
+    
+    mi = []
+
+    for dd in pp:
         
-    dd = (d-1) if d>0 else 3
-    if t[dd]:
         dx = dirs[dd][0]
         dy = dirs[dd][1]
-        c = walk(p+str((x,y)), x+dx, y+dy, dd, 0, acc+t[dd])
-
-    mi = [i for i in [a,b,c] if i!=None]
+        if dd==d:            
+            a = walk(p+","+str((x,y)), x+dx, y+dy, dd, st+1, acc+t[dd])
+        else:
+            a = walk(p+","+str((x,y)), x+dx, y+dy, dd, 0, acc+t[dd])
+                    
+        if a:
+            mi.append(a)
+            
+            #    mi = [i for i in [a,b,c] if i!=None]
     mi = min(mi) if len(mi) else None
 
         
     return mi
 
-print(walk("", B[0], B[1], 3, 0, 0))
+B=(0,0)
+E=(len(arr[0])-1,len(arr)-1)
+
+print(walk(str((-1,-1)), B[0], B[1], 1, 0, 0))
 
 
 
