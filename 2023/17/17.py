@@ -24,15 +24,24 @@ print(arr)
 arr=np.array(arr)
 #barr=np.zeros_like(arr)
 
+mini=None
+
 #@cache
-@logged
+#@logged
 def walk(p, x, y, d, st, acc):
     global E
     global arr
-    
+    global mini
+
+    if mini and acc>=mini:
+        return None
+
 #    print("walk", (x,y)==E, x,y,d,p)
     if (x,y)==E:
         print (acc)
+        if mini==None or acc<mini:
+            mini=acc
+                
         return acc
     
     if st>=3:
@@ -72,9 +81,11 @@ def walk(p, x, y, d, st, acc):
 
     mi = [i for i in [a,b,c] if i!=None]
     mi = min(mi) if len(mi) else None
+
+        
     return mi
 
-print(walk([], B[0], B[1], 1, 0, 0))
+print(walk([], B[0], B[1], 3, 0, 0))
 
 
 
