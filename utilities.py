@@ -4,9 +4,17 @@
 # import sys
 # sys.path.append("../..")
 # from utilities import *
-from functools import cache
-
+from functools import cache, wraps
 import re
+
+#https://stackoverflow.com/questions/308999/what-does-functools-wraps-do
+def logged(func):
+    @wraps(func)
+    def with_logging(*args, **kwargs):
+        print(func.__name__ + "("+str(args)+","+str(kwargs)+")")
+        return func(*args, **kwargs)
+    return with_logging
+
 
 # get all integers from a string
 # if negative is True, also handles negative numbers
@@ -326,7 +334,16 @@ def checkpos(arr, x, y, fun, outofbounds=True):
         return outofbounds
 
     return fun(arr[y][x])
-    
+
+dirs = {0:(0,-1),1:(1,0),2:(0,1),3:(-1,0)}
+
+def checkallpos(arr, x, y, fun, outofbounds=True):
+
+    v= [checkpos(arr, x+dirs[i][0], y+dirs[i][1], fun, outofbounds) for i in range(4)]
+    #    print("cap",x,y,v)
+    return v
+        
+
 # check position around an item in an array to see if they fulfill the lambda function
 def checkallaround(arr, x, y, fun, outofbounds=True):
     v = True
