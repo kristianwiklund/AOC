@@ -10,8 +10,10 @@ from pprint import pprint
 import numpy as np
 #import scipy
 from functools import cache, wraps
+from cachetools import cached
+from cachetools.keys import hashkey
 
-arr = readarray("input.short",split="",convert=lambda x:int(x))
+arr = readarray("input",split="",convert=lambda x:int(x))
 #lines = readlines("input.short")
 
 #dirs = {0:(0,-1),1:(1,0),2:(0,1),3:(-1,0)}
@@ -28,6 +30,8 @@ mini=None
 
 #@cache
 #@logged
+
+@cached(cache={}, key=lambda p,x,y,d,st,acc: hashkey(p,x,y,st,acc))
 def walk(p, x, y, d, st, acc):
     global E
     global arr
@@ -38,7 +42,8 @@ def walk(p, x, y, d, st, acc):
 
 #    print("walk", (x,y)==E, x,y,d,p)
     if (x,y)==E:
-        print (acc)
+#        print (walk.cache_info())
+        print (acc,p)
         if mini==None or acc<mini:
             mini=acc
                 
@@ -48,7 +53,7 @@ def walk(p, x, y, d, st, acc):
 #        print("3:", p)
         return None
 
-    if (x,y) in p:
+    if str((x,y)) in p:
 #        print("dup: ",p)
         return None
 
@@ -64,20 +69,20 @@ def walk(p, x, y, d, st, acc):
     if t[dd]:
         dx = dirs[dd][0]
         dy = dirs[dd][1]
-        a = walk(p+[(x,y)], x+dx, y+dy, dd, st+1, acc+t[dd])
+        a = walk(p+str((x,y)), x+dx, y+dy, dd, st+1, acc+t[dd])
         
     dd = (d+1)if d<3 else 0
     if t[dd]:
         dx = dirs[dd][0]
         dy = dirs[dd][1]
-        b = walk(p+[(x,y)], x+dx, y+dy, dd, 0, acc+t[dd])
+        b = walk(p+str((x,y)), x+dx, y+dy, dd, 0, acc+t[dd])
 
         
     dd = (d-1) if d>0 else 3
     if t[dd]:
         dx = dirs[dd][0]
         dy = dirs[dd][1]
-        c = walk(p+[(x,y)], x+dx, y+dy, dd, 0, acc+t[dd])
+        c = walk(p+str((x,y)), x+dx, y+dy, dd, 0, acc+t[dd])
 
     mi = [i for i in [a,b,c] if i!=None]
     mi = min(mi) if len(mi) else None
@@ -85,7 +90,7 @@ def walk(p, x, y, d, st, acc):
         
     return mi
 
-print(walk([], B[0], B[1], 3, 0, 0))
+print(walk("", B[0], B[1], 3, 0, 0))
 
 
 
