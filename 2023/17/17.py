@@ -29,10 +29,10 @@ arr=np.array(arr)
 mini=None
 
 #@cache
+#
 #@logged
 
-@cached(cache={}, key=lambda p,x,y,d,acc: hashkey(p, x,y,acc))
-#@cache
+#@logged
 def walk(p, x, y, d,acc):
     global E
     global arr
@@ -41,64 +41,78 @@ def walk(p, x, y, d,acc):
 
     
     if not checkpos(arr, x,y, lambda x:True, outofbounds=False):
-        print("should not happen")
         return None
     
-    if mini and acc>=mini:        
+    if mini and acc>=mini:
+
+ #       print("\033c\033[3J", end='')
+        #       print(p)
+ #       printpath(eval("["+p+"]")
+ #                 +[(x,y)],
+ #                 background=barr)
+        
+  #      print("(",acc,")")
         return None
 
-#    print("walk", (x,y)==E, x,y,p)
+    #    print("walk", (x,y)==E, x,y,p)
     if (x,y)==E:
         print("\033c\033[3J", end='')
-        printpath(eval("["+p+"]")+[(x,y)],background=barr)
-        print(acc)
+        #       print(p)
+        printpath(eval("["+p+"]")
+                  +[(x,y)],
+                  background=barr)
+#        print(p)
+        
         if mini==None or acc<mini:
+            print(acc)                   
             mini=acc
         return acc
-
-    if str((x,y,d)) in p:
+    if str((x,y)) in p:
+        #        print("\033c\033[3J", end='')
+        #       print(p)
+        #        printpath(eval("["+p+"]")
+        #                  +[(x,y)],
+        #                  background=barr)
         return None
 
 
-    # not optimal...
-    t = checkallpos(arr, x, y, lambda x:x, outofbounds=False)
-
-    dd=d
-
-    def canmove(i,d):
-        if i==d:
-            return False
-        if i==d+1 or i==d-1:
-            return True
-
-        if d+1==4 and i==0:
-            return True
-
-        if d-1==-1 and i==3:
-            return True
-
-        return False
-    
-    
-    pp = [i for i in range(4) if (t[i] and canmove(i,d))]
-    pp = sorted(pp,key=lambda i:-t[i])
+    if (x,y)==B:
+        pp=[2,1]
+    else:
+        pp = [[3,1],[0,2],[1,3],[2,0]][d]
     
     mi=[]
+    bo=[]
+    
+#    print((x,y),B,"--",d,pp)
     for dd in pp:
-        
+ #       print(d,dd)
         dx = dirs[dd][0]
         dy = dirs[dd][1]
 
-        a = walk(p+str((x,y,d)),x+dx,y+dy,dd,acc+arr[y+dy][x+dx])
-        mi.append(a)
-        if checkpos(arr, x+2*dx,y+2*dy, lambda x:True, outofbounds=False):
-            a = walk(p+str((x,y,d)),x+dx,y+dy,dd,acc+arr[y+dy][x+dx]+arr[y+2*dy][x+2*dx])
-            mi.append(a)
-        if checkpos(arr, x+3*dx,y+3*dy, lambda x:True, outofbounds=False):
-            a = walk(p+str((x,y,d)),x+dx,y+dy,dd,acc+arr[y+dy][x+dx]+arr[y+2*dy][x+2*dx]+arr[y+3*dy][x+3*dx])
-            mi.append(a)
+        p1 = checkpos(arr, x+dx,y+dy, lambda x:True, outofbounds=False)
+        p2 = p1 and checkpos(arr, x+2*dx,y+2*dy, lambda x:True, outofbounds=False)
+        p3 = p2 and checkpos(arr, x+3*dx,y+3*dy, lambda x:True, outofbounds=False)
+
+        if p3:
+            bo.append((p+","+str((x+dx,y+dy))+","+str((x+2*dx,y+2*dy))+","+str((x+dx,y+dy)), arr[y+dy][x+dx]+arr[y+2*dy][x+2*dx]+arr[y+3*dy][x+3*dx],x+3*dx,y+3*dy,dd))
+
+        if p2:
+            bo.append((p+","+str((x,y))+","+str((x+dx,y+dy)), arr[y+dy][x+dx]+arr[y+2*dy][x+2*dx],x+2*dx,y+2*dy,dd))
+            
+        if p1:
+            bo.append((p+","+str((x,y)),arr[y+dy][x+dx],x+dx,y+dy,dd))
+            
+    bo = sorted(bo,key=lambda x:x[1])
+
+#     walk(p+str((x,y,d)),x+dx,y+dy,dd,acc+arr[y+dy][x+dx])
+    for b in bo:
+#        print("b=",b)
+        mi.append( walk(b[0],b[2],b[3],b[4],acc+b[1]))
+
         
     mi =[i for i in mi if i!=None]
+    #print (mi)
     mi = min(mi) if len(mi) else None
     
     if mi:    
