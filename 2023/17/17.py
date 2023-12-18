@@ -84,6 +84,7 @@ def walk(p, x, y, d, st,acc):
 
         return False
     
+    
     pp = [i for i in range(4) if (t[i] and canmove(i,d))]
     pp = sorted(pp,key=lambda i:-t[i])
 #    print(pp,t)
@@ -99,6 +100,7 @@ def walk(p, x, y, d, st,acc):
         if dd==d:            
             a = walk(p+","+str((x,y)), x+dx, y+dy, dd, st+1, acc+arr[y][x])
         else:
+            # try a turn
             a = walk(p+","+str((x,y)), x+dx, y+dy, dd, 0, acc+arr[y][x])
                     
         if a:
