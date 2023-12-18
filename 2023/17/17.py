@@ -26,53 +26,48 @@ barr=arr
 arr=np.array(arr)
 #barr=np.zeros_like(arr)
 
-mini=1086
+mini=None
 
 #@cache
 #@logged
 
-@cached(cache={}, key=lambda p,x,y,d,st,acc: hashkey(p, x,y,st,acc))
+@cached(cache={}, key=lambda p,x,y,d,acc: hashkey(p, x,y,acc))
 #@cache
-def walk(p, x, y, d, st,acc):
+def walk(p, x, y, d,acc):
     global E
     global arr
     global mini
     global barr
+
     
-    if mini and acc>=mini:
+    if not checkpos(arr, x,y, lambda x:True, outofbounds=False):
+        print("should not happen")
+        return None
+    
+    if mini and acc>=mini:        
         return None
 
-#    print("walk", (x,y)==E, x,y,d,p)
+#    print("walk", (x,y)==E, x,y,p)
     if (x,y)==E:
         print("\033c\033[3J", end='')
         printpath(eval("["+p+"]")+[(x,y)],background=barr)
         print(acc)
         if mini==None or acc<mini:
             mini=acc
-        return arr[y][x]
-    #        print (walk.cache_info())
+        return acc
 
-    #        print (acc)
-
-        
-    
-    if st>=3:
-#        print("3:", p)
-        return None
-
-    if str((x,y)) in p:
-#        print("dup: ",p)
+    if str((x,y,d)) in p:
         return None
 
 
-    
+    # not optimal...
     t = checkallpos(arr, x, y, lambda x:x, outofbounds=False)
 
     dd=d
 
     def canmove(i,d):
         if i==d:
-            return True
+            return False
         if i==d+1 or i==d-1:
             return True
 
@@ -87,37 +82,34 @@ def walk(p, x, y, d, st,acc):
     
     pp = [i for i in range(4) if (t[i] and canmove(i,d))]
     pp = sorted(pp,key=lambda i:-t[i])
-#    print(pp,t)
-#    import sys
-#    sys.exit()
     
-    mi = []
-
+    mi=[]
     for dd in pp:
         
         dx = dirs[dd][0]
         dy = dirs[dd][1]
-        if dd==d:            
-            a = walk(p+","+str((x,y)), x+dx, y+dy, dd, st+1, acc+arr[y][x])
-        else:
-            # try a turn
-            a = walk(p+","+str((x,y)), x+dx, y+dy, dd, 0, acc+arr[y][x])
-                    
-        if a:
+
+        a = walk(p+str((x,y,d)),x+dx,y+dy,dd,acc+arr[y+dy][x+dx])
+        mi.append(a)
+        if checkpos(arr, x+2*dx,y+2*dy, lambda x:True, outofbounds=False):
+            a = walk(p+str((x,y,d)),x+dx,y+dy,dd,acc+arr[y+dy][x+dx]+arr[y+2*dy][x+2*dx])
             mi.append(a)
-            
-            #    mi = [i for i in [a,b,c] if i!=None]
+        if checkpos(arr, x+3*dx,y+3*dy, lambda x:True, outofbounds=False):
+            a = walk(p+str((x,y,d)),x+dx,y+dy,dd,acc+arr[y+dy][x+dx]+arr[y+2*dy][x+2*dx]+arr[y+3*dy][x+3*dx])
+            mi.append(a)
+        
+    mi =[i for i in mi if i!=None]
     mi = min(mi) if len(mi) else None
     
     if mi:    
-        return mi+arr[y][x]
+        return mi
     else:
         return None
 
 B=(0,0)
 E=(len(arr[0])-1,len(arr)-1)
 
-print(walk(str((-1,-1)), B[0], B[1], 1, 0,0))
+print(walk(str((-1,-1)), B[0], B[1], 1,0))
 
 
 
