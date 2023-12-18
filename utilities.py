@@ -164,6 +164,19 @@ def lrs(str):
     return res
 
 
+# flood fill an array with v starting at x,y where elements are b
+def floodfill(a,x,y,v,b=0):
+   p = [(x,y)]
+
+   while p:
+      x,y=p.pop()
+      a[y][x]=v
+      for i in range(4):
+         if checkpos(a, x+dirs[i][0], y+dirs[i][1], lambda i:i==b, outofbounds=False):
+            p.append((x+dirs[i][0], y+dirs[i][1]))
+
+
+
 # draw a line between two points in an array
 #@logged
 def drawline(ap, x1,y1,x2,y2,d):
