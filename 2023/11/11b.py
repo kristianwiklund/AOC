@@ -9,6 +9,7 @@ from pprint import pprint
 from sortedcontainers import SortedSet
 import numpy as np
 import scipy.ndimage
+z
 
 #import scipy
 #from functools import cache

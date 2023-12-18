@@ -165,6 +165,7 @@ def lrs(str):
 
 
 # draw a line between two points in an array
+#@logged
 def drawline(ap, x1,y1,x2,y2,d):
 
     xx1 = min(x1,x2)
@@ -173,17 +174,30 @@ def drawline(ap, x1,y1,x2,y2,d):
     xx2 = max(x1,x2)
     yy2 = max(y1,y2)
     
-    
+
+    # doesn't work for diagonals
     for x in range(xx1,xx2+1):
         for y in range(yy1,yy2+1):
             ap[y][x]=d
 
 
 
+# normalize a path to have its lower value at 0
+def poff(path):
+    x = [i[0] for i in path]
+    y = [i[1] for i in path]
+
+    dx = -min(0,min(x))
+    dy = -min(0,min(y))
+
+    return (dx,dy)
+    
+            
 # print a path (list of tuples) on an array
+def printpath(p,nonum=True, background=None,bgin=None,end="",thex=None):
 
-def printpath(path,nonum=True, background=None,bgin=None,end="",thex=None):
-
+    path = [(i[0],i[1]) for i in p]
+    
     if background:
         mx = len(background[0])
     else:

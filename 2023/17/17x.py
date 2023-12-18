@@ -26,30 +26,35 @@ barr=arr
 arr=np.array(arr)
 #barr=np.zeros_like(arr)
 
-mini=2300
+mini=1086
 
 #@cache
 #@logged
 
-#@cached(cache={}, key=lambda p,x,y,d,st,acc: hashkey(p,x,y,st,acc))
-def walk(p, x, y, d, st):
+@cached(cache={}, key=lambda p,x,y,d,st,acc: hashkey(p, x,y,st,acc))
+#@cache
+def walk(p, x, y, d, st,acc):
     global E
     global arr
     global mini
     global barr
     
-#    if mini and acc>=(mini-abs(len(arr)-y)+abs(len(arr[0])-x)):
-#        return None
+    if mini and acc>=mini:
+        return None
 
 #    print("walk", (x,y)==E, x,y,d,p)
     if (x,y)==E:
-#        print (walk.cache_info())
-        printpath(eval("["+p+"]"),background=barr)
-        print (acc)
+        print("\033c\033[3J", end='')
+        printpath(eval("["+p+"]")+[(x,y)],background=barr)
+        print(acc)
         if mini==None or acc<mini:
             mini=acc
-                
         return arr[y][x]
+    #        print (walk.cache_info())
+
+    #        print (acc)
+
+        
     
     if st>=3:
 #        print("3:", p)
@@ -92,23 +97,25 @@ def walk(p, x, y, d, st):
         dx = dirs[dd][0]
         dy = dirs[dd][1]
         if dd==d:            
-            a = walk(p+","+str((x,y)), x+dx, y+dy, dd, st+1, acc+t[dd])
+            a = walk(p+","+str((x,y)), x+dx, y+dy, dd, st+1, acc+arr[y][x])
         else:
-            a = walk(p+","+str((x,y)), x+dx, y+dy, dd, 0, acc+t[dd])
+            a = walk(p+","+str((x,y)), x+dx, y+dy, dd, 0, acc+arr[y][x])
                     
         if a:
             mi.append(a)
             
             #    mi = [i for i in [a,b,c] if i!=None]
     mi = min(mi) if len(mi) else None
-
-        
-    return mi
+    
+    if mi:    
+        return mi+arr[y][x]
+    else:
+        return None
 
 B=(0,0)
 E=(len(arr[0])-1,len(arr)-1)
 
-print(walk(str((-1,-1)), B[0], B[1], 1, 0, 0))
+print(walk(str((-1,-1)), B[0], B[1], 1, 0,0))
 
 
 
