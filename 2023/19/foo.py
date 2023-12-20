@@ -3955,7 +3955,6 @@ for x in range(1,4001):
                 v = _in(x,m,a,s)
                 if "A" in v:
                   ___ss+=1
-                  if not ___ss%1000000:
-                    print(___ss)
+        print(___ss)
 
 print("part 2:",___ss)

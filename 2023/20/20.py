@@ -20,7 +20,7 @@ cm = {x[0]:{} for x in arr if x[1]=="&"}
 bc = [x[2] for x in arr if x[1]=="b"][0]
 #print (bc)
 net = {x[0]:x[2] for x in arr}
-print(net)
+#print(net)
 G=nx.DiGraph()
 for x in net:
     for i in net[x]:
@@ -28,6 +28,26 @@ for x in net:
 
 p=nx.all_simple_paths(G,"roadcaster","rx")
 print(list(p))
+
+import pygraphviz
+import matplotlib.pyplot as plt
+from networkx.drawing.nx_agraph import write_dot
+#print(G.edges(data=True))
+#print(G.nodes)
+
+#labels = nx.get_edge_attributes(G,'weight')
+#nx.draw_networkx_edge_labels(G,pos=nx.spring_layout(G),edge_labels=labels)
+
+cnt=0
+cache=dict()
+write_dot(G, "maze.dot")
+
+nx.draw_spring(G,  with_labels=True)
+plt.savefig("maze_nwx.png")
+
+
+import sys
+sys.exit()
 
 for x in net:
 #    print(x,net[x])
@@ -132,7 +152,7 @@ while True:
 #    print(s)
     goff.append(s)
     i+=1
-    if len(goff)>200000:
+    if len(goff)>2000000:
         break
 
 cnt={i:0 for i in range(len(ff))}
@@ -153,6 +173,7 @@ print(bo)
 
 cnt={i:0 for i in range(len(ff))}
 
+xo = ["rx","vf","hf","pm","mk","pk"]
 while True:
     press(bc, q)
     tick(ff,cm,net, q,i)
