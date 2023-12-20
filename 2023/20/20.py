@@ -1,11 +1,11 @@
 import sys
 sys.path.append("../..")
 from utilities import *
-#import networkx as nx
+import networkx as nx
 #from copy import deepcopy
 from pprint import pprint
 #from sortedcontainers import SortedList
-#from sortedcontainers import SortedDict
+from sortedcontainers import SortedDict
 #from sortedcontainers import SortedSet
 #import numpy as np
 #import scipy
@@ -20,6 +20,14 @@ cm = {x[0]:{} for x in arr if x[1]=="&"}
 bc = [x[2] for x in arr if x[1]=="b"][0]
 #print (bc)
 net = {x[0]:x[2] for x in arr}
+print(net)
+G=nx.DiGraph()
+for x in net:
+    for i in net[x]:
+        G.add_edge(x,i)
+
+p=nx.all_simple_paths(G,"roadcaster","rx")
+print(list(p))
 
 for x in net:
 #    print(x,net[x])
@@ -48,8 +56,8 @@ def tick(ff,cm, net, q, bp):
             print("Part 2:",e[0],e,bp)
             break
 
-        if e[0]=="rx":
-            print(bp, e)
+#        if e[0]=="rx":
+#            print(bp, e)
         
         if e[1]=="low":
             cntl+=1
@@ -109,7 +117,62 @@ for i in range(1000):
 print(cnth, cntl, cnth*cntl)
 assert(cnth*cntl>86325428)
 
+goff=[]
+
+
 while True:
     press(bc, q)
     tick(ff,cm,net, q,i)
+    s=""
+    for ii in ff:
+        if ff[ii]=="high":
+            s+="1"
+        else:
+            s+="0"
+#    print(s)
+    goff.append(s)
+    i+=1
+    if len(goff)>200000:
+        break
+
+cnt={i:0 for i in range(len(ff))}
+for x in range(1,len(goff)):
+    g=goff[x]
+    gg=goff[x-1]
+    for i in range(len(g)):
+        if g[i]!=gg[i]:
+            cnt[i]+=1
+
+print(cnt)
+
+from scipy.fft import fft
+
+bo = sorted(range(len(ff)),key=lambda x:cnt[x])
+
+print(bo)
+
+cnt={i:0 for i in range(len(ff))}
+
+while True:
+    press(bc, q)
+    tick(ff,cm,net, q,i)
+    s=""
+    for ii in ff:
+        if ff[ii]=="high":
+            s+="1"
+        else:
+            s+="0"
+
+    #    for i in range(len(ff)):
+    #        if s[i]=="1":
+    #            cnt[i]+=1
+    #        else:
+    #            cnt[i]-=1
+    
+    #        print(f'{cnt[i]:>5}',end="")
+
+    for ii in bo:
+        print(s[ii],end="")
+    print("")
+    
     i+=1
