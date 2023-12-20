@@ -270,7 +270,7 @@ def printpath(p,nonum=True, background=None,bgin=None,end="",thex=None):
                 if indx in draw:
                     s = draw[indx]
                 else:
-                    print(indx)
+                    #print(indx)
                         
                     if thex:
                         s = thex[i]
