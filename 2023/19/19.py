@@ -76,22 +76,6 @@ def irn(G,x, vs):
             continue
         d = ints(p)[0]
 
-<<<<<<< HEAD
-for xxx in v:
-    z=["x>=1,m>=1,a>=1,s>=1,x<=4000,m<=4000,a<=4000,s<=4000"]
-    for y in range(len(xxx)-1):
-        p = G.get_edge_data(xxx[y],xxx[y+1])["rule"]
-        if p!= True:
-            z.append(p)
-        
-    #    zz.append(reduce_inequalities(z,[x,m,a,s]))
-    zz.append(",".join(z))
-#    az.append(z)
-#print(zz)
-
-for xxx in zz:
-    print(reduce_inequalities(eval(xxx)))
-=======
         if p[1]==">": # <=
             vs[p[0]][1]=min(vs[p[0]][1],d+1)
         else: # >=
@@ -126,4 +110,3 @@ for i in v:
     ss+=cc
 
 print(ss)
->>>>>>> 4d22ed69dc76757adf0d2bf1de2f7853616c03ed
