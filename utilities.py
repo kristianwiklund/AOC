@@ -403,4 +403,8 @@ arr=[['4', '6', '7', '', '', '1', '1', '4', '', ''], ['', '', '', '*', '', '', '
 
 assert(checkanyaround(arr, 0, 0, lambda x:x!=''))
 
-    
+# true if a overlaps b
+# a and b are ranges
+def overlaps(a, b):
+
+    return a.stop > b.start and b.stop>a.start
