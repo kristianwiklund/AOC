@@ -26,13 +26,14 @@ barr=arr
 arr=np.array(arr)
 #barr=np.zeros_like(arr)
 
-mini=None
+mini=150
 
 #@cache
 #
 #@logged
 
 #@logged
+@cache
 def walk(p, x, y, d,acc):
     global E
     global arr
@@ -43,7 +44,7 @@ def walk(p, x, y, d,acc):
     if not checkpos(arr, x,y, lambda x:True, outofbounds=False):
         return None
     
-    if mini and acc>=mini:
+    if mini and (acc+abs(x-len(arr[0]))+abs(y-len(arr)))>=mini:
 
  #       print("\033c\033[3J", end='')
         #       print(p)
@@ -60,7 +61,7 @@ def walk(p, x, y, d,acc):
         #       print(p)
         printpath(eval("["+p+"]")
                   +[(x,y)],
-                  background=barr)
+                  background=None)
 #        print(p)
         
         if mini==None or acc<mini:
@@ -95,15 +96,17 @@ def walk(p, x, y, d,acc):
         p3 = p2 and checkpos(arr, x+3*dx,y+3*dy, lambda x:True, outofbounds=False)
 
         if p3:
-            bo.append((p+","+str((x+dx,y+dy))+","+str((x+2*dx,y+2*dy))+","+str((x+dx,y+dy)), arr[y+dy][x+dx]+arr[y+2*dy][x+2*dx]+arr[y+3*dy][x+3*dx],x+3*dx,y+3*dy,dd))
+#            bo.append((p+","+str((x,y))+","+str((x+2*dx,y+2*dy))+","+str((x+dx,y+dy)), arr[y+dy][x+dx]+arr[y+2*dy][x+2*dx]+arr[y+3*dy][x+3*dx],x+3*dx,y+3*dy,dd))
+            bo.append((p+","+str((x,y)), arr[y+dy][x+dx]+arr[y+2*dy][x+2*dx]+arr[y+3*dy][x+3*dx],x+3*dx,y+3*dy,dd))            
 
         if p2:
-            bo.append((p+","+str((x,y))+","+str((x+dx,y+dy)), arr[y+dy][x+dx]+arr[y+2*dy][x+2*dx],x+2*dx,y+2*dy,dd))
+            bo.append((p+","+str((x,y)), arr[y+dy][x+dx]+arr[y+2*dy][x+2*dx],x+2*dx,y+2*dy,dd))
+#            bo.append((p+","+str((x,y))+","+str((x+dx,y+dy)), arr[y+dy][x+dx]+arr[y+2*dy][x+2*dx],x+2*dx,y+2*dy,dd))
             
         if p1:
             bo.append((p+","+str((x,y)),arr[y+dy][x+dx],x+dx,y+dy,dd))
             
-    bo = sorted(bo,key=lambda x:x[1])
+    bo = sorted(bo,key=lambda x:x[1]/3)
 
 #     walk(p+str((x,y,d)),x+dx,y+dy,dd,acc+arr[y+dy][x+dx])
     for b in bo:

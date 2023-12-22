@@ -26,8 +26,11 @@ for x in net:
     for i in net[x]:
         G.add_edge(x,i)
 
-p=nx.all_simple_paths(G,"roadcaster","rx")
-print(list(p))
+p=nx.all_simple_paths(G,"roadcaster","vf")
+p=list(p)
+p=[item for sublist in p for item in sublist]
+print(p)
+H = nx.subgraph(G,p)
 
 import pygraphviz
 import matplotlib.pyplot as plt
@@ -40,14 +43,16 @@ from networkx.drawing.nx_agraph import write_dot
 
 cnt=0
 cache=dict()
-write_dot(G, "maze.dot")
+#write_dot(H, "maze.dot")
 
-nx.draw_spring(G,  with_labels=True)
-plt.savefig("maze_nwx.png")
+#nx.draw_spring(H,  with_labels=True)
+#plt.savefig("maze_nwx.png")
 
 
-import sys
-sys.exit()
+#import sys
+#sys.exit()
+
+cmm={}
 
 for x in net:
 #    print(x,net[x])
@@ -63,6 +68,7 @@ def press(bc, q):
 
 def tick(ff,cm, net, q, bp):
     global cnth, cntl
+    global cmm
     
     while True:
 
@@ -107,10 +113,12 @@ def tick(ff,cm, net, q, bp):
                     a=False
                 
             if a:
+                cmm[e[0]]="low"
                 for i in net[e[0]]:
                     q.append((i, "low", e[0]))
    #                 print("--> low")
             else:
+                cmm[e[0]]="high"
                 for i in net[e[0]]:
                     q.append((i, "high", e[0]))
     #                print("--> high")
@@ -149,13 +157,20 @@ while True:
             s+="1"
         else:
             s+="0"
+            
+    for ii in cmm:
+        if cmm[ii]=="high":
+            s+="1"
+        else:
+            s+="0"
+            
 #    print(s)
     goff.append(s)
     i+=1
     if len(goff)>2000000:
         break
 
-cnt={i:0 for i in range(len(ff))}
+cnt={i:0 for i in range(len(ff)+len(cm))}
 for x in range(1,len(goff)):
     g=goff[x]
     gg=goff[x-1]
@@ -167,11 +182,11 @@ print(cnt)
 
 from scipy.fft import fft
 
-bo = sorted(range(len(ff)),key=lambda x:cnt[x])
+bo = sorted(range(len(ff)+len(cm)),key=lambda x:cnt[x])
 
 print(bo)
 
-cnt={i:0 for i in range(len(ff))}
+cnt={i:0 for i in range(len(ff)+len(cm))}
 
 xo = ["rx","vf","hf","pm","mk","pk"]
 while True:
@@ -184,6 +199,12 @@ while True:
         else:
             s+="0"
 
+    for ii in cmm:
+        if cmm[ii]=="high":
+            s+="1"
+        else:
+            s+="0"
+            
     #    for i in range(len(ff)):
     #        if s[i]=="1":
     #            cnt[i]+=1

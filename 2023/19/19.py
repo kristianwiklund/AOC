@@ -80,45 +80,16 @@ a = symbols("a")
 s = symbols("s")
 
 for xxx in v:
-    z=["x>=0,m>=0,a>=0,s>=0,x<=4000,m<=4000,a<=4000,s<=4000"]
+    z=["x>=1,m>=1,a>=1,s>=1,x<=4000,m<=4000,a<=4000,s<=4000"]
     for y in range(len(xxx)-1):
         p = G.get_edge_data(xxx[y],xxx[y+1])["rule"]
         if p!= True:
             z.append(p)
         
-        #    zz.append(reduce_inequalities(z,[x,m,a,s]))
+    #    zz.append(reduce_inequalities(z,[x,m,a,s]))
     zz.append(",".join(z))
 #    az.append(z)
+#print(zz)
 
-aaaaa=0
-
-for zzz in zz:
-#    print(zz[0])
-    ss=str(reduce_inequalities(eval(zzz)))
-    print(ss)
-    U={"x":[],"m":[],"a":[],"s":[]}
-    for i in ss.split("&"):
-        i=i.replace("(","").replace(")","").strip()
-#        print(">"+i+"<")
-        if i[0].isdigit():
-            U[i[-1]].append(ints(i)[0])
-        else:
-            U[i[0]].append(ints(i)[0])
-
-
-    ssss=1
-#    print(U)
-    for p in U:
-#        print(U[p])
-        if len(U[p]):
-            ssss*=abs(U[p][0]-U[p][1])
-        else:
-            ssss*=4000
-        
-    aaaaa+=ssss
-
-print(aaaaa)
-    
-
-
-    
+for xxx in zz:
+    print(reduce_inequalities(eval(xxx)))
