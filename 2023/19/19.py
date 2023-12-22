@@ -59,26 +59,24 @@ for j in range(i+1,len(arr)):
     print ("v=(_in(",j,"))")
     
 print("print(\"part 1:\",___ss)")
-#rint(len(G))
+
 v=list(nx.all_simple_paths(G,"_in","A"))
-#rint(v)
+print(v)
 #v=set([i for x in v for i in x])
+#print(len(G),G.nodes())
+
 #G = G.subgraph(v)
-#print(len(G))
+print(len(G),G.nodes())
 
-#for x in G:
-#    for e in (G.edges([x])):
-#        if G.get_edge_data(e[0],e[1]):
-#            print (e,G.get_edge_data(e[0],e[1])["rule"])
+def irn(G,x, vs):
 
-zz=[]
-az=[]
-from sympy import symbols, reduce_inequalities, solveset, solve, simplify
-x = symbols("x")
-m = symbols("m")
-a = symbols("a")
-s = symbols("s")
+    for i in G.successors(x):
+        p = G.get_edge_data(x,i)["rule"]
+        if p==True:
+            continue
+        d = ints(p)[0]
 
+<<<<<<< HEAD
 for xxx in v:
     z=["x>=1,m>=1,a>=1,s>=1,x<=4000,m<=4000,a<=4000,s<=4000"]
     for y in range(len(xxx)-1):
@@ -93,3 +91,39 @@ for xxx in v:
 
 for xxx in zz:
     print(reduce_inequalities(eval(xxx)))
+=======
+        if p[1]==">": # <=
+            vs[p[0]][1]=min(vs[p[0]][1],d+1)
+        else: # >=
+            vs[p[0]][0]=max(vs[p[0]][0],d-1)
+
+    return vs
+    
+ss=0
+for i in v:
+    vs = {i:{0:1,1:4000} for i in "xmas"}
+    for j in range(len(i)-1):
+        p = G.get_edge_data(i[j],i[j+1])["rule"]
+        if p==True:
+            # this corresponds to ALL restrictions from ALL other edges, inverted
+#            print("vs(pre)=",vs)
+            vs=irn(G,i[j],vs)
+#            print("vs=",vs)
+            continue
+#        print(p,vs)
+        d = ints(p)[0]
+#        print(d)
+        if p[1]==">":
+            vs[p[0]][0]=max(vs[p[0]][0],d)
+        else:
+            vs[p[0]][1]=min(vs[p[0]][1],d)            
+            
+    cc=1
+    print(i)
+    print(vs)
+    for x in vs:
+        cc*=vs[x][1]-vs[x][0]
+    ss+=cc
+
+print(ss)
+>>>>>>> 4d22ed69dc76757adf0d2bf1de2f7853616c03ed

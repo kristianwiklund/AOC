@@ -52,8 +52,6 @@ def sj(x,m,a,s):
   return A(x,m,a,s)
 
 def tjc(x,m,a,s):
-  if x>3630 :
-    return A(x,m,a,s)
   return A(x,m,a,s)
 
 def fm(x,m,a,s):
