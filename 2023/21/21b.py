@@ -13,8 +13,8 @@ import numpy as np
 np.set_printoptions(threshold=sys.maxsize)
 arr = readarray("input.short",split="",convert=lambda x:x)
 #lines = readlines("input.short")
-barr = np.full_like(arr,fill_value=np.inf,dtype=np.double)
-print(barr)
+arr = [["." if y=="S" else y for y in x]+x+["." if y=="S" else y for y in x] for x in arr]
+arr = [["." if y=="S" else y for y in x] for x in arr]+ arr + [["." if y=="S" else y for y in x] for x in arr]
 
 def doit(arr,barr, p):
 
@@ -38,12 +38,19 @@ def doit(arr,barr, p):
 y = [x for x in range(len(arr)) if "S" in arr[x]][0]
 x = arr[y].index("S")
 
+
+
+
+barr = np.full_like(arr,fill_value=np.inf,dtype=np.double)
 barr[y][x]=0
+print(barr)
+
 p = [(x,y) for x in range(len(arr[0])) for y in range(len(arr))]
+
 
 doit(arr,barr,p)
 pp = (barr==0)
-for i in range(2,66,2):
+for i in range(2,50,2):
     pp += (barr==i)
 
 nf = lambda x:0 if x==np.inf else x

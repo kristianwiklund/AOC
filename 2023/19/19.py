@@ -59,66 +59,54 @@ for j in range(i+1,len(arr)):
     print ("v=(_in(",j,"))")
     
 print("print(\"part 1:\",___ss)")
-#rint(len(G))
+
 v=list(nx.all_simple_paths(G,"_in","A"))
-#rint(v)
+print(v)
 #v=set([i for x in v for i in x])
+#print(len(G),G.nodes())
+
 #G = G.subgraph(v)
-#print(len(G))
+print(len(G),G.nodes())
 
-#for x in G:
-#    for e in (G.edges([x])):
-#        if G.get_edge_data(e[0],e[1]):
-#            print (e,G.get_edge_data(e[0],e[1])["rule"])
+def irn(G,x, vs):
 
-zz=[]
-az=[]
-from sympy import symbols, reduce_inequalities, solveset, solve, simplify
-x = symbols("x")
-m = symbols("m")
-a = symbols("a")
-s = symbols("s")
+    for i in G.successors(x):
+        p = G.get_edge_data(x,i)["rule"]
+        if p==True:
+            continue
+        d = ints(p)[0]
 
-for xxx in v:
-    z=["x>=0,m>=0,a>=0,s>=0,x<=4000,m<=4000,a<=4000,s<=4000"]
-    for y in range(len(xxx)-1):
-        p = G.get_edge_data(xxx[y],xxx[y+1])["rule"]
-        if p!= True:
-            z.append(p)
-        
-        #    zz.append(reduce_inequalities(z,[x,m,a,s]))
-    zz.append(",".join(z))
-#    az.append(z)
+        if p[1]==">": # <=
+            vs[p[0]][1]=min(vs[p[0]][1],d+1)
+        else: # >=
+            vs[p[0]][0]=max(vs[p[0]][0],d-1)
 
-aaaaa=0
-
-for zzz in zz:
-#    print(zz[0])
-    ss=str(reduce_inequalities(eval(zzz)))
-    print(ss)
-    U={"x":[],"m":[],"a":[],"s":[]}
-    for i in ss.split("&"):
-        i=i.replace("(","").replace(")","").strip()
-#        print(">"+i+"<")
-        if i[0].isdigit():
-            U[i[-1]].append(ints(i)[0])
-        else:
-            U[i[0]].append(ints(i)[0])
-
-
-    ssss=1
-#    print(U)
-    for p in U:
-#        print(U[p])
-        if len(U[p]):
-            ssss*=abs(U[p][0]-U[p][1])
-        else:
-            ssss*=4000
-        
-    aaaaa+=ssss
-
-print(aaaaa)
+    return vs
     
+ss=0
+for i in v:
+    vs = {i:{0:1,1:4000} for i in "xmas"}
+    for j in range(len(i)-1):
+        p = G.get_edge_data(i[j],i[j+1])["rule"]
+        if p==True:
+            # this corresponds to ALL restrictions from ALL other edges, inverted
+#            print("vs(pre)=",vs)
+            vs=irn(G,i[j],vs)
+#            print("vs=",vs)
+            continue
+#        print(p,vs)
+        d = ints(p)[0]
+#        print(d)
+        if p[1]==">":
+            vs[p[0]][0]=max(vs[p[0]][0],d)
+        else:
+            vs[p[0]][1]=min(vs[p[0]][1],d)            
+            
+    cc=1
+    print(i)
+    print(vs)
+    for x in vs:
+        cc*=vs[x][1]-vs[x][0]
+    ss+=cc
 
-
-    
+print(ss)
