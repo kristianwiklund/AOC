@@ -7,6 +7,20 @@
 from functools import cache, wraps
 import re
 
+# https://stackoverflow.com/questions/1984799/cross-product-of-two-vectors-in-python
+def cross(a, b):
+#    if len(a)==2:
+#        c = a[0]*b[1]-b[0]*a[1]
+    #el
+    if len(a)==3:
+        c = [a[1]*b[2] - a[2]*b[1],
+             a[2]*b[0] - a[0]*b[2],
+             a[0]*b[1] - a[1]*b[0]]
+    else:
+        raise ValueError("wrong dimension, need 3")
+    
+    return c
+
 #https://stackoverflow.com/questions/308999/what-does-functools-wraps-do
 def logged(func):
     @wraps(func)
