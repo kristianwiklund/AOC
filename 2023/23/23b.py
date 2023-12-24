@@ -12,7 +12,7 @@ from pprint import pprint
 #import scipy
 #from functools import cache
 
-arr = readarray("input",split="",convert=lambda x:x if x not in "><^v" else ".")
+arr = readarray("input.short",split="",convert=lambda x:x if x not in "><^v" else ".")
 #lines = readlines("input.short")
 
 #print(arr)
@@ -21,45 +21,25 @@ start=[x for x in range(len(arr[0])) if arr[0][x]=="."][0]
 stop=list(reversed([x for x in range(len(arr[len(arr)-1])) if arr[len(arr)-1][x]=="."]))[0]
 print(start,stop)
 
-G=nx.DiGraph()
+G=nx.Graph()
 
+j=[(start,0),(stop,len(arr)-1)]
 for y in range(len(arr)):
     for x in range(len(arr[0])):
+        if arr[y][x]==".":
+            z=checkallpos(arr,x,y,lambda x:x==".",outofbounds=False)        
+            for i in range(4):
+                if z[i]:
+                    G.add_edge((x,y),(x+dirs[i][0],y+dirs[i][1]))
+            if sum(z)>2:
+                j.append((x,y))
 
-        match arr[y][x]:
-            case "#":
-                continue
-            case ">":
-                if checkpos(arr, x+dirs[1][0],y+dirs[1][1],lambda x:x!="#",outofbounds=False):
-                    G.add_edge((x,y), (x+dirs[1][0],y+dirs[1][1]))
-            case "<":
-                if checkpos(arr, x+dirs[3][0],y+dirs[3][1],lambda x:x!="#",outofbounds=False):
-                    G.add_edge((x,y), (x+dirs[3][0],y+dirs[3][1]))
-            case "v":
-                if checkpos(arr, x+dirs[2][0],y+dirs[2][1],lambda x:x!="#",outofbounds=False):
-                    G.add_edge((x,y), (x+dirs[2][0],y+dirs[2][1]))
-            case "^":
-                if checkpos(arr, x+dirs[0][0],y+dirs[0][1],lambda x:x!="#",outofbounds=False):
-                    G.add_edge((x,y), (x+dirs[0][0],y+dirs[0][1]))
-                    print((x,y),"->",(x+dirs[0][0],y+dirs[0][1]))                
-            case ".":
-                z=checkallpos(arr,x,y,lambda x:x!="#",outofbounds=False)
-                ch="^>v<"
-                for i in range(4):
-                    if z[i]:
-                        if (arr[y+dirs[i][1]][x+dirs[i][0]]==ch[i]) or (arr[y+dirs[i][1]][x+dirs[i][0]]=="."):
-                            G.add_edge((x,y),(x+dirs[i][0],y+dirs[i][1]))
 
-#pos = nx.spring_layout(G)
-#nx.draw(G,pos=pos)
-#plt.savefig("maze_nwx.png")
+def doit(j):
+    f = j.pop(0)
+    j=sorted(j,key=lambda x:len(nx.shortest_path(G,f,x)))
 
-v=list(nx.all_simple_paths(G,(start,0),(stop,len(arr)-1)))
-#print(v)
+    return j
 
-l = [len(x) for x in v]
-l= sorted(l,key=lambda x:-x)
-v=sorted(list(v),key=lambda x:-len(x))
-
-printpath(v[0],background=arr)
-print(l[0]-1)
+j=doit(j)
+print(j)
