@@ -49,23 +49,40 @@ else:
 def isx(L1,L2):
 
 #    print(L1,L2)
-    X = cross(L1,L2)
+#    X = cross(L1,L2)
 #    X = (X/X[2])[0:2]
+#    return X
+    
+    a1 = L1[0]
+    b1 = L1[1]
+    c1 = L1[2]
 
-    return X
+    a2 = L2[0]
+    b2 = L2[1]
+    c2 = L2[2]
+    
+    x0 = (b1*c2-b2*c1)
+    y0 = (c1*a2-c2*a1)
+    k0 = (a1*b2-a2*b1)
+
+    if not k0:
+        return None
+    
+    #    return (x0,y0,k0)
+    return (x0/k0,y0/k0,1)
+
 
 
 c=0
 cc=0
 d=0
 dd=0
-
 for i in range(len(arr)-1):
     for j in range(i+1,len(arr)):
 
         v = isx(barr[i],barr[j])
         print(v)
-        if v[2]!=0:
+        if v:
             p = (limits[0]*v[2] <= v[0]) and (v[0] <= limits[1]*v[2]) and  (limits[0]*v[2] <= v[1]) and (v[1] <= limits[1]*v[2])
             q1 = (v[0]>=arr[j][0][0]*v[2]) if arr[j][1][0]>=0 else (v[0]<=arr[j][0][0]*v[2])
             q2 = (v[0]>=arr[i][0][0]*v[2]) if arr[i][1][0]>=0 else (v[0]<=arr[i][0][0]*v[2])
@@ -73,11 +90,6 @@ for i in range(len(arr)-1):
             cc+=1
             if p:
                 if q1 and q2:
-                    #                print ("---")
-                    #                print(arr[i],arr[j],v,arr[j][0],arr[j][1],q1, q2,p)
-                    #                print (v,limits[0]*v[2],limits[1]*v[2])
-                    #A                import sys
-                    #                sys.exit()
                     c+=1
                 else:
                     d+=1
