@@ -7,6 +7,55 @@
 from functools import cache, wraps
 import re
 
+# calculate the line equation from two positions
+# returns  ax+bx+c=0
+def p2l(P):
+    
+    P1 = P[0]
+    P2 = [P[0][0]+P[1][0],P[0][1]+P[1][1]]
+
+    x1 = P1[0]
+    y1 = P1[1]
+
+    x2 = P2[0]
+    y2 = P2[1]
+
+    A = y2-y1
+    B = x1-x2
+    C = y1*(x2-x1)-(y2-y1)*x1
+
+#    print("x",A,B,C,P)
+    return ([A,B,C])
+
+# calculate the intersection point of two lines on line equation format
+def isx(L1,L2):
+
+#    print(L1,L2)
+#    X = cross(L1,L2)
+#    X = (X/X[2])[0:2]
+#    return X
+    
+    a1 = L1[0]
+    b1 = L1[1]
+    c1 = L1[2]
+
+    a2 = L2[0]
+    b2 = L2[1]
+    c2 = L2[2]
+    
+    x0 = (b1*c2-b2*c1)
+    y0 = (c1*a2-c2*a1)
+    k0 = (a1*b2-a2*b1)
+
+    if not k0:
+        return None
+    
+    #    return (x0,y0,k0)
+    return (x0/k0,y0/k0,1)
+
+
+
+
 # https://stackoverflow.com/questions/1984799/cross-product-of-two-vectors-in-python
 def cross(a, b):
 #    if len(a)==2:
