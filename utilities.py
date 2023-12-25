@@ -7,6 +7,7 @@
 from functools import cache, wraps
 import re
 
+
 # calculate the line equation from two positions
 # returns  ax+bx+c=0
 def p2l(P):
@@ -410,7 +411,7 @@ assert(addtuples((0,0),(0,0))==(0,0))
 # def check a position in an array to see if it fulfills the lambda function
 # outofbounds is the value used if we are out of the array
 
-def checkpos(arr, x, y, fun, outofbounds=True):
+def checkpos(arr, x, y, fun, outofbounds=False):
     if x<0:
         return outofbounds
 
@@ -427,7 +428,7 @@ def checkpos(arr, x, y, fun, outofbounds=True):
 
 dirs = {0:(0,-1),1:(1,0),2:(0,1),3:(-1,0)}
 
-def checkallpos(arr, x, y, fun, outofbounds=True):
+def checkallpos(arr, x, y, fun, outofbounds=False):
 
     v= [checkpos(arr, x+dirs[i][0], y+dirs[i][1], fun, outofbounds) for i in range(4)]
     #    print("cap",x,y,v)
@@ -471,3 +472,66 @@ assert(checkanyaround(___arr, 0, 0, lambda x:x!=''))
 def overlaps(a, b):
 
     return a.stop > b.start and b.stop>a.start
+
+
+# dijksta on a matrix
+# default follows "."
+def dijkstra(arr, start, f=lambda x:x==".", stop=None):
+
+    (startx, starty) = start
+
+    if not f(arr[starty][startx]):
+        return None
+
+    if stop and not f(arr[stop[1]][stop[0]]):
+        return None
+    
+    n = sum([len(x) for x in arr])**4
+    barr = [[n+1]*len(x) for x in arr]
+
+    barr[starty][startx]=0
+
+    p = [(x,y) for x in range(len(arr[0])) for y in range(len(arr)) if f(arr[y][x])]
+
+    while len(p):
+        p = sorted(p,key = lambda x:barr[x[1]][x[0]])
+        (x,y) = p.pop(0)
+
+        v = checkallpos(arr,x,y,f,outofbounds=False)
+        for i in range(4):
+            if v[i]:
+                barr[y+dirs[i][1]][x+dirs[i][0]] = min(barr[y+dirs[i][1]][x+dirs[i][0]],barr[y][x]+1)
+
+        if stop!=None and stop==(x,y):
+            break
+
+
+    if stop!=None:
+        r = [stop]
+        (x,y) = stop
+
+        while True:
+            v = checkallpos(arr,x,y,f,outofbounds=False)
+            i = sorted([i for i in range(4) if v[i]], key=lambda t:barr[y+dirs[t][1]][x+dirs[t][0]])
+            i=i[0]
+            (x,y) = (x+dirs[i][0],y+dirs[i][1])
+            r.append((x,y))
+            if (x,y)==start:
+                break
+        return(barr,list(reversed(r)))
+    else:
+        return(barr,None)
+                                                       
+
+__arr=["@@@@@@@@@",
+       "@.......@",
+       "@.@@@@@.@",
+       "@.....@.@",
+       "@@@.@.@@@",
+       "@...@...@",
+       "@@@@@@@.@"]
+
+(__barr,__p) = (dijkstra(__arr, (7,6), stop=(7,2)))
+assert(__p==[(7, 6), (7, 5), (6, 5), (5, 5), (5, 4), (5, 3), (4, 3), (3, 3), (2, 3), (1, 3), (1, 2), (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (7, 2)])
+#print(__p)
+#printpath(__p,background=__arr)
