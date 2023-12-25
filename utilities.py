@@ -474,6 +474,30 @@ def overlaps(a, b):
     return a.stop > b.start and b.stop>a.start
 
 
+# route through a cost matrix
+def droute(arr, barr, start, stop, f=lambda x:x=="."):
+
+    r = [stop]
+    (x,y) = stop
+    
+    while True:
+        v = checkallpos(arr,x,y,f,outofbounds=False)
+        i = sorted([i for i in range(4) if v[i]], key=lambda t:barr[y+dirs[t][1]][x+dirs[t][0]])
+        i = [(x+dirs[t][0],y+dirs[t][1]) for t in i]
+        i = [t for t in i if t not in r]
+        
+        # check if unroutable (i.e. we will backtrack on ourselves)
+        # this happens if we have fed the router a strange weighted matrix as in 2023 17
+        if not len(i):
+            printpath(r,background=arr)
+            return None
+        
+        (x,y) = i[0]                
+        r.append((x,y))
+        if (x,y)==start:
+            break
+    return list(reversed(r))
+    
 # dijksta on a matrix
 # default follows "."
 def dijkstra(arr, start, f=lambda x:x==".", stop=None):
@@ -486,9 +510,9 @@ def dijkstra(arr, start, f=lambda x:x==".", stop=None):
     if stop and not f(arr[stop[1]][stop[0]]):
         return None
     
-    n = sum([len(x) for x in arr])**4
+    n = sum([len(x) for x in arr])**10
     barr = [[n+1]*len(x) for x in arr]
-
+    
     barr[starty][startx]=0
 
     p = [(x,y) for x in range(len(arr[0])) for y in range(len(arr)) if f(arr[y][x])]
@@ -507,18 +531,8 @@ def dijkstra(arr, start, f=lambda x:x==".", stop=None):
 
 
     if stop!=None:
-        r = [stop]
-        (x,y) = stop
-
-        while True:
-            v = checkallpos(arr,x,y,f,outofbounds=False)
-            i = sorted([i for i in range(4) if v[i]], key=lambda t:barr[y+dirs[t][1]][x+dirs[t][0]])
-            i=i[0]
-            (x,y) = (x+dirs[i][0],y+dirs[i][1])
-            r.append((x,y))
-            if (x,y)==start:
-                break
-        return(barr,list(reversed(r)))
+        p = droute(arr, barr, start, stop, f)
+        return(barr,p)
     else:
         return(barr,None)
                                                        
