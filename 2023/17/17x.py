@@ -20,6 +20,7 @@ arr = readarray("input.short",split="",convert=lambda x:int(x))
 
 B=(0,0)
 E=(len(arr[0])-1,len(arr)-1)
+#E=(11,10)
 print(E)
 (barr,p) = dijkstra(arr, (0,0),f=lambda x:True)
 a=np.array(arr)
