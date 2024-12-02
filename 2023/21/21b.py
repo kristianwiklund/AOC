@@ -11,7 +11,7 @@ import numpy as np
 #import scipy
 #from functools import cache
 np.set_printoptions(threshold=sys.maxsize)
-arr = readarray("input.short",split="",convert=lambda x:x)
+arr = readarray("input",split="",convert=lambda x:x)
 #lines = readlines("input.short")
 arr = [["." if y=="S" else y for y in x]+x+["." if y=="S" else y for y in x] for x in arr]
 arr = [["." if y=="S" else y for y in x] for x in arr]+ arr + [["." if y=="S" else y for y in x] for x in arr]
@@ -59,5 +59,7 @@ noinf = np.vectorize(nf)
 print("Ans:",sum(sum(pp)))
 
 barr=noinf(barr)
-print(barr.max())
+#print(barr.max())
+
+np.set_printoptions(linewidth=200)
 print(barr)

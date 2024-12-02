@@ -10,6 +10,10 @@ erl_crash.dump
 rel/example_project
 ebin/*.beam
 deps
+input
+input.txt
+input.long
+input.erl
 
 # rebar 3
 .rebar3
