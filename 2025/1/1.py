@@ -18,4 +18,13 @@ arr = readarray("input",split="  ",convert=lambda x:int(x))
 x,y=unzip(arr)
 x=sorted(x)
 y=sorted(y)
-print (sum([abs(x-y) for (x,y) in list((zip(x,y)))]))
+print ("A:",sum([abs(x-y) for (x,y) in list((zip(x,y)))]))
+
+s=0
+for i in x:
+    if (i in y):
+        c=y.count(i)
+        s+=c*i
+
+print("B:",s)
+    
