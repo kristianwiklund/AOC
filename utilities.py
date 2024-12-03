@@ -7,6 +7,8 @@
 from functools import cache, wraps
 import re
 
+def unzip(l):
+    return list(zip(*l))
 
 # calculate the line equation from two positions
 # returns  ax+bx+c=0
