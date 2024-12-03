@@ -26,9 +26,34 @@ def chunk(l):
     v = "+".join(v)
     return (v)
 
-s=0
-for l in lines:
-    x = chunk(l)
-    s+=eval(x)
+l = "".join(lines)
+x = chunk(l)
+s=eval(x)
 
 print("A:",s)
+
+def chunk2(l):
+
+    a = l.split("don't()")
+    #  print("a",a)
+
+    ll=a[0]
+
+    for x in a[1:]:
+        b = x.split("do()",1)
+        if len(b)>1:
+            ll+=x.split("do()",1)[1]
+
+    return(ll)
+
+l = "".join(lines)
+
+# remove dead code
+y = chunk2(l)
+# parses what remains
+x = chunk(y)
+s=eval(x)
+print("B:",s)
+
+
+    
