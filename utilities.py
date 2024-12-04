@@ -15,8 +15,22 @@ def sign(i):
     else:
         return 0
 
+# reverse zip
 def unzip(l):
     return list(zip(*l))
+
+assert(unzip(zip([1,2,3],["a","b","c"]))==[(1,2,3),("a","b","c")])
+
+# Custom Decorator function, for use with functools caches
+def list_to_tuple(function):
+    def wrapper(*args):
+        args = [tuple(x) if isinstance(x, list) else x for x in args]
+        result = function(*args)
+        result = tuple(result) if isinstance(result, list) else result
+        return result
+    return wrapper
+
+
 
 # calculate the line equation from two positions
 # returns  ax+bx+c=0
@@ -279,7 +293,9 @@ def poff(path):
 
     return (dx,dy)
     
-            
+
+from colorama import Fore
+
 # print a path (list of tuples) on an array
 def printpath(p,nonum=True, background=None,bgin=None,end="",thex=None):
 
@@ -366,9 +382,9 @@ def printpath(p,nonum=True, background=None,bgin=None,end="",thex=None):
             if (x,y) in path:
                 if nonum:
                     if (x,y) in syms:
-                        print(syms[(x,y)],end="")
+                        print(Fore.RED+syms[(x,y)]+Fore.RESET,end="")
                     else:
-                        print("#",end="")
+                        print(Fore.RED+"#"+Fore.RESET,end="")
                 else:
                     print ("{i: <{width}}|".format(i=path.index((x,y)), width=l),end="")
             else:
@@ -387,7 +403,7 @@ def printpath(p,nonum=True, background=None,bgin=None,end="",thex=None):
                 else:
                     print (format("","<"+str(l))+"|",end="")
 
-        print(""+end)
+        print(Fore.RESET+""+end)
         
 # --
 from collections import defaultdict
@@ -483,31 +499,33 @@ def overlaps(a, b):
 
     return a.stop > b.start and b.stop>a.start
 
-
 # route through a cost matrix
+# used by dijkstra function below
 def droute(arr, barr, start, stop, f=lambda x:x=="."):
 
     r = [stop]
     (x,y) = stop
-    
+
     while True:
         v = checkallpos(arr,x,y,f,outofbounds=False)
         i = sorted([i for i in range(4) if v[i]], key=lambda t:barr[y+dirs[t][1]][x+dirs[t][0]])
         i = [(x+dirs[t][0],y+dirs[t][1]) for t in i]
         i = [t for t in i if t not in r]
-        
+
         # check if unroutable (i.e. we will backtrack on ourselves)
         # this happens if we have fed the router a strange weighted matrix as in 2023 17
         if not len(i):
             printpath(r,background=arr)
             return None
-        
-        (x,y) = i[0]                
+
+        (x,y) = i[0]
         r.append((x,y))
         if (x,y)==start:
             break
     return list(reversed(r))
-    
+
+
+
 # dijksta on a matrix
 # default follows "."
 def dijkstra(arr, start, f=lambda x:x==".", stop=None):

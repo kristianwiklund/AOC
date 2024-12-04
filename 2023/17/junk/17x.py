@@ -1,5 +1,5 @@
 import sys
-sys.path.append("../..")
+sys.path.append("../../..")
 from utilities import *
 import networkx as nx
 #from copy import deepcopy
