@@ -54,6 +54,15 @@ y = " ".join(transpose(y))
 g = y.count("XMAS")
 h = y.count("SAMX")
 
-
-
 print("A:",a+b+c+d+e+f+g+h)
+c=0
+for y in range(1,len(lines)-1):
+    for x in range(1,len(lines[0])-1):
+        if lines[y][x]=='A':
+            s = lines[y-1][x-1]+lines[y-1][x+1]+lines[y+1][x+1]+lines[y+1][x-1]
+            if not "X" in s:
+                if s in ["MSSM", "SMMS", "SSMM", "MMSS"]:
+                    c+=1
+#                    print(s)
+
+print("B:",c)
