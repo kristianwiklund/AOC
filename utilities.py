@@ -528,7 +528,7 @@ def droute(arr, barr, start, stop, f=lambda x:x=="."):
 
 # dijksta on a matrix
 # default follows "."
-def dijkstra(arr, start, f=lambda x:x==".", stop=None):
+def dijkstra(arr, start, f=lambda x:x==".", stop=None, barr=None):
 
     (startx, starty) = start
 
@@ -539,7 +539,9 @@ def dijkstra(arr, start, f=lambda x:x==".", stop=None):
         return None
     
     n = sum([len(x) for x in arr])**10
-    barr = [[n+1]*len(x) for x in arr]
+
+    if not barr:
+        barr = [[n+1]*len(x) for x in arr]
     
     barr[starty][startx]=0
 

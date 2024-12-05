@@ -38,15 +38,15 @@ from networkx.drawing.nx_agraph import write_dot
 #print(G.edges(data=True))
 #print(G.nodes)
 
-#labels = nx.get_edge_attributes(G,'weight')
-#nx.draw_networkx_edge_labels(G,pos=nx.spring_layout(G),edge_labels=labels)
+labels = nx.get_edge_attributes(G,'weight')
+nx.draw_networkx_edge_labels(G,pos=nx.spring_layout(G),edge_labels=labels)
 
 cnt=0
 cache=dict()
-#write_dot(H, "maze.dot")
+write_dot(H, "maze.dot")
 
-#nx.draw_spring(H,  with_labels=True)
-#plt.savefig("maze_nwx.png")
+nx.draw_spring(H,  with_labels=True)
+plt.savefig("maze_nwx.png")
 
 
 #import sys
