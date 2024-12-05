@@ -16,8 +16,8 @@ with open("input","r") as fd:
     #arr = readarray("input.short",split="|",convert=lambda x:int(x))
     #lines = readlines("input.short")
 
-    arr = readblock(fd, lambda x:x.split("|"))
-    barr = readblock(fd, lambda x:x.split(","))
+    arr = readblock(fd, lambda x:[int(x) for x in x.split("|")])
+    barr = readblock(fd, lambda x:[int(x) for x in x.split(",")])
 
     #    print (arr)
     #    print (barr)
@@ -36,9 +36,10 @@ with open("input","r") as fd:
     for x in barr:
         y = sorted(x, key=cmp_to_key(cmp))
         if x==y:
-            c+=int(y[int(len(y)/2)])
+            # avoid the division
+            c+=sum([y[i] if y[i]==y[::-1][i] else 0 for i in range(len(y))])
         else:
-            d+=int(y[int(len(y)/2)])
+            d+=sum([y[i] if y[i]==y[::-1][i] else 0 for i in range(len(y))])
             
     print("A:", c)
     print("B:", d)
