@@ -79,6 +79,17 @@ def isx(L1,L2):
     return (x0/k0,y0/k0,1)
 
 
+# https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
+def ccw(A,B,C):
+    return (C[1]-A[1])*(B[0]-A[0]) > (B[1]-A[1])*(C[0]-A[0])
+
+def intersect(p1,p2):
+#    print(p1,p2)
+    A,B=p1
+    C,D=p2
+    
+    return ccw(A,C,D) != ccw(B,C,D) and ccw(A,B,C) != ccw(A,B,D)
+
 
 
 # https://stackoverflow.com/questions/1984799/cross-product-of-two-vectors-in-python
