@@ -45,17 +45,19 @@ def tick(arr, x, y, d):
             
     return ((x,y),d)
 
-def bonkabonka(arr):
+def bonkabonka(arr, start=None, cc=0,dd=0):
 
-    v=findinarray(arr,"^")
-#    print (v)
-    (x,y)=v
+    if not start:
+        v=findinarray(arr,"^")
+        #    print (v)
+        (x,y)=v
+        d=0
+    else:
+        (x,y,d)=start
 
-    p=[(x,y,0)]
-    q=[(x,y,0)]
+    p=[(x,y,d)]
+    q=[(x,y,d)]
 
-    d=0
-    
         
     while True:
         n = tick(arr,x,y,d)
@@ -72,7 +74,7 @@ def bonkabonka(arr):
             
         if (r[0],r[1],d) in p:
             if r[0]!=x or r[1]!=y:
-                print("Cyclic")
+                print(cc,"/",dd,"Cyclic")
                 return True
             
         p.append((r[0],r[1],d))    
@@ -89,13 +91,16 @@ te = len(set([(p[0],p[1]) for p in p]))
 print("A:",te)
 
 # this is the possibly most inefficient way to solve the problem, but it works
+# takes roughly 2hrs on my NUC during which time I was playing portal.
 
 c=0
+
+#iterate over all locations, and test them one by one...
 
 for yy in range(len(arr)):
     for xx in range(len(arr[yy])):
 
-#        print(yy,xx)
+        print(yy,xx)
         
         if checkpos(arr, xx,yy, lambda x:x!="#"):
             s = arr[yy][xx]
@@ -109,6 +114,4 @@ for yy in range(len(arr)):
                 c+=1
             arr[yy][xx]=s
 
-print(c+1)
-
-
+print("B:", c+1)
