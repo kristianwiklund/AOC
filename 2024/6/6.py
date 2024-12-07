@@ -12,7 +12,7 @@ from pprint import pprint
 #import scipy
 #from functools import cache
 
-arr = readarray("input",split="",convert=lambda x:x)
+arr = readarray("input.short",split="",convert=lambda x:x)
 #lines = readlines("input.short")
 #print(arr)
 
@@ -74,7 +74,7 @@ def bonkabonka(arr, start=None, cc=0,dd=0):
             
         if (r[0],r[1],d) in p:
             if r[0]!=x or r[1]!=y:
-                print(cc,"/",dd,"Cyclic")
+#                print(cc,"/",dd,"Cyclic")
                 return True
             
         p.append((r[0],r[1],d))    
@@ -83,7 +83,7 @@ def bonkabonka(arr, start=None, cc=0,dd=0):
 
 (p,q) = bonkabonka(arr)
         
-#printpath(p,background=arr)    
+printpath(p,background=arr)    
 #print(len(p),len(set(p)))
 #print(p)
 
@@ -100,7 +100,7 @@ c=0
 for yy in range(len(arr)):
     for xx in range(len(arr[yy])):
 
-        print(yy,xx)
+ #       print(yy,xx)
         
         if checkpos(arr, xx,yy, lambda x:x!="#"):
             s = arr[yy][xx]
