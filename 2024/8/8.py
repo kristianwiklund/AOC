@@ -35,22 +35,6 @@ def fan(arr,a):
             # step
             dx=p[i][0]-p[j][0]
             dy=p[i][1]-p[j][1]
-            #print(a,"-- dx,dy =",dx,dy)
-            # "an antinode occurs at any point that is perfectly in line with two antennas of the same frequency but only when one of the antennas is twice as far away as the other"
-            # -> check that distance(p,a) = 2*distance(p,b) 
-
-            #            leq = p2l((p[i],p[j]))
-            #           print(leq)
-
-            # traverse leq until we hit the other side, investigating points where distance(p,a)=2*distance(p,b)
-            # ax+by+c=0
-            # y = (-c-ax)/b
-
-            #for x in range(0,len(arr[0])):
-            #    y = int((-leq[2]-leq[0]*x)/leq[1])
-            #    if distance((x,y),p[i])==2*distance((x,y),p[j]) or distance((x,y),p[i])==2*distance((x,y),p[j]):
-            #        arr[y][x]="#"
-            #        print("hit",(x,y),p[i],p[j],i,j)
 
             # there are four cases
             l=[]            

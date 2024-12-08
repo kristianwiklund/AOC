@@ -6,6 +6,7 @@
 # from utilities import *
 from functools import cache, wraps
 import re
+import math
 
 # get the manhattan distance between two points
 def distance(x,y):
@@ -52,13 +53,20 @@ def list_to_tuple(function):
     return wrapper
 
 
+#return y as function of x given P
+def fxl(P,x):
+    # ax+by+c=0
+    # by = 0-c-ax
+    #y = -c/b - ax/b
 
+    return ((-P[2]-P[0]*x)/P[1])
+    
 # calculate the line equation from two positions
-# returns  ax+bx+c=0
+# returns  ax+by+c=0
 def p2l(P):
     
     P1 = P[0]
-    P2 = [P[0][0]+P[1][0],P[0][1]+P[1][1]]
+    P2 = P[1]#[P[0][0]+P[1][0],P[0][1]+P[1][1]]
 
     x1 = P1[0]
     y1 = P1[1]
@@ -70,8 +78,15 @@ def p2l(P):
     B = x1-x2
     C = y1*(x2-x1)-(y2-y1)*x1
 
-#    print("x",A,B,C,P)
-    return ([A,B,C])
+    dd=math.gcd(A,B,C)
+
+#    print("x",[A/dd,B/dd,C/dd],P)
+    return ([A/dd,B/dd,C/dd])
+
+assert(p2l(((1,1),(2,2)))==[1.0,-1.0,0])
+
+def printleq(P):
+    print(P,"{}x{}{}y{}{} = 0".format(P[0],"+" if P[1]>-1 else "", P[1],"+" if P[2]>0 else "", P[2] ))
 
 # calculate the intersection point of two lines on line equation format
 def isx(L1,L2):
@@ -329,7 +344,7 @@ def poff(path):
 from colorama import Fore
 
 # print a path (list of tuples) on an array
-def printpath(p,nonum=True, background=None,bgin=None,end="",thex=None):
+def printpath(p,nonum=True, background=None,bgin=None,end="",thex=None,highlight=None):
 
     path = [(i[0],i[1]) for i in p]
     
@@ -414,9 +429,15 @@ def printpath(p,nonum=True, background=None,bgin=None,end="",thex=None):
             if (x,y) in path:
                 if nonum:
                     if (x,y) in syms:
-                        print(Fore.RED+syms[(x,y)]+Fore.RESET,end="")
+                        if highlight!=background[y][x]:
+                            print(Fore.RED+syms[(x,y)]+Fore.RESET,end="")
+                        else:
+                            print(Fore.BLUE+syms[(x,y)]+Fore.RESET,end="")
                     else:
-                        print(Fore.RED+"#"+Fore.RESET,end="")
+                        if highlight!=background[y][x]:
+                            print(Fore.RED+"#"+Fore.RESET,end="")
+                        else:
+                            print(Fore.BLUE+"#"+Fore.RESET,end="")                            
                 else:
                     print ("{i: <{width}}|".format(i=path.index((x,y)), width=l),end="")
             else:
@@ -425,10 +446,16 @@ def printpath(p,nonum=True, background=None,bgin=None,end="",thex=None):
                         print(".",end="")
                     else:                        
                         if bgin and background[y][x] in bgin:
-                            print(background[y][x],end="")
+                            if highlight!=background[y][x]:
+                                print(background[y][x],end="")
+                            else:
+                                print(Fore.YELLOW+background[y][x]+Fore.RESET,end="")
                         else:
                             try:
-                                print(background[y][x],end="")
+                                if highlight!=background[y][x]:
+                                    print(background[y][x],end="")
+                                else:
+                                    print(Fore.YELLOW+background[y][x]+Fore.RESET,end="")
                             except:
                                 pass
                             #                            print(".",end="")
