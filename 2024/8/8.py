@@ -16,7 +16,7 @@ arr = readarray("input",split="",convert=lambda x:x)
 #lines = readlines("input.short")
 
 t = set("".join([i for i in ["".join(i).replace(".","") for i in arr] if i]))
-print (t)
+#print (t)
 
 def fan(arr,a):
     p = findinarray(arr,a,all=True)
@@ -44,7 +44,7 @@ def fan(arr,a):
             l.append((p[j][0]-2*dx,p[j][1]-2*dy))
             #print(a,i,j,"--",l)
             l = [v for v in l if distance(p[i],v)==2*distance(p[j],v) or 2*distance(p[i],v)==distance(p[j],v)]
-            
+          
             
             # check if these are good
             lll = [i for i in l if checkpos(arr,i[0],i[1],lambda y:y!=a)]
@@ -55,13 +55,24 @@ def fan(arr,a):
     #pprint(arr)
     return set(n)
 
-s = set()
-for x in t:
-    print(x)
-    ss = fan(arr,x)
-    #print(x,ss)
-    s|=ss
+import cProfile, pstats
 
-print(s,len(s))
+#@timer
+def doit():
+    s = set()
+    for x in t:
+ #       print(x)
+        ss = fan(arr,x)
+        #print(x,ss)
+        s|=ss
 
-printpath(s,background=arr)
+    return s
+
+profiler=cProfile.Profile()
+profiler.enable()
+s=doit()
+profiler.disable()
+stats = pstats.Stats(profiler).sort_stats('tottime')
+stats.print_stats()
+print(len(s))
+#printpath(s,background=arr)

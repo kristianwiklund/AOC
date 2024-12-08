@@ -16,7 +16,7 @@ arr = readarray("input",split="",convert=lambda x:x)
 #lines = readlines("input.short")
 
 t = sorted(list(set("".join([i for i in ["".join(i).replace(".","") for i in arr] if i]))))
-print (t)
+#print (t)
 
 def fan(arr,a):
     p = findinarray(arr,a,all=True)
@@ -38,15 +38,15 @@ def fan(arr,a):
 
             start = min(p[i][0],p[j][0])%abs(p[i][0]-p[j][0])
             
-            print("stepping from", start, "to", len(arr[0]), "in steps of", abs(p[i][0]-p[j][0]))
+            #print("stepping from", start, "to", len(arr[0]), "in steps of", abs(p[i][0]-p[j][0]))
             for x in range(start, len(arr[0]) ,abs(p[i][0]-p[j][0])):
                 y = int(fxl(leq,x))
-                print("step:",x,"y=",y)
+                #print("step:",x,"y=",y)
 
                 if checkpos(arr,x,y,lambda x:True):
                     m.append((x,y))
 
-            print(p[i],p[j],abs(p[i][0]-p[j][0]),abs(p[i][1]-p[j][1]),m)                               
+ #           print(p[i],p[j],abs(p[i][0]-p[j][0]),abs(p[i][1]-p[j][1]),m)                               
             if not (p[i][0],p[i][1]) in m or not (p[j][0],p[j][1]) in m:
                 print("b0rked", m, leq)
                 print(a,"+",p[i],p[j],end=" | ")
@@ -63,15 +63,20 @@ def fan(arr,a):
     #pprint(arr)
     return set(n)
 
-s = set()
-for x in t:
-    print(x)
-    ss = fan(arr,x)
-    #print(x,ss)
-    s|=ss
+@timer
+def doit():
+    s = set()
+    for x in t:
+        #print(x)
+        ss = fan(arr,x)
+        #print(x,ss)
+        s|=ss
 
-print(s,len(s))
+    return s
 
-printpath(s,background=arr)
+s=doit()
+print(len(s))
+
+#printpath(s,background=arr)
 
 assert(len(s)>966)
