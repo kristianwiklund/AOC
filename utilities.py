@@ -7,6 +7,27 @@
 from functools import cache, wraps
 import re
 
+# get the manhattan distance between two points
+def distance(x,y):
+    return abs(x[0]-y[0])+abs(x[1]-y[1])
+
+# find one (default) or all (if flag) items in an array matching
+def findinarray(arr,what,all=False):
+    barr=[]
+    for y in range(len(arr)):
+        for x in range(len(arr[y])):
+            if arr[y][x]==what:
+                if not all:
+                    return (x,y)
+                else:
+                    barr.append((x,y))
+
+    if not all:
+        return None
+
+    return barr
+
+# sign of a number
 def sign(i):
     if i<0:
         return -1

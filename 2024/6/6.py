@@ -16,13 +16,6 @@ arr = readarray("input.short",split="",convert=lambda x:x)
 #lines = readlines("input.short")
 #print(arr)
 
-def findinarray(arr,what):
-    for y in range(len(arr)):
-        for x in range(len(arr[y])):
-            if arr[y][x]==what:
-                return (x,y)
-    return None        
-
 def tick(arr, x, y, d):
     x+=dirs[d][0]
     y+=dirs[d][1]
