@@ -168,6 +168,19 @@ assert(ints("banana 5 nabana 5", negative=False)==[5,5])
 
 import functools
 import time
+import cProfile, pstats
+
+def profiler(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        profiler = cProfile.Profile()
+        profiler.enable()
+        value = func(*args, **kwargs)
+        profiler.disable()
+        stats = pstats.Stats(profiler).sort_stats('cumtime')
+        stats.print_stats()
+        return value
+    return wrapper
 
 def timer(func):
     @functools.wraps(func)

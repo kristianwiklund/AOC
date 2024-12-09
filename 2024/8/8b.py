@@ -63,6 +63,7 @@ def fan(arr,a):
     #pprint(arr)
     return set(n)
 
+@profiler
 @timer
 def doit():
     s = set()
