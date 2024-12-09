@@ -14,18 +14,13 @@ def distance(x,y):
 
 # find one (default) or all (if flag) items in an array matching
 def findinarray(arr,what,all=False):
-    barr=[]
-    for y,row in enumerate(arr):
-        for x,v in enumerate(row):
-            if v==what:
-                if not all:
-                    return (x,y)
-                else:
-                    barr.append((x,y))
+    barr=[(arr.index(row),row.index(what)) for row in arr if what in row]
 
     if not all:
-        return None
-
+        if not len(barr):
+            return False
+        else:
+            return barr[0]
     return barr
 
 # sign of a number
