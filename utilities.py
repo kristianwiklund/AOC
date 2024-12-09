@@ -5,7 +5,7 @@
 # sys.path.append("../..")
 # from utilities import *
 from functools import cache, wraps
-import re
+import regex as re
 
 def sign(i):
     if i<0:
@@ -14,7 +14,12 @@ def sign(i):
         return 1
     else:
         return 0
-
+    
+import regex
+# count all matches in a string, even overlapping
+def countall(s,p):
+    return len(re.findall(p, s, overlapped=True))
+    
 # reverse zip
 def unzip(l):
     return list(zip(*l))
