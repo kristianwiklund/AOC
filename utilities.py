@@ -15,9 +15,9 @@ def distance(x,y):
 # find one (default) or all (if flag) items in an array matching
 def findinarray(arr,what,all=False):
     barr=[]
-    for y in range(len(arr)):
-        for x in range(len(arr[y])):
-            if arr[y][x]==what:
+    for y,row in enumerate(arr):
+        for x,v in enumerate(row):
+            if v==what:
                 if not all:
                     return (x,y)
                 else:
