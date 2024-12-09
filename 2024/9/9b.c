@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
   int i,j;
   int moved=0;
   
-  printf("strlen(ap)=%ld\n",strlen(ap));
+  //  printf("strlen(ap)=%ld\n",strlen(ap));
   
   memset(a, -1, sizeof(int)*10*strlen(ap)); 
 
@@ -56,11 +56,11 @@ int main(int argc, char **argv) {
     fp = j;
     
     // we have found something at the end
-    printf("block %d: found file %d which is", fp, fn);
+    //printf("block %d: found file %d which is", fp, fn);
 
     for(;a[j]==fn;j--);
     
-    printf(" %d blocks long\n", fp-j);
+    //printf(" %d blocks long\n", fp-j);
 
     // now find an empty block >= the size of the identified file
 
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 	  goto hoppsan;
 
       if((x-i)>=(fp-j)) {
-	printf("...moving file %d to %d\n", fn, i);
+	//printf("...moving file %d to %d\n", fn, i);
         for(y=0;y<fp-j;y++)
 	  b[i+y]=fn;
 	for(x=j+1;x<=fp;x++) {
@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
 
     
   hoppsan:
-    printf("Unable to move file %d. Moving on...\n", fn);
+    //printf("Unable to move file %d. Moving on...\n", fn);
     
   } while(j>=0);
   
