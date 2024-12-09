@@ -91,10 +91,10 @@ int main(int argc, char **argv) {
       i++;
     } while(i<j);
     
-    printf("Unable to move file %d. Moving on...\n", fn);
+
     
   hoppsan:
-
+    printf("Unable to move file %d. Moving on...\n", fn);
     
   } while(j>=0);
   
