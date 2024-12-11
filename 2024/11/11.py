@@ -7,12 +7,12 @@ from utilities import *
 from pprint import pprint
 #from sortedcontainers import SortedList
 #from sortedcontainers import SortedDict
-#from sortedcontainers import SortedSet
+from sortedcontainers import SortedSet
 #import numpy as np
 #import scipy
-#from functools import cache
+from functools import cache
 
-arr = readarray("input",split=" ",convert=lambda x:int(x))[0]
+arr = readarray("input.short",split=" ",convert=lambda x:int(x))[0]
 #lines = readlines("input.short")
 
 class CLIST:
@@ -37,11 +37,22 @@ def blink(arr):
 
 import collections
 
+barr=len(arr)
 pl=len(arr)
 for i in range(25):
     arr=blink(arr)
     l=len(arr)
-    print(i,l,arr[:10])
-#    print(collections.Counter([len(str(x)) for x in arr]))#, i,l,l-pl,l/pl, l/(i+1))
+    print(arr[:10],1,pl,l-pl,l/pl,l/(i+1))
+    pl=l
 
-print(len(arr))
+print("A:",len(arr))
+
+# 1     0
+# 1  -> 1
+# 1  -> 2024
+# 4  -> 2,0,2,4
+# 4  -> 4048,1,4048,8096
+# 7  -> 40,48,2024,40,48,80,96
+# 12 -> 4,0,20,24,4,0,4,8,8,0,9,6
+# 14 -> 8096,1,2,0,2,4,8096,1,8096,16192,16192,1,18216,12144
+
