@@ -533,6 +533,7 @@ def checkpos(arr, x, y, fun, outofbounds=False):
 
     return fun(arr[y][x])
 
+
 dirs = {0:(0,-1),1:(1,0),2:(0,1),3:(-1,0)}
 
 def checkallpos(arr, x, y, fun, outofbounds=False):
