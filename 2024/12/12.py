@@ -81,27 +81,28 @@ print("A:",c)
 
 tv=[0,0,0]*(len(R[0])+2)
 farr=[]
-farr.append(deepcopy(tv))
-farr.append(deepcopy(tv))
-farr.append(deepcopy(tv))
+#farr.append(deepcopy(tv))
+#farr.append(deepcopy(tv))
+#farr.append(deepcopy(tv))
 
 for y in range(len(R)):
-    knarr=[0,0,0]
+    #knarr=[0,0,0]
+    knarr=[]
     for x in range(len(R[y])):
         knarr.append(R[y][x])
         knarr.append(R[y][x])
         knarr.append(R[y][x])
-    knarr.append(0)
-    knarr.append(0)
-    knarr.append(0)
+ #   knarr.append(0)
+ #   knarr.append(0)
+ #   knarr.append(0)
     
     farr.append(deepcopy(knarr))
     farr.append(deepcopy(knarr))
     farr.append(deepcopy(knarr))
 
-farr.append(deepcopy(tv))
-farr.append(deepcopy(tv))
-farr.append(deepcopy(tv))
+#farr.append(deepcopy(tv))
+#farr.append(deepcopy(tv))
+#farr.append(deepcopy(tv))
 
 #pprint(farr)
 
@@ -133,7 +134,7 @@ def pokemon(arr):
         n = findinarray(arr, 1)
         #        pprint(list(arr))
         #        print(n)
-        printpath([],background=list(arr))
+#        printpath([],background=list(arr))
         
         #print(arr,n)
         if not n:
@@ -171,9 +172,11 @@ def allg(farr, g, R):
         y = pokemon(v)
         n = findinarray(R, i, all=True)        
         a = len(n)
- #       print(a*len(y))
-        tot+=a*len(y)
+        #       print(a*len(y))
 
+        tot+=a*len(y)
+        print(i,len(g),tot)
+        
     return tot
 print("B:",allg(farr,allregions, R))
 
