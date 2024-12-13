@@ -1,4 +1,5 @@
 # various utility functions that could be reusable
+# -*-  coding: utf-8 -*-
 
 # usage
 # import sys
