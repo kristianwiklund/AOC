@@ -1,5 +1,5 @@
 
-def tokens():
+def atokens():
  return {"Al":["ThF","ThRnFAr"],
          "B":["BCa","TiB","TiRnFAr"],
          "Ca":["CaCa","PB","PRnFAr","SiRnFYFAr","SiRnMgAr","SiTh"],
@@ -14,6 +14,6 @@ def tokens():
          "Th":["ThCa"],
          "Ti":["BP","TiTi"]}
 
-def input():
+def ainput():
  return "ORnPBPMgArCaCaCaSiThCaCaSiThCaCaPBSiRnFArRnFArCaCaSiThCaCaSiThCaCaCaCaCaCaSiRnFYFArSiRnMgArCaSiRnPTiTiBFYPBFArSiRnCaSiRnTiRnFArSiAlArPTiBPTiRnCaSiAlArCaPTiTiBPMgYFArPTiRnFArSiRnCaCaFArRnCaFArCaSiRnSiRnMgArFYCaSiRnMgArCaCaSiThPRnFArPBCaSiRnMgArCaCaSiThCaSiRnTiMgArFArSiThSiThCaCaSiRnMgArCaCaSiRnFArTiBPTiRnCaSiAlArCaPTiRnFArPBPBCaCaSiThCaPBSiThPRnFArSiThCaSiThCaSiThCaPTiBSiRnFYFArCaCaPRnFArPBCaCaPBSiRnTiRnFArCaPRnFArSiRnCaCaCaSiThCaRnCaFArYCaSiRnFArBCaCaCaSiThFArPBFArCaSiRnFArRnCaCaCaFArSiRnFArTiRnPMgArF"
 

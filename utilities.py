@@ -272,10 +272,16 @@ def readarray(fn, split=" ", convert=lambda x:x, strip=True):
 # factorization
 from functools import reduce
 
-def factors(n):    
+def factors(n):
+    if not n:
+        return None
+    
     return set(reduce(list.__add__, 
                 ([i, n//i] for i in range(1, int(n**0.5) + 1) if n % i == 0)))
 
+def sfactors(n):
+    x = factors(n)
+    return sorted(list(x))
 
 # Returns the longest repeating non-overlapping
 # substring in str
@@ -535,6 +541,7 @@ def checkpos(arr, x, y, fun, outofbounds=False):
     return fun(arr[y][x])
 
 
+# north, east, south, west
 dirs = {0:(0,-1),1:(1,0),2:(0,1),3:(-1,0)}
 
 def checkallpos(arr, x, y, fun, outofbounds=False):

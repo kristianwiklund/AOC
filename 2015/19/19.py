@@ -1,21 +1,40 @@
 #!/usr/bin/python3
 
-from inputshort import input
-from inputshort import tokens
+import sys
+sys.path.append("../..")
+from utilities import *
+
 import re
 import networkx as nx
 from functools import cache
 
 G = nx.DiGraph()
 
+with open("input.short","r") as fd:
+    tra = readblock(fd)
+    tor = readblock(fd)
 
+r=dict()
+for l in tra:
+    l = l.split(" => ")
+    if l[0] in r:        
+        r[l[0]].append(l[1])
+    else:
+        r[l[0]]=[l[1]]
+
+tokens=r
+input=tor[0]
+
+from input import *
+
+@cache
 def subit(s):
     bop = list()
-    t = tokens()
-
+    
     all = set()
-
-    for i in tokens():
+    t = tuckens
+    
+    for i in t:
         r = t[i]
 
         for rr in r:
@@ -23,32 +42,52 @@ def subit(s):
 
     return all
 
-all = subit(input())
+tuckens = tokens
+all = subit(input)
             
 print(all)
 print("Answer to 1: ",len(all))
 
-m = "e"
+# Given the available replacements and the medicine molecule in your puzzle input, what is the fewest number of steps to go from e to the medicine molecule?
+
+bs={}
+for m in tokens:
+    for j in tokens[m]:
+        if j in bs:
+            bs[j].append(m)
+        else:
+            bs[j]=[m]
+
+print(bs)
+print(input)
+
+#tuckens = bs
 
 @cache
-def doit(m, target, depth=0):
-    global tokens
+def desc(s,n,mn=1000000000000000000000000000000):
+    global input
     
-    all = subit(m)
+    if n>=mn:
+        return mn+1
 
-    mm = []
-    
-    for i in all:
-        print(i)
-        if i==target:
-            return depth+1
+    if n>950:
+        return 5001
+
+    v = subit(s)
+#    print(ss,v)
+    for x in v:
+        if x==input:
+            print(input,ss)
+            mn = n+1
         else:
-            mm.append[doit(i, target, depth+1)]
+            m = desc(x,n+1,mn)
+            if m and m<mn:
+                mn=m
 
-        
-    return min(mm)
+    if mn:
+        return mn
+    else:
+        return None
 
-print(doit("e","HOHOHO",0))
-        
-    
-    
+print(desc(input,0))
+
