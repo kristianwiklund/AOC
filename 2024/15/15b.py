@@ -110,12 +110,36 @@ with open("input.short.2","r") as fd:
             w["box"][(x,y)]=(a,b)
             
         w["me"]=(ox,oy)
+
+    # recursive box finder
+    def findlbv(w,p,d,lb):
+
+        print("findlbv checking",p,"in dir",d)
+        xx,yy=p
+        xx+=dirs[d][0]
+        yy+=dirs[d][1]
         
-    
+        if (xx,yy) in w["wall"]:
+            return lb
+
+        if (xx,yy) in w["box"]:
+
+            m = w["box"][(xx,yy)]
+            lb+=m
+
+            # fan out the boxes
+            return findlbv(w, m[0], d, lb)+findlbv(w, m[1], d, lb)
+
+        return lb
+            
+            
+        
     def storpotat(w, d):
 
         (x,y)=w["me"]
-
+        ox=x
+        oy=y
+        
         xx=x+dirs[d][0]
         yy=y+dirs[d][1]
         
@@ -134,9 +158,45 @@ with open("input.short.2","r") as fd:
             smolpotat(w,d,xx,yy)
             return
 
-        # moving vertically. We need to find all the boxes the box might move and move them
+        # moving vertically.
+        # the trivial case is that nothing is in front of us - we have already checked for that and for a wall,
+        # so now we need to find all the boxes the box might move and move them. done the same way as in smolpotat
 
-               
+        print(list(w["box"][(xx,yy)]))
+        lb = list(set(list(w["box"][(xx,yy)])+findlbv(w, w["box"][(xx, yy)][0], d, [])+findlbv(w, w["box"][(xx, yy)][1], d, [])))
+        print(lb)
+
+        # lb contains all boxes that potentially move when we move. now figure out if we can move or not
+        # start by sorting the boxes in "furthest away from dude first" order
+        dd = [abs(w["me"][1]-t[1]) for t in lb]
+        print(dd)
+
+        lb = [x for _, x in sorted(zip(dd, lb))][::-1]
+        print(lb)
+
+        for x in lb:
+            # if any of the boxes in the cone have a wall next to them in the movement dir, we cannot move
+            if (x[0]+dirs[d][0],x[1]+dirs[d][1]) in w["wall"]:
+                return
+
+        # yay move.
+
+        for i in lb:
+            print("push",i,"one step in",d,"-->",end="")
+            x,y=i
+            t = w["box"][(x,y)]
+            del w["box"][(x,y)]
+            x+=dirs[d][0]
+            y+=dirs[d][1]
+            a=(t[0][0]+dirs[d][0], t[0][1]+dirs[d][1])
+            b=(t[1][0]+dirs[d][0], t[1][1]+dirs[d][1])
+
+            print((x,y),":",(a,b))
+            w["box"][(x,y)]=(a,b)
+            
+        w["me"]=(xx,yy)
+        
+        
         
 
     world = dooz(arr)
@@ -144,6 +204,11 @@ with open("input.short.2","r") as fd:
     
     storpotat(world, 3)
     printworld(world)
-    
+
+    world["me"]=(7,5)
+    printworld(world)
+
+    storpotat(world,0)
+    printworld(world)
     
 
