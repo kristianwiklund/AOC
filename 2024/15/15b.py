@@ -17,7 +17,7 @@ from pprint import pprint
 
 import clear_screen 
 
-with open("input","r") as fd:
+with open("input.short","r") as fd:
 
     arr = readblock(fd, convert=lambda x:[x for x in x])
     b = readblock(fd, convert=lambda x:[x for x in x])
