@@ -15,6 +15,8 @@ from pprint import pprint
 #arr = readarray("input.short",split="",convert=lambda x:x)
 #lines = readlines("input.short")
 
+import clear_screen 
+
 with open("input","r") as fd:
 
     arr = readblock(fd, convert=lambda x:[x for x in x])
@@ -46,6 +48,12 @@ with open("input","r") as fd:
 
     def printworld(w):
 
+#        clear_screen.clear()
+
+        from py100 import py100
+
+        py100.move_cursor_upper_left()
+        
         mx = max([t[0] for t in [w["me"]]+list(w["box"].keys())+w["wall"]])
         my = max([t[1] for t in [w["me"]]+list(w["box"].keys())+w["wall"]])
 
@@ -219,13 +227,15 @@ with open("input","r") as fd:
 #        print(s)
 
         return sum([i[1]*100+i[0] for i in s])
+
+    clear_screen.clear()
     
     for dd in b:
         d=t[dd]
         
         storpotat(world, d)
-        print(".",end="")
- #       printworld(world)
+        #       print(".",end="")
+        printworld(world)
 
     print(gps(world))
 
