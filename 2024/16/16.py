@@ -13,6 +13,8 @@ from pprint import pprint
 from functools import cache
 import sys
 sys.setrecursionlimit(3000)
+from cachetools import cached
+from cachetools.keys import hashkey
 
 arr = readarray("input",split="",convert=lambda x:x)
 #lines = readlines("input.short")
@@ -24,13 +26,25 @@ arr[E[1]][E[0]]="."
 
 print(B,E)
 
-@cache
-def dfs(current, E, visited, cost, d):
-    global arr
+mc=False
 
+@cache
+def dfs(curre-
+        nt, E, visited, cost, d):
+    global arr
+    global mc
+
+    #132515 is too high
+    if cost>50000: #132515
+        return (False, visited)
+    
 #    print (current, visited)
     if current==E:
         #        print("The End",cost,visited+str(current))
+        if not mc or cost < mc:
+            print(cost)
+            mc = cost
+            
         return (cost, visited+","+str(current))
    
     # don't eat your own tail
@@ -52,12 +66,18 @@ def dfs(current, E, visited, cost, d):
             if i==d:
                 #                print ("pos:", current,"testing: ", end="")
                 #                print((x+dirs[i][0], y+dirs[i][1]),visited," ",end="")
-                nc,np = dfs((x+dirs[i][0], y+dirs[i][1]), E, visited, cost+1, d)
+                if not mc or cost+1<mc:
+                    nc,np = dfs((x+dirs[i][0], y+dirs[i][1]), E, visited, cost+1, d)
+                else:
+                    continue
                 #                print("(nc,np)=:",nc,np)
             else:
                 #                print ("pos (turn):", current,"testing: ", end="")
                 #                print((x+dirs[i][0], y+dirs[i][1]),"vis:", visited," ", end="")
-                nc,np = dfs((x+dirs[i][0], y+dirs[i][1]), E, visited, cost+1001, i)
+                if not mc or cost+1001 < mc:
+                    nc,np = dfs((x+dirs[i][0], y+dirs[i][1]), E, visited, cost+1001, i)
+                else:
+                    continue
                 #                print(nc,np)
             if nc and (not bc or (nc<bc)):
                 bc=nc
