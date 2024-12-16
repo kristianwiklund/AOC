@@ -10,7 +10,7 @@ from pprint import pprint
 #from sortedcontainers import SortedSet
 #import numpy as np
 #import scipy
-#from functools import cache
+from functools import cache
 
 arr = readarray("input.short",split="",convert=lambda x:x)
 #lines = readlines("input.short")
@@ -22,26 +22,50 @@ arr[E[1]][E[0]]="."
 
 print(B,E)
 
-(barr,p) = dijkstra(arr, B, stop=E)
-printpath(p,background=arr)
-#print(barr)
-# barr contains the unmodified cost matrix
+@cache
+def dfs(current, E, visited, cost, d):
+    global arr
 
-# networkx collapses from this
-# G=nx.Graph()
+#    print (current, visited)
+    if current==E:
+        #        print("The End",cost,visited+str(current))
+        return (cost, visited+","+str(current))
+   
+    # don't eat your own tail
+    if str(current) in visited:
+        return (False, visited)
 
-# for y,l in enumerate(arr):
-#     for x,v in enumerate(l):
-# #A        print (x,y)
+     
+    x,y=current
+    visited+=","+str(current)
 
-#         p = checkallpos(arr,x,y,lambda x:x!="#", outofbounds=False)
+    p = checkallpos(arr, x, y, lambda x:x==".", outofbounds=False)
 
-#         for i,pv in enumerate(p):
-#             if pv:
-#                 G.add_edge((x,y),(x+dirs[i][0],y+dirs[i][1]))
+    bc=False
+    bp=""
 
-# #print(G)
 
-# P = nx.all_shortest_paths(G,B,E)
-# print(len(list(P)))
+    for i,v in enumerate(p):
+        if v:
+            if i==d:
+                #                print ("pos:", current,"testing: ", end="")
+                #                print((x+dirs[i][0], y+dirs[i][1]),visited," ",end="")
+                nc,np = dfs((x+dirs[i][0], y+dirs[i][1]), E, visited, cost+1, d)
+                #                print("(nc,np)=:",nc,np)
+            else:
+                #                print ("pos (turn):", current,"testing: ", end="")
+                #                print((x+dirs[i][0], y+dirs[i][1]),"vis:", visited," ", end="")
+                nc,np = dfs((x+dirs[i][0], y+dirs[i][1]), E, visited, cost+1001, i)
+                #                print(nc,np)
+            if nc and (not bc or (nc<bc)):
+                bc=nc
+                bp=np
 
+    return (bc,bp)
+
+bc, bp = dfs(B, E, "", 0, -1)
+bp=bp[1:]
+bp = eval(bp)
+print(bp)
+printpath(bp,background=arr)
+print(bc)
