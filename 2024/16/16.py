@@ -11,8 +11,10 @@ from pprint import pprint
 #import numpy as np
 #import scipy
 from functools import cache
+import sys
+sys.setrecursionlimit(3000)
 
-arr = readarray("input.short",split="",convert=lambda x:x)
+arr = readarray("input",split="",convert=lambda x:x)
 #lines = readlines("input.short")
 
 B = findinarray(arr,"S")
