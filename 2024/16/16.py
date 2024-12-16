@@ -10,10 +10,10 @@ from pprint import pprint
 #from sortedcontainers import SortedSet
 #import numpy as np
 #import scipy
-from functools import cache
+from functools import cache, lru_cache
 import sys
 sys.setrecursionlimit(3000)
-from cachetools import cached
+from cachetools import cached,LRUCache
 from cachetools.keys import hashkey
 
 arr = readarray("input",split="",convert=lambda x:x)
@@ -26,17 +26,24 @@ arr[E[1]][E[0]]="."
 
 print(B,E)
 
-mc=False
 
-@cache
-def dfs(curre-
-        nt, E, visited, cost, d):
+
+COSTLIMIT=124549 #132516 #124548 124548
+
+mc=COSTLIMIT
+
+@cached(cache=LRUCache(maxsize=3000000), key = lambda current, E, visited, cost, d:hashkey(current,cost,visited,d))
+#@cache
+def dfs(current, E, visited, cost, d):
     global arr
     global mc
-
+    global COSTLIMIT
+    
     #132515 is too high
-    if cost>50000: #132515
-        return (False, visited)
+    if cost>COSTLIMIT: #132515
+#        print(len(visited))
+        
+        return False
     
 #    print (current, visited)
     if current==E:
@@ -49,7 +56,7 @@ def dfs(curre-
    
     # don't eat your own tail
     if str(current) in visited:
-        return (False, visited)
+        return False
 
      
     x,y=current
@@ -61,23 +68,34 @@ def dfs(curre-
     bp=""
 
 
+    # walk straight ahead first, cheapest
+    # if p[d]:
+    #     if not mc or cost+1<mc:
+    #         zy = dfs((x+dirs[d][0], y+dirs[d][1]), E, visited, cost+1, d)
+    #         if zy:
+    #             bc,bp=zy
+            
     for i,v in enumerate(p):
         if v:
-            if i==d:
-                #                print ("pos:", current,"testing: ", end="")
-                #                print((x+dirs[i][0], y+dirs[i][1]),visited," ",end="")
-                if not mc or cost+1<mc:
-                    nc,np = dfs((x+dirs[i][0], y+dirs[i][1]), E, visited, cost+1, d)
-                else:
-                    continue
-                #                print("(nc,np)=:",nc,np)
-            else:
-                #                print ("pos (turn):", current,"testing: ", end="")
-                #                print((x+dirs[i][0], y+dirs[i][1]),"vis:", visited," ", end="")
+            if not i == d:
                 if not mc or cost+1001 < mc:
-                    nc,np = dfs((x+dirs[i][0], y+dirs[i][1]), E, visited, cost+1001, i)
+                    zy = dfs((x+dirs[i][0], y+dirs[i][1]), E, visited, cost+1001, i)
+                    if zy:
+                        nc,np=zy
+                    else:
+                        continue
                 else:
                     continue
+            else:
+                if not mc or cost+1 < mc:
+                    zy = dfs((x+dirs[i][0], y+dirs[i][1]), E, visited, cost+1, i)
+                    if zy:
+                        nc,np=zy
+                    else:
+                        continue
+                else:
+                    continue                
+                
                 #                print(nc,np)
             if nc and (not bc or (nc<bc)):
                 bc=nc
@@ -85,7 +103,7 @@ def dfs(curre-
 
     return (bc,bp)
 
-bc, bp = dfs(B, E, "", 0, -1)
+bc, bp = dfs(B, E, "", 0, 1)
 bp=bp[1:]
 bp = eval(bp)
 print(bp)
