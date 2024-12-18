@@ -51,5 +51,8 @@ def bfs(arr, B, E):
 
 front.add((B,1))
 barr[B[1]][B[0]]=0
-barr = bfs(arr,B,E)
+barr = np.array(bfs(arr,B,E))
+np.set_printoptions(linewidth=200, formatter={"all":lambda x:"{:4}".format(str("    " if x==(2**64) else x))})
+print(barr)
+
 

@@ -504,6 +504,25 @@ def partition(seq, key):
 
 # --
 
+def sparse2arr(spa,value="#",bg=".",dim=None):
+
+    if dim:
+        mx,my=dim
+    else:
+        mx=max([x for x,_ in spa])+1
+        my=max([y for _,y in spa])+1
+
+    arr = [[bg]*mx for _ in range(my)]
+
+    for x,y in spa:
+        if not value and isinstance(spa, collections.Mapping):
+            arr[y][x]=spa[(x,y)]
+        else:
+            arr[y][x]=value
+           # print(y,x)
+            
+    return arr
+        
 # convert an array into a sparse array dict
 def arr2sparse(arr,ignore=""):
     s = dict()
@@ -605,7 +624,7 @@ def droute(arr, barr, start, stop, f=lambda x:x=="."):
         # check if unroutable (i.e. we will backtrack on ourselves)
         # this happens if we have fed the router a strange weighted matrix as in 2023 17
         if not len(i):
-            printpath(r,background=arr)
+#            printpath(r,background=arr)
             return None
 
         (x,y) = i[0]
