@@ -31,8 +31,6 @@ def match(line):
 
     return fr
 
-#tp = ['r', 'wr', 'b', 'g', 'bwu', 'rb', 'gb', 'br']
-
 def make(pile):
     global pat
     o,c,l = pile
@@ -45,63 +43,21 @@ def make(pile):
     nawp = [(o,y,l+[x]) for x,y in v if not len(y)]
     return (newp, nawp)
 
-X=[]
-poss = set()
-
+s=set()
 for l in lines:
-#    X.append(("brwrr","brwrr",[]))
+    v = match(l)
 
-    print("Testing line",l)
-    X=[(l,l,[])]
-    
-    ppo = 0
+    while v:
+        z=[]
+        for i in v:
+            #print("i",i)
+            if len(i[1])==0:
+                s.add(l)
+            ll = match(i[1])
+            if ll:
+                #print("bop")
+                #                s.add(l)
+                z+=ll
+        v=z
 
-    vis = set()
-
-    #pool = Pool()
-
-    class byebye(Exception):
-        pass
-
-    cnt=0
-    try:
-        while len(X):
-            if not cnt%100:
-                print(cnt,len(X))
-            cnt+=1
-                    
-            #    p = X.pop()
-            #print(len(X))
-            
-            #    (x,y) = make(pat,p)
-        
-#            print("LX:",len(X))
-            #    res = pool.map(make, X)
-#            res = map(make, X)
-            #            print("res",list(res))
-            NX=[]
-            
-            for Y in X:                
-                R = make(Y)
-                
-#                print("in:",Y,"out:",R)
-                (x,y)=R
-#                print(x)
-#                print(y)
-                if len(y):
-                    poss.add(l)                                        
-                    print("Hit",len(poss),"/",len(lines), "y=",y)
-                    raise byebye
-#                print("x",x)
-                for a,b,c in x:
-                    if not (a,b,c) in NX:
-                        NX.append((a,b,c))
-                    #            print("NX",NX)
-            print(poss, len(NX))
-            X = NX
-    except byebye:
-        continue
-    
-print(poss)
-print(len(poss))
-    
+print(s)
