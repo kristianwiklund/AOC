@@ -67,21 +67,23 @@ def run(ABC,P):
             case 7:
                 ABC[2] = ABC[0] // (2**combo(o))
 
-    
-PQI = ABC
 
-q = 0
+PQI = deepcopy(ABC)
 
-while True:
-    q=q+1
-#    print(q)
-    ABC = deepcopy(PQI)
-    ABC[0]=q
-    r = run(ABC,P)
-    if r==P:
-        print ("match", q)
-        print (r,P)
-        break
-#    print(q,r,P)
-    if not q%100000:
-        print(q)
+print(run(ABC,P))
+
+def run2(A):
+
+    print("---")
+    while A:
+        B=A%8
+        B=B^6
+        C=A//B
+        B=B^C 
+        B=B^4
+        P=B%8
+        print(P)
+        A=A//8
+        
+
+run2()

@@ -14,12 +14,12 @@ from pprint import pprint
 
 #arr = readarray("input.short",split="",convert=lambda x:x)
 lines = readlines("input")
-from multiprocessing import Pool
+#from multiprocessing import Pool
 
-pat = lines[0].replace(" ","").split(",")
-print(pat)
+pat = sorted(lines[0].replace(" ","").split(","), key=len)
+#print(pat)
 lines = lines[2:]
-print(lines)
+#print(lines)
 
 @cache
 def match(line):
@@ -31,62 +31,76 @@ def match(line):
 
     return fr
 
-tp = ['r', 'wr', 'b', 'g', 'bwu', 'rb', 'gb', 'br']
+#tp = ['r', 'wr', 'b', 'g', 'bwu', 'rb', 'gb', 'br']
 
 def make(pile):
     global pat
     o,c,l = pile
 
     v = match(c)
+    if not len(v):
+        return([],[])
 
     newp = [(o,y,l+[x]) for x,y in v if len(y)]
     nawp = [(o,y,l+[x]) for x,y in v if not len(y)]
     return (newp, nawp)
 
 X=[]
+poss = set()
+
 for l in lines:
 #    X.append(("brwrr","brwrr",[]))
-    X.append((l,l,[]))
 
-poss = set()
-ppo = 0
-
-vis = set()
-
-pool = Pool()
-
-
-while len(X):
-#    p = X.pop()
-    #print(len(X))
+    print("Testing line",l)
+    X=[(l,l,[])]
     
-#    (x,y) = make(pat,p)
+    ppo = 0
 
-#    print("X:",X)
-#    res = pool.map(make, X)
-    res = map(make, X)
-    X=[]
-#    print(res)
-    
-    for R in res:
-#        print("R:",R)
-        (x,y)=R
-#        print(x)
-#        print(y)
-        for a,b,c in x:
-            if not b+","+str(c) in vis and not a in poss:
-                X.append((a,b,c))
-                vis.add(b+","+str(c))
+    vis = set()
+
+    #pool = Pool()
+
+    class byebye(Exception):
+        pass
+
+    cnt=0
+    try:
+        while len(X):
+            if not cnt%100:
+                print(cnt,len(X))
+            cnt+=1
+                    
+            #    p = X.pop()
+            #print(len(X))
+            
+            #    (x,y) = make(pat,p)
+        
+#            print("LX:",len(X))
+            #    res = pool.map(make, X)
+#            res = map(make, X)
+            #            print("res",list(res))
+            NX=[]
+            
+            for Y in X:                
+                R = make(Y)
                 
-                if not len(vis)%10000:
-                    print(len(vis), len(poss),"/",len(lines))
-        if len(y):
-            if len(poss)>ppo:
-                print(len(poss),"/",len(lines))
-                ppo=len(poss)
-            for z in y:
-                poss.add(z[0])
-
+#                print("in:",Y,"out:",R)
+                (x,y)=R
+#                print(x)
+#                print(y)
+                if len(y):
+                    poss.add(l)                                        
+                    print("Hit",len(poss),"/",len(lines), "y=",y)
+                    raise byebye
+#                print("x",x)
+                for a,b,c in x:
+                    if not (a,b,c) in NX:
+                        NX.append((a,b,c))
+                    #            print("NX",NX)
+            print(poss, len(NX))
+            X = NX
+    except byebye:
+        continue
     
 print(poss)
 print(len(poss))
