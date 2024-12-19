@@ -13,7 +13,7 @@ from pprint import pprint
 #from functools import cache
 
 #arr = readarray("input.short",split="",convert=lambda x:x)
-lines = readlines("input.short")
+lines = readlines("input")
 from multiprocessing import Pool
 
 pat = lines[0].replace(" ","").split(",")
@@ -21,8 +21,9 @@ print(pat)
 lines = lines[2:]
 print(lines)
 
-def match(pat, line):
-
+@cache
+def match(line):
+    global pat
     fr=[]
     for i in pat:
         if line.startswith(i):
@@ -32,12 +33,11 @@ def match(pat, line):
 
 tp = ['r', 'wr', 'b', 'g', 'bwu', 'rb', 'gb', 'br']
 
-#@cache
 def make(pile):
     global pat
     o,c,l = pile
 
-    v = match(pat,c)
+    v = match(c)
 
     newp = [(o,y,l+[x]) for x,y in v if len(y)]
     nawp = [(o,y,l+[x]) for x,y in v if not len(y)]
@@ -63,7 +63,8 @@ while len(X):
 #    (x,y) = make(pat,p)
 
 #    print("X:",X)
-    res = pool.map(make, X)
+#    res = pool.map(make, X)
+    res = map(make, X)
     X=[]
 #    print(res)
     
