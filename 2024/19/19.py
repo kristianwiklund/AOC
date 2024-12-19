@@ -11,6 +11,7 @@ from pprint import pprint
 #import numpy as np
 #import scipy
 #from functools import cache
+from cachetools import *
 
 #arr = readarray("input.short",split="",convert=lambda x:x)
 lines = readlines("input")
@@ -31,33 +32,38 @@ def match(line):
 
     return fr
 
+@cached(cache={}, key=lambda pile:pile[1])
 def make(pile):
     global pat
     o,c,l = pile
 
     v = match(c)
     if not len(v):
-        return([],[])
+        return None
 
     newp = [(o,y,l+[x]) for x,y in v if len(y)]
     nawp = [(o,y,l+[x]) for x,y in v if not len(y)]
     return (newp, nawp)
 
+@cache
+def makemake(l):
+
+    X=[(l,l,[])]
+    while len(X):
+       x = X.pop()
+       t = make(x)
+       # returns: a list of (original name, remaining text, match list)
+       if t:
+           if t[1]:
+               return True
+           X+=t[0]
+    
+       
+    return False
+
+    
 s=set()
 for l in lines:
-    v = match(l)
-
-    while v:
-        z=[]
-        for i in v:
-            #print("i",i)
-            if len(i[1])==0:
-                s.add(l)
-            ll = match(i[1])
-            if ll:
-                #print("bop")
-                #                s.add(l)
-                z+=ll
-        v=z
-
-print(s)
+    v = makemake(l)
+    if v:
+        print(l)
