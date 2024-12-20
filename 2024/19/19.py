@@ -18,6 +18,27 @@ pat = sorted(lines[0].replace(" ","").split(","),key=lambda x:-len(x))
 lines=lines[2:]
 
 @cache
+def goff(s):
+    global pat
+
+    if not len(s):
+        return 1
+    
+    x = [i for i,p in enumerate(pat) if s.startswith(p)]
+    if not len(x):
+        return 0
+
+    c=0
+    for i in x:
+        v = s[len(pat[i]):]
+        if not v:
+            c+=1
+        else:
+            c+=goff(v)
+
+    return c
+
+@cache
 def boll(s):
     
     global pat
@@ -56,4 +77,13 @@ for i in lines:
 
     c+=boll(i)
        
-print(c)
+print("A:",c)
+
+c=0
+cc=0
+for i in lines:
+    print(cc,c)
+    cc+=1
+    c+=goff(i)
+
+print("B:",c)
