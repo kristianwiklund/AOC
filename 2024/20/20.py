@@ -7,13 +7,13 @@ from utilities import *
 from pprint import pprint
 #from sortedcontainers import SortedList
 #from sortedcontainers import SortedDict
-#from sortedcontainers import SortedSet
-#import numpy as np
+from sortedcontainers import SortedSet
+import numpy as np
 #import scipy
 #from functools import cache
 
-arr = readarray("input",split="",convert=lambda x:x)
-#lines = readlines("input.short")
+arr = readarray("input.short",split="",convert=lambda x:x)
+#lines = readlines("inputshort")
 
 hc={}
 vc={}
@@ -84,3 +84,57 @@ cn={x:len(c[x]) for x in c}
 print(ck)
 print(sum(cn.values()))
 assert(ck!=5653)
+
+# to find all potential shortcuts we need to follow the path and find
+# locations to end which are within 20 manhattan distance from the normal
+# path
+sneak={}
+op = set()
+xox=0
+pox=0
+
+for i,a in enumerate(p):
+    for j,b in enumerate(p):
+        
+        if distance(a,b)<=2:
+            continue
+
+        if distance(a,b)>30:
+            continue
+
+        pox+=1
+        
+        #        print(i,j)
+        
+        if True:
+            if not (b,a) in op and not (a,b) in op:
+                arr[b[1]][b[0]]="#"
+                arr[a[1]][a[0]]="#"
+                op.add((a,b))
+                                        
+                # can we get from a to b without crossing something?
+                r = dijkstra(arr,a,stop=b,f=lambda x:x=="#")
+                if r:
+                    (x,pp) = r
+                    if len(pp)<=22:
+                        printpath(pp,background=arr)
+#                        kossan=max(tp[a],tp[b])-min(tp[a],tp[b])-len(pp)+1
+                        kossan=abs(tp[a]-tp[b])-len(pp)+1
+                        if kossan>=50: # and kossan<=len(p):
+                            xox+=1
+                            print(len(pp))
+                            print(kossan,tp[a],tp[b],p.index(a),p.index(b))
+                            sys.exit()
+                            if kossan in sneak:
+                                sneak[kossan]+=1
+                            else:
+                                sneak[kossan]=1
+                        
+                arr[b[1]][b[0]]="."
+                arr[a[1]][a[0]]="."
+
+c=sum(sneak.values())
+print(c,xox)
+assert(c<1250947)
+print(len(p))
+pprint(sneak)

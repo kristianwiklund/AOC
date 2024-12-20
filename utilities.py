@@ -637,7 +637,7 @@ def droute(arr, barr, start, stop, f=lambda x:x=="."):
 
 # dijksta on a matrix
 # default follows "."
-def dijkstra(arr, start, f=lambda x:x==".", stop=None, barr=None, mr=droute):
+def dijkstra(arr, start, f=lambda x:x==".", stop=None, barr=None, mr=droute,maxlen=None):
 
     (startx, starty) = start
 
