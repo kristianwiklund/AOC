@@ -45,6 +45,14 @@ def make(pile):
     nawp = [(o,y,l+[x]) for x,y in v if not len(y)]
     return (newp, nawp)
 
+# idea:
+# move along the track. find spots that have a manhattan distance of <=20 and check if those are connectable
+# without touching other track parts along the way
+
+
+
+   
+    
 @cache
 def makemake(l):
 
@@ -63,7 +71,14 @@ def makemake(l):
 
     
 s=set()
+c=0
+a=0
 for l in lines:
     v = makemake(l)
     if v:
         print(l)
+        a+=1
+    c+=1
+    print(a,"/",c,"ok")
+
+print("track length",len(p))
