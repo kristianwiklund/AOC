@@ -41,12 +41,12 @@ for i in [str(x) for x in range(0,10)]+["A"]:
         else:
             sy=""
 
-        #        if i in ["7","4","1"] and j in ["0","A"]:
-        s = sx+sy
-        #        elif j in ["7","4","1"] and i in ["0","A"]:
-        #            s = sy+sx
-        #else:
-        #    s = sy+sx
+        if j=="A" or j=="0":
+            s = sx+sy
+        else:
+            s = sy+sx
+
+        
             
         
         numpad[i,j] = s
@@ -90,16 +90,12 @@ for i in "<>^vA":
         else:
             sy=""
 
-            #        if j=="<":
-            #            s=sy+sx
-            #        elif j=="<":
-        #            s=sy+sx
-        #        else:
-        s=sx+sy
-
-        if i=="A" and j=="<":
-            print(sx,sy,(x1,y1),(x2,y2))
-        
+        if j=="<":
+            s=sy+sx
+            print(i,"to <",s,sx,sy,(x1,y1),(x2,y2))                        
+        else:
+            s=sx+sy
+            
         dirpad[i,j] = s
 
 dirprev = ["A","A","A"]
@@ -194,12 +190,16 @@ for i in lines:
 print(sc)
 #assert(sc>211720)
 
-s = dirpush(dirpush(numpush("379A"),0),1)
-print(s,decodenum(decodedir(decodedir(s))))
-print("<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A",decodenum(decodedir(decodedir("<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A"))))
 
+#s = dirpush(dirpush(numpush("379A"),0),1)
+#print(s,decodenum(decodedir(decodedir(s))))
+#print("<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A",decodenum(decodedir(decodedir("<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A"))))
+print("----------------------")
+print("       379A           ")
 s = dirpush(dirpush(numpush("179A"),0),1)
 t = "<v<A>>^A<vA<A>>^AAvAA<^A>A<v<A>>^AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A"
+print(s)
+print(t)
 print("--")
 s=decodedir(s)
 t=decodedir(t)
@@ -218,4 +218,5 @@ print(t)
 
 print(len([i for i,v in enumerate(s) if v=="A"]))
 print(len([i for i,v in enumerate(t) if v=="A"]))
+
 
