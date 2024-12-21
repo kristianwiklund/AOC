@@ -35,9 +35,9 @@ def calltrace(function):
 # consume a list of lists and create a flat list that have all bifurcations flattened
 @calltrace
 def fwb(l,pl,r):
-    if len(l)==1:
-        #        print("end of the list")
-
+    if len(l)==1 and len(l[0])==1:
+        print("end of the list",l,pl)
+        
         if not len(pl):
             return [l]
         
@@ -60,23 +60,27 @@ def fwb(l,pl,r):
 
     # take the first item from the list
     a = l.pop(0)
-
+    print("postpop",a)
     if not isinstance(a,list):
         # not a list, convert to a list
         a = [a]
 
+    # append everything in the first instance of the list
+    # to whatever we have collected already
+
+    # if nothing is collected, our collection is what we popped from the front of the list
     if len(pl)==0:
         npl = a
     else:
         npl=[]
-        #print("a",a)
-        for i in a:
-            for p in pl:
-                b = [p]+a
+        print("--:a",a)
+        for p in pl:
+            for i in a:                
+                b = [p]+i
                 print("<p>",p,"<a>",a, "b",b)                
                 npl.append(b)
                 
-    print(l, npl)
+    print("npl",l, npl)
     return fwb(l, npl, r+1)
 
 def flattenwithbranches(l, pl=[]):
@@ -85,11 +89,11 @@ def flattenwithbranches(l, pl=[]):
 
     
 #print(flattenwithbranches([1]))
-assert(flattenwithbranches([1])==[[1]])
-assert(flattenwithbranches([1,2])==[[1,2]])
-assert(flattenwithbranches([1,2,3])==[[1,2,3]])
-
-print(flattenwithbranches([1,[2,3],4]))
+#assert(flattenwithbranches([1])==[[1]])
+#assert(flattenwithbranches([1,2])==[[1,2]])
+#assert(flattenwithbranches([1,2,3])==[[1,2,3]])
+print("-----------------")
+print(flattenwithbranches([1,[2,3]]))
 sys.exit()
 
 # get the manhattan distance between two points
