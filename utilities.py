@@ -83,10 +83,8 @@ assert(flattenwithbranches(["a","b"])==[["a","b"]])
 assert(flattenwithbranches(["a","b","c"])==[["a","b","c"]])
 #print("skogen",flattenwithbranches(["a",["b","c"]]))
 assert(flattenwithbranches(["a",["b","c"]])==["ab"],["ac"])
-print("-----------------")
 assert(flattenwithbranches(["a",["b","c"],"d"])==["abd","acd"])
 
-sys.exit()
 
 # get the manhattan distance between two points
 def distance(x,y):

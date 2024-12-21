@@ -120,37 +120,17 @@ def encode(s):
 #    print("NP  ----")
     a = numpush(s)
     a = flattenwithbranches(a)
+    n = dirpush(a,0)
+    n = flattenwithbranches(n)
+#    n = dirpush(a,1)
+#    n = flattenwithbranches(n)
     
-    return(a,n,nn)
+    return(a,n)
 
-a,n,nn=encode("029A")
-print("vvv")
-pprint(a)
-print(".")
-pprint(n)
-print(".")
-pprint(nn)
-print("---")
-sys.exit()
+a,n=encode("029A")
 
-def ptbobb(v):
+print(n)
 
-    for i,a in enumerate(v):
-        print(i,a)
-        for j,b in enumerate(a):
-            print(i,j,b)
-            for k,c in enumerate(b):
-                print(i,j,k,c)
-                for l,d in enumerate(c):
-                    print(i,j,k,l,d)
-
-
-def mkbobb(v,m=[]):
-    pass
-#    for i,a in enumerate(v):
-#        m.append(
-
-#ptbobb(v)
 sys.exit()
 
 sc=0
