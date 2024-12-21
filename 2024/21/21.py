@@ -92,11 +92,12 @@ for i in "<>^vA":
 
         if j=="<":
             s=sy+sx
-            print(i,"to <",s,sx,sy,(x1,y1),(x2,y2))                        
+            print(i,"to <",s,sx,sy,(x1,y1),(x2,y2))
         else:
             s=sx+sy
             
         dirpad[i,j] = s
+
 
 dirprev = ["A","A","A"]
 
@@ -125,7 +126,7 @@ for i in dirpad:
     rdirpad[i[0],"".join(sorted(dirpad[i]))]=i[1]
     if dirpad[i]!="".join(sorted(dirpad[i])):
         print ("boop", dirpad[i], "".join(sorted(dirpad[i])))
-    
+
     
 print("rdirpad",rdirpad)
 
@@ -188,7 +189,8 @@ for i in lines:
     sc+=len(s)*v
 
 print(sc)
-#assert(sc>211720)
+assert(sc>211720)
+assert(sc<224204)
 
 
 #s = dirpush(dirpush(numpush("379A"),0),1)
@@ -196,8 +198,8 @@ print(sc)
 #print("<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A",decodenum(decodedir(decodedir("<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A"))))
 print("----------------------")
 print("       379A           ")
-s = dirpush(dirpush(numpush("179A"),0),1)
-t = "<v<A>>^A<vA<A>>^AAvAA<^A>A<v<A>>^AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A"
+s = dirpush(dirpush(numpush("379A"),0),1)
+t = "<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A"
 print(s)
 print(t)
 print("--")
@@ -219,4 +221,5 @@ print(t)
 print(len([i for i,v in enumerate(s) if v=="A"]))
 print(len([i for i,v in enumerate(t) if v=="A"]))
 
-
+posprev=["A","A","A"]
+print(dirpush("<",0))
