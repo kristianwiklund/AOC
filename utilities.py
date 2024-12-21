@@ -36,62 +36,41 @@ def calltrace(function):
 @calltrace
 def fwb(l,pl,r):
 
+    print("fwb",l,pl)
     # trivial case, we have run out of tokens
     if l==[]:
         return pl
     
     # trivial case, completely flat list
     nested = any(isinstance(i, list) for i in l)
-    if not nested:
+    if pl==[] and not nested:
+        print("not nested returning l")
         return [l]
-
-    # l is not flat, we need to do something
-    # pop off the fist element of the list
     
-    a = l.pop(0)
+    # combine the previously collected items with the first item in the list
+    # treat the first item in the list recursively, in case it is a nested list
 
-    # add the elements of a to the elements of pl
-    # if not a list, simply slap them to the pl
-    bula=[]
-    if not isinstance(a,list):
-        print("nolist",a,pl)
-        if len(pl):
-            for i in pl:
-                if isinstance(i,list):
-                    bula.append(i+[a])
-                else:
-                    bula.append([i,a])
-                    
-                return fwb(l,bula,r+1)
-        else:
-            return fwb(l,[a],r+1)
+    first = l.pop(0)
+    first = fwb(first,[],r+1)[0]
+
+    # now first contains a cleaned (flat) list of items
+    # l contains the list of not yet processed items
+    # pl contains the list of items we have processed earlier
+
+    # combine first and pl into new items
+    if len(pl):
+        print(type(pl).__name__,type(first).__name__)
+        print(pl,first)
+        c = [x+y for x in pl for y in first]
+        print(c)
     else:
-        # a is a list, fix any branching in it
-        print("list",a)
-        na = fwb(a,[],0)
-        print("na",na,a,"pl",pl)
+        c = first
         
-        if len(pl):
-            print("len pl",len(pl))
-            for i in pl:
-                for j in na[0]:
-                    if isinstance(i,list):
-                        if isinstance(j,list):
-                            bula.append(i+j)
-                        else:
-                            bula.append(i+[j])
-                    else:
-                        if isinstance(j,list):
-                            bula.append([i]+j)
-                        else:
-                            bula.append([i]+[j])
-            print("fula",bula, "l=",l)
-            z = fwb(l,bula,r+1)
-            print("fbz z",l,bula,z)
-            return z
-        else:
-            print("empty pl calling direct")
-            return fwb(l,na,r+1)
+    print("mupp","pl:",pl,"l:",l,"c:",c)
+    
+    return fwb(l, c, r+2)
+    
+    
         
 def flattenwithbranches(l, pl=[]):
     return fwb(l,pl,0)
@@ -99,13 +78,13 @@ def flattenwithbranches(l, pl=[]):
 
     
 #print(flattenwithbranches([1]))
-assert(flattenwithbranches([1])==[[1]])
-assert(flattenwithbranches([1,2])==[[1,2]])
-assert(flattenwithbranches([1,2,3])==[[1,2,3]])
-assert(flattenwithbranches([1,[2,3]])==[[1,2],[1,3]])
+assert(flattenwithbranches(["a"])==[["a"]])
+assert(flattenwithbranches(["a","b"])==[["a","b"]])
+assert(flattenwithbranches(["a","b","c"])==[["a","b","c"]])
+#print("skogen",flattenwithbranches(["a",["b","c"]]))
+assert(flattenwithbranches(["a",["b","c"]])==["ab"],["ac"])
 print("-----------------")
-
-print(flattenwithbranches([1,[2,3],4]))
+assert(flattenwithbranches(["a",["b","c"],"d"])==["abd","acd"])
 
 sys.exit()
 
