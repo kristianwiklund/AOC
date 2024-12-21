@@ -48,5 +48,7 @@ for i in lines:
     t = min([len(x) for x in t])
     print(t)
     su+=t*ints(i)[0]
+    
 print(su)
 assert(su<226342)
+assert(su>211720)
