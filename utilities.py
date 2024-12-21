@@ -59,10 +59,11 @@ def fwb(l,pl,r):
 
     # combine first and pl into new items
     if len(pl):
-        print(type(pl).__name__,type(first).__name__)
-        print(pl,first)
+#        print(type(pl).__name__,type(first).__name__)
+#        print(pl,first)
         c = [x+y for x in pl for y in first]
         print(c)
+        sys.exit()
     else:
         c = first
         
