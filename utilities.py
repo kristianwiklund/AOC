@@ -10,6 +10,25 @@ import regex as re
 import re
 import math
 
+# consume a list of lists and create a flat list that have all bifurcations flattened
+def flattenwithbranches(l,pl):
+
+    if len(l)==0:
+        return pl
+    
+    a = l[0]
+    ax = l[1:]
+
+    npl=[]
+    for i in a:
+        for t in pl:
+            v = t+i
+            npl.append(v)
+    return flattenwithbranches(ax,npl)
+
+print(flattenwithbranches([1,[2,3],4]))
+sys.exit()
+
 # get the manhattan distance between two points
 def distance(x,y):
     return abs(x[0]-y[0])+abs(x[1]-y[1])

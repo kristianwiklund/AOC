@@ -113,121 +113,13 @@ def dirpush(s,n):
 
     return m
 
-#print("DP",dirpush("<>^A",0))
-
-# rnumpad={}
-# for i in numpad:
-#     rnumpad[i[0],"".join(sorted(numpad[i]))]=i[1]
-
-# #print(rnumpad)
-
-# rdirpad={}
-# for i in dirpad:
-#     rdirpad[i[0],"".join(sorted(dirpad[i]))]=i[1]
-#     if dirpad[i]!="".join(sorted(dirpad[i])):
-#         print ("boop", dirpad[i], "".join(sorted(dirpad[i])))
-    
-    
-# print("rdirpad",rdirpad)
-
-# s=dirpush(dirpush(numpush("029A"),0),1)
-
-# def decodedir(st):
-    
-#     st = st.split("A")[:-1]
-    
-# #    print("st",st)
-#     pos="A"
-
-#     n=""
-#     for i in st:
-#         i="".join(sorted(i))
-#         x=rdirpad[pos,i]
-#         pos=x
-#         n+=x
-#     return (n)
-
-# def decodenum(st):
-    
-#     st = st.split("A")[:-1]
-# #    print("st",st)
-#     pos="A"
-
-#     n=""
-#     for i in st:
-#         i="".join(sorted(i))
-#         x=rnumpad[pos,i]
-#         pos=x
-#         n+=x
-#     return (n)
-
-# s=dirpush(dirpush(numpush("029A"),0),1)
-# print(len(s))
-# print(s)
-# print("s",s)
-# a = decodedir(s)
-# print("a",a)
-# b = decodedir(a)
-# print("b",b)
-# c = decodenum(b)
-# print("c",c)
-# assert(c=="029A")
-
-def genbobb(a):
-    
-    if len(a)==1:
-        #print("<-genbobb:",a[0][0])
-        return [a[0][0]]
-
-    #print("genbobb:",a)
-    
-    ax = a[1:]
-    a = a[0]
-    #print(a,"|",ax)
-
-    m=[]
-
-    for i in a:
-        #print("a=",i)
-        v = genbobb(ax)
-        for t in v:
-            m.append(i+t)
-
-    return m
-    
-    
-
 def encode(s):
     numprev="A"
     posprev=["A","A"]
 
 #    print("NP  ----")
     a = numpush(s)
-    a = genbobb(a)
-    print("genbobbarob",a)
-
-    n = []
-
-    for z in a:
-        n.append(dirpush(z,0))
-
-    print("nnnn:",n)
-    for i in n:
-        nn=genbobb(i)
-        print("genbobbabob",nn)
-    sys.exit()
-    
-    nn = {}
-    for z in n.values():
-        print("dp z",z)
-        for x in z:
-            print("dp x",x)
-            b = dirpush(x,0)
-            nn[x]=b
-    print(nn)
-
-    print("DP2:")
-#    pprint(nn)
+    a = flattenwithbranches(a)
     
     return(a,n,nn)
 
