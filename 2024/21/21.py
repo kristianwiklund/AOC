@@ -45,13 +45,13 @@ for i in "".join(snumpad):
             continue
         
         pths = list(nx.all_shortest_paths(G,i,j))
-        print(i,"->",j,":",len(pths))
+        #        print(i,"->",j,":",len(pths))
         numpad[i,j]=[]
         for pth in pths:                        
             eal = "".join([G[pth[i]][pth[i+1]]['d'] for i in range(len(pth[:-1]))])+"A"
             numpad[i,j].append(eal)
         
-print(numpad)
+#print(numpad)
 G = nx.DiGraph()
 
 for y,l in enumerate(sdirpad):
@@ -77,7 +77,7 @@ for i in "".join(sdirpad):
             continue
         
         pths = list(nx.all_shortest_paths(G,i,j))
-        print(i,"->",j,":",len(pths))
+        #        print(i,"->",j,":",len(pths))
         dirpad[i,j]=[]
         for pth in pths:                        
             eal = "".join([G[pth[i]][pth[i+1]]['d'] for i in range(len(pth[:-1]))])+"A"
@@ -97,18 +97,24 @@ def numpush(s):
         
     return m
 
-print("NP",numpush("029A"))
+#
+#print("NP",numpush("029A"))
 dirprev=["A","A"]
 
 def dph(s,n):
     global dirpad
     global dirprev
     m=[]
-    print(s)
+    #    print(s)
+
     for i in s:
         if dirprev[n]==i:
             m.append("A")
         else:
+            pprint(dirpad)
+            print("s:",s)
+            print("i:",i)
+            print(dirpad[dirprev[n],i])
             m.append(dirpad[dirprev[n],i])
             
         dirprev[n]=i
@@ -116,11 +122,11 @@ def dph(s,n):
     return m
 
 def dirpush(s,n):
-    print(s)
+ #   print(s)
     m=[]
     for j in s:
         for i in j:
-            print(i)
+  #          print(i)
             m.append(dph(i,n))
 
     return m
@@ -134,21 +140,21 @@ def encode(s):
 
 #    print("NP  ----")
     a = numpush(s)
-#    a = flattenwithbranches(a)
+    a = flattenwithbranches(a)
     print("a",a)
     n = dirpush(a,0)
     n = flattenwithbranches(n)
-    print(n)
-    sys.exit()
+#    print(n)
     n = dirpush(n,1)
-    n = flattenwithbranches(n)
+#    n = flattenwithbranches(n)
     
     return(a,n)
 
-a,n=encode("029A")
+a,n=encode("379A")
 print("----->>>",a)
-print("-----<<<",n)
-#n=flattenwithbranches(n)
+
+n=flattenwithbranches(n)
+#print("-----<<<",n)
 pprint(min([len (i) for i in n]))
 sys.exit()
 
@@ -159,10 +165,10 @@ for i in lines:
     assert(c==i)
     
     v=ints(i)[0]
-    print(len(s),"*",v)
+#    print(len(s),"*",v)
     sc+=len(s)*v
 
-print(sc)
+#print(sc)
 #assert(sc>211720)
 
 # s = dirpush(dirpush(numpush("379A"),0),1)
