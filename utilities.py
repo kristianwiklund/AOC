@@ -87,11 +87,9 @@ def flattenwithbranches(l, pl=[]):
 #print(flattenwithbranches([1]))
 assert(flattenwithbranches([1])==[[1]])
 assert(flattenwithbranches([1,2])==[[1,2]])
-
-print(flattenwithbranches([1,2,3]))
 assert(flattenwithbranches([1,2,3])==[[1,2,3]])
 
-#print(flattenwithbranches([1,[2,3],4]))
+print(flattenwithbranches([1,[2,3],4]))
 sys.exit()
 
 # get the manhattan distance between two points
