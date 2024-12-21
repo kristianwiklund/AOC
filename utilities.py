@@ -32,95 +32,95 @@ def calltrace(function):
         return result
     return wrapper
 
-from copy import deepcopy
+# from copy import deepcopy
 
-def flippeflopp(a,b):
+# def flippeflopp(a,b):
 
-    if isinstance(a,list) and isinstance(b,list):
-        print(a,b)
-        c = [x+y for x in a for y in b]
-    else:
-        print(a,b)
-        if isinstance(b,list):
-            c = [x+y for x in [a] for y in b]
-        else:
-            c = [x+y for x in a for y in [b]]
+#     if isinstance(a,list) and isinstance(b,list):
+#         print(a,b)
+#         c = [x+y for x in a for y in b]
+#     else:
+#         print(a,b)
+#         if isinstance(b,list):
+#             c = [x+y for x in [a] for y in b]
+#         else:
+#             c = [x+y for x in a for y in [b]]
 
-    return c
+#     return c
     
     
-# consume a list of lists and create a flat list that have all bifurcations flattened
-@calltrace
-def fwb(l,pl,r):
+# # consume a list of lists and create a flat list that have all bifurcations flattened
+# @calltrace
+# def fwb(l,pl,r):
 
-    print(r,"fwb",l,pl)
-    # trivial case, we have run out of tokens
-    if l==[]:
-        print(r,"no more tokens, return what we have")
-        return pl
+#     print(r,"fwb",l,pl)
+#     # trivial case, we have run out of tokens
+#     if l==[]:
+#         print(r,"no more tokens, return what we have")
+#         return pl
 
-#    if len(l)==1 and isinstance(l[0],list):
-#        l=l[0]
+# #    if len(l)==1 and isinstance(l[0],list):
+# #        l=l[0]
     
-    # trivial case, completely flat list
-    nested = any(isinstance(i, list) for i in l)
-    if pl==[] and not nested:
-        print(r,"not nested returning l (ell)")
-        return [l]
+#     # trivial case, completely flat list
+#     nested = any(isinstance(i, list) for i in l)
+#     if pl==[] and not nested:
+#         print(r,"not nested returning l (ell)")
+#         return [l]
     
-    # combine the previously collected items with the first item in the list
-    # treat the first item in the list recursively, in case it is a nested list
+#     # combine the previously collected items with the first item in the list
+#     # treat the first item in the list recursively, in case it is a nested list
 
-    l=deepcopy(l)
-    print("-------------", l)
-    thirst = deepcopy(l.pop(0))
-    print(r,"calling fwb with",thirst,"to flatten if needed")
-    first = fwb(thirst,[],r+1)[0]
-    print(r,"we have flattened",thirst,"to",first)
-#    first=first[0]
+#     l=deepcopy(l)
+#     print("-------------", l)
+#     thirst = deepcopy(l.pop(0))
+#     print(r,"calling fwb with",thirst,"to flatten if needed")
+#     first = fwb(thirst,[],r+1)[0]
+#     print(r,"we have flattened",thirst,"to",first)
+# #    first=first[0]
     
-    # now first contains a cleaned (flat) list of items
-    # l contains the list of not yet processed items
-    # pl contains the list of items we have processed earlier
+#     # now first contains a cleaned (flat) list of items
+#     # l contains the list of not yet processed items
+#     # pl contains the list of items we have processed earlier
 
-    # combine first and pl into new items
-    if len(pl):
-        print(r,"combining",pl, "and", first)
-        print(type(pl).__name__,type(first).__name__)
+#     # combine first and pl into new items
+#     if len(pl):
+#         print(r,"combining",pl, "and", first)
+#         print(type(pl).__name__,type(first).__name__)
 
-        print("----_---",pl,first)
+#         print("----_---",pl,first)
 
-        c = flippeflopp(pl, first)
+#         c = flippeflopp(pl, first)
 
-        print(r,"|||||||||||||||| c=",c)
- #       sys.exit()
-    else:
-        print(r,"pl is empty",pl,"using first for c",first)
-        c = first
+#         print(r,"|||||||||||||||| c=",c)
+#  #       sys.exit()
+#     else:
+#         print(r,"pl is empty",pl,"using first for c",first)
+#         c = first
 
     
-    print(r,"mupp","pl:",pl,"l:",l,"c:",c)
+#     print(r,"mupp","pl:",pl,"l:",l,"c:",c)
 
-    print(r,"calling again to continue flattening...")
-    return fwb(l, c, r+1)
+#     print(r,"calling again to continue flattening...")
+#     return fwb(l, c, r+1)
     
-from sortedcontainers import SortedSet
+# from sortedcontainers import SortedSet
         
-def flattenwithbranches(l, pl=[]):
-    m=fwb(l,pl,0)
-    return m
+# def flattenwithbranches(l, pl=[]):
+#     m=fwb(l,pl,0)
+#     return m
     
 
 
-#print(flattenwithbranches(["a"]))
-assert(flattenwithbranches(["a"])==[["a"]])
-assert(flattenwithbranches(["a","b"])==[["a","b"]])
-assert(flattenwithbranches(["a","b","c"])==[["a","b","c"]])
-#print(Fore.RED+"skogen"+Fore.RESET,flattenwithbranches(["a",["b","c"]]))
-print("----------------------------------------------------")
-assert(flattenwithbranches(["a",["b","c"]])==["ab"],["ac"])
-#print("skogen",flattenwithbranches(["a",["b","c"],"d"]))
-assert(flattenwithbranches(["a",["b","c"],"d"])==["abd","acd"])
+# #print(flattenwithbranches(["a"]))
+# assert(flattenwithbranches(["a"])==[["a"]])
+# assert(flattenwithbranches(["a","b"])==[["a","b"]])
+# assert(flattenwithbranches(["a","b","c"])==[["a","b","c"]])
+# #print(Fore.RED+"skogen"+Fore.RESET,flattenwithbranches(["a",["b","c"]]))
+# print("----------------------------------------------------")
+# assert(flattenwithbranches(["a",["b","c"]])==["ab"],["ac"])
+# #print("skogen",flattenwithbranches(["a",["b","c"],"d"]))
+# assert(flattenwithbranches(["a",["b","c"],"d"])==["abd","acd"])
 
 
 # get the manhattan distance between two points
