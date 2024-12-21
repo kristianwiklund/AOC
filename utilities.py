@@ -560,6 +560,8 @@ def checkpos(arr, x, y, fun, outofbounds=False):
     return fun(arr[y][x])
 
 
+
+
 # north, east, south, west
 dirs = {0:(0,-1),1:(1,0),2:(0,1),3:(-1,0)}
 
