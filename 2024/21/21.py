@@ -104,10 +104,10 @@ def dph(s,n):
     global dirpad
     global dirprev
     m=[]
-
+    print(s)
     for i in s:
-        if dirprev[n]==s:
-            m.append("[A]")
+        if dirprev[n]==i:
+            m.append("A")
         else:
             m.append(dirpad[dirprev[n],i])
             
@@ -116,10 +116,12 @@ def dph(s,n):
     return m
 
 def dirpush(s,n):
-
+    print(s)
     m=[]
-    for i in s:
-        m.append(dph(i,n))
+    for j in s:
+        for i in j:
+            print(i)
+            m.append(dph(i,n))
 
     return m
 
@@ -132,20 +134,20 @@ def encode(s):
 
 #    print("NP  ----")
     a = numpush(s)
-    a = flattenwithbranches(a)[2]
+#    a = flattenwithbranches(a)
     print("a",a)
     n = dirpush(a,0)
-    
-#    n = flattenwithbranches(n)
-#    n = dirpush(a,1)
-#    n = flattenwithbranches(n)
+    n = flattenwithbranches(n)
+    print(n)
+    #    n = dirpush(a,1)
+    n = flattenwithbranches(n)
     
     return(a,n)
 
 a,n=encode("029A")
 print("----->>>",a)
 print("-----<<<",n)
-n=flattenwithbranches(n)
+#n=flattenwithbranches(n)
 pprint(n)
 sys.exit()
 

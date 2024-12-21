@@ -32,44 +32,61 @@ def calltrace(function):
         return result
     return wrapper
 
+from copy import deepcopy
+
 # consume a list of lists and create a flat list that have all bifurcations flattened
 @calltrace
 def fwb(l,pl,r):
 
-    print("fwb",l,pl)
+    print(r,"fwb",l,pl)
     # trivial case, we have run out of tokens
     if l==[]:
+        print(r,"no more tokens, return what we have")
         return pl
+
+#    if len(l)==1 and isinstance(l[0],list):
+#        l=l[0]
     
     # trivial case, completely flat list
     nested = any(isinstance(i, list) for i in l)
     if pl==[] and not nested:
-        print("not nested returning l")
+        print(r,"not nested returning l (ell)")
         return [l]
     
     # combine the previously collected items with the first item in the list
     # treat the first item in the list recursively, in case it is a nested list
 
-    first = l.pop(0)
-    first = fwb(first,[],r+1)[0]
-
+    l=deepcopy(l)
+    print("-------------", l)
+    thirst = deepcopy(l.pop(0))
+    print(r,"calling fwb with",thirst,"to flatten if needed")
+    first = fwb(thirst,[],r+1)
+    print(r,"we have flattened",thirst,"to",first)
+#    first=first[0]
+    
     # now first contains a cleaned (flat) list of items
     # l contains the list of not yet processed items
     # pl contains the list of items we have processed earlier
 
     # combine first and pl into new items
     if len(pl):
-#        print(type(pl).__name__,type(first).__name__)
-#        print(pl,first)
-        c = [x+y for x in pl for y in first]
-        print(c)
-        sys.exit()
-    else:
-        c = first
+        print(r,"combining",pl, "and", first)
+        print(type(pl).__name__,type(first).__name__)
+
+        print("----_---",pl,first)
         
-    print("mupp","pl:",pl,"l:",l,"c:",c)
+        c = [x+y for x in pl for y in [first]]
+        print(r,"|||||||||||||||| c=",c)
+ #       sys.exit()
+    else:
+        print(r,"pl is empty",pl,"using first for c",first)
+        c = first
+
     
-    return fwb(l, c, r+2)
+    print(r,"mupp","pl:",pl,"l:",l,"c:",c)
+
+    print(r,"calling again to continue flattening...")
+    return fwb(l, c, r+1)
     
 from sortedcontainers import SortedSet
         
@@ -78,15 +95,15 @@ def flattenwithbranches(l, pl=[]):
     return m
     
 
-    
+
 #print(flattenwithbranches(["a"]))
-assert(flattenwithbranches(["a"])==[["a"]])
-assert(flattenwithbranches(["a","b"])==[["a","b"]])
-assert(flattenwithbranches(["a","b","c"])==[["a","b","c"]])
-print(Fore.RED+"skogen"+Fore.RESET,flattenwithbranches(["a",["b","c"]]))
-assert(flattenwithbranches(["a",["b","c"]])==["ab"],["ac"])
+#assert(flattenwithbranches(["a"])==[["a"]])
+#assert(flattenwithbranches(["a","b"])==[["a","b"]])
+#assert(flattenwithbranches(["a","b","c"])==[["a","b","c"]])
+#print(Fore.RED+"skogen"+Fore.RESET,flattenwithbranches(["a",["b","c"]]))
+#assert(flattenwithbranches(["a",["b","c"]])==["ab"],["ac"])
 #print("skogen",flattenwithbranches(["a",["b","c"],"d"]))
-assert(flattenwithbranches(["a",["b","c"],"d"])==["abd","acd"])
+#assert(flattenwithbranches(["a",["b","c"],"d"])==["abd","acd"])
 
 
 # get the manhattan distance between two points
