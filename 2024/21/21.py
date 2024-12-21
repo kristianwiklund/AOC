@@ -139,7 +139,8 @@ def encode(s):
     n = dirpush(a,0)
     n = flattenwithbranches(n)
     print(n)
-    #    n = dirpush(a,1)
+    sys.exit()
+    n = dirpush(n,1)
     n = flattenwithbranches(n)
     
     return(a,n)
@@ -148,7 +149,7 @@ a,n=encode("029A")
 print("----->>>",a)
 print("-----<<<",n)
 #n=flattenwithbranches(n)
-pprint(n)
+pprint(min([len (i) for i in n]))
 sys.exit()
 
 sc=0
