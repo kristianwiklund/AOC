@@ -42,13 +42,32 @@ def push(ss,pad):
     return acc
 
 su=0
+lines=["029A"]
 for i in lines:
-    t=push(push(push([i],numpad),dirpad),dirpad)
+#    t=push(push(push([i],numpad),dirpad),dirpad)
+    t=push([i],numpad)
+    print(t)
     t=list(set(t))
+    print(t)
+
+    print([decodenum(x) for x in t])
+    
+    # numpad ok
+
+    t=push(t,dirpad)
+    print(t)
+    t=list(set(t))
+    print(t)
+    
+    
+    sys.exit()
+
     t = min([len(x) for x in t])
     print(t)
     su+=t*ints(i)[0]
     
 print(su)
+print("29*68=1972")
 assert(su<226342)
 assert(su>211720)
+assert(sc<224204)
