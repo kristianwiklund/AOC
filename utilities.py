@@ -99,6 +99,7 @@ assert(flattenwithbranches([1,2])==[[1,2]])
 assert(flattenwithbranches([1,2,3])==[[1,2,3]])
 print("-----------------")
 print(flattenwithbranches([1,[2,3]]))
+assert(flattenwithbranches([1,[2,3]])==[[1,2],[1,3]])
 sys.exit()
 
 # get the manhattan distance between two points
