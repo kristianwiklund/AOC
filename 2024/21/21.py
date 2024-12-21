@@ -41,10 +41,12 @@ for i in [str(x) for x in range(0,10)]+["A"]:
         else:
             sy=""
 
-        if y1!=7 and y2!=7:
-            s = sx+sy
-        else:
-            s = sy+sx
+        #        if i in ["7","4","1"] and j in ["0","A"]:
+        s = sx+sy
+        #        elif j in ["7","4","1"] and i in ["0","A"]:
+        #            s = sy+sx
+        #else:
+        #    s = sy+sx
             
         
         numpad[i,j] = s
@@ -62,15 +64,12 @@ def numpush(s):
         
     return m
 
-s=numpush("029A")
-assert(s=="<A^A^^>AvvvA")
+dirpad={}
 
-numpad={}
+arr = readarray("dirpad",split="",convert=lambda x:x)
 
-arr = readarray("numpad",split="",convert=lambda x:x)
-
-for i in [str(x) for x in range(0,10)]+["A"]:
-    for j in [str(x) for x in range(0,10)]+["A"]:
+for i in "<>^vA":
+    for j in "<>^vA":
         x1,y1 = findinarray(arr,i)
         x2,y2 = findinarray(arr,j)
         
@@ -91,26 +90,132 @@ for i in [str(x) for x in range(0,10)]+["A"]:
         else:
             sy=""
 
-        if y1!=7 and y2!=7:
-            s = sx+sy
-        else:
-            s = sy+sx
-            
-        
-        numpad[i,j] = s
+            #        if j=="<":
+            #            s=sy+sx
+            #        elif j=="<":
+        #            s=sy+sx
+        #        else:
+        s=sx+sy
 
-numprev = "A"
+        if i=="A" and j=="<":
+            print(sx,sy,(x1,y1),(x2,y2))
         
-def numpush(s):
-    global numpad
-    global numprev
+        dirpad[i,j] = s
+
+dirprev = ["A","A","A"]
+
+print("da",dirpad["A","<"])
+
+def dirpush(s,n):
+    global dirpad
+    global dirprev
     m=""
     
     for i in s:
-        m+=numpad[numprev,i]+"A"
-        numprev=i
+        m+=dirpad[dirprev[n],i]+"A"
+        dirprev[n]=i
         
     return m
+
+
+rnumpad={}
+for i in numpad:
+    rnumpad[i[0],"".join(sorted(numpad[i]))]=i[1]
+
+#print(rnumpad)
+
+rdirpad={}
+for i in dirpad:
+    rdirpad[i[0],"".join(sorted(dirpad[i]))]=i[1]
+    if dirpad[i]!="".join(sorted(dirpad[i])):
+        print ("boop", dirpad[i], "".join(sorted(dirpad[i])))
     
-            
-        
+    
+print("rdirpad",rdirpad)
+
+s=dirpush(dirpush(numpush("029A"),0),1)
+
+def decodedir(st):
+    
+    st = st.split("A")[:-1]
+    
+#    print("st",st)
+    pos="A"
+
+    n=""
+    for i in st:
+        i="".join(sorted(i))
+        x=rdirpad[pos,i]
+        pos=x
+        n+=x
+    return (n)
+
+def decodenum(st):
+    
+    st = st.split("A")[:-1]
+#    print("st",st)
+    pos="A"
+
+    n=""
+    for i in st:
+        i="".join(sorted(i))
+        x=rnumpad[pos,i]
+        pos=x
+        n+=x
+    return (n)
+
+s=dirpush(dirpush(numpush("029A"),0),1)
+print(len(s))
+print(s)
+print("s",s)
+a = decodedir(s)
+print("a",a)
+b = decodedir(a)
+print("b",b)
+c = decodenum(b)
+print("c",c)
+assert(c=="029A")
+
+
+
+sc=0
+for i in lines:
+    numprev="A"
+    posprev=["A","A","A"]
+    
+    s=dirpush(dirpush(numpush(i),0),1)
+    c=decodenum(decodedir(decodedir(s)))
+    assert(c==i)
+    
+    v=ints(i)[0]
+    print(len(s),"*",v)
+    sc+=len(s)*v
+
+print(sc)
+#assert(sc>211720)
+
+s = dirpush(dirpush(numpush("379A"),0),1)
+print(s,decodenum(decodedir(decodedir(s))))
+print("<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A",decodenum(decodedir(decodedir("<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A"))))
+
+s = dirpush(dirpush(numpush("179A"),0),1)
+t = "<v<A>>^A<vA<A>>^AAvAA<^A>A<v<A>>^AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A"
+print("--")
+s=decodedir(s)
+t=decodedir(t)
+print(s)
+print(t)
+print("...")
+s=decodedir(s)
+t=decodedir(t)
+print(s)
+print(t)
+print("...")
+s=decodenum(s)
+t=decodenum(t)
+print(s)
+print(t)
+
+print(len([i for i,v in enumerate(s) if v=="A"]))
+print(len([i for i,v in enumerate(t) if v=="A"]))
+
