@@ -54,6 +54,7 @@ def fwb(l,pl,r):
     # if not a list, simply slap them to the pl
     bula=[]
     if not isinstance(a,list):
+        print("nolist",a,pl)
         if len(pl):
             for i in pl:
                 if isinstance(i,list):
@@ -66,9 +67,12 @@ def fwb(l,pl,r):
             return fwb(l,[a],r+1)
     else:
         # a is a list, fix any branching in it
+        print("list",a)
         na = fwb(a,[],0)
         print("na",na,a,"pl",pl)
+        
         if len(pl):
+            print("len pl",len(pl))
             for i in pl:
                 for j in na[0]:
                     if isinstance(i,list):
@@ -86,6 +90,7 @@ def fwb(l,pl,r):
             print("fbz z",l,bula,z)
             return z
         else:
+            print("empty pl calling direct")
             return fwb(l,na,r+1)
         
 def flattenwithbranches(l, pl=[]):
@@ -97,9 +102,11 @@ def flattenwithbranches(l, pl=[]):
 assert(flattenwithbranches([1])==[[1]])
 assert(flattenwithbranches([1,2])==[[1,2]])
 assert(flattenwithbranches([1,2,3])==[[1,2,3]])
-print("-----------------")
-print(flattenwithbranches([1,[2,3]]))
 assert(flattenwithbranches([1,[2,3]])==[[1,2],[1,3]])
+print("-----------------")
+
+print(flattenwithbranches([1,[2,3],4]))
+
 sys.exit()
 
 # get the manhattan distance between two points
