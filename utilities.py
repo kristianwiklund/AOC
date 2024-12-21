@@ -34,6 +34,21 @@ def calltrace(function):
 
 from copy import deepcopy
 
+def flippeflopp(a,b):
+
+    if isinstance(a,list) and isinstance(b,list):
+        print(a,b)
+        c = [x+y for x in a for y in b]
+    else:
+        print(a,b)
+        if isinstance(b,list):
+            c = [x+y for x in [a] for y in b]
+        else:
+            c = [x+y for x in a for y in [b]]
+
+    return c
+    
+    
 # consume a list of lists and create a flat list that have all bifurcations flattened
 @calltrace
 def fwb(l,pl,r):
@@ -60,7 +75,7 @@ def fwb(l,pl,r):
     print("-------------", l)
     thirst = deepcopy(l.pop(0))
     print(r,"calling fwb with",thirst,"to flatten if needed")
-    first = fwb(thirst,[],r+1)
+    first = fwb(thirst,[],r+1)[0]
     print(r,"we have flattened",thirst,"to",first)
 #    first=first[0]
     
@@ -74,8 +89,9 @@ def fwb(l,pl,r):
         print(type(pl).__name__,type(first).__name__)
 
         print("----_---",pl,first)
-        
-        c = [x+y for x in pl for y in [first]]
+
+        c = flippeflopp(pl, first)
+
         print(r,"|||||||||||||||| c=",c)
  #       sys.exit()
     else:
@@ -97,13 +113,14 @@ def flattenwithbranches(l, pl=[]):
 
 
 #print(flattenwithbranches(["a"]))
-#assert(flattenwithbranches(["a"])==[["a"]])
-#assert(flattenwithbranches(["a","b"])==[["a","b"]])
-#assert(flattenwithbranches(["a","b","c"])==[["a","b","c"]])
+assert(flattenwithbranches(["a"])==[["a"]])
+assert(flattenwithbranches(["a","b"])==[["a","b"]])
+assert(flattenwithbranches(["a","b","c"])==[["a","b","c"]])
 #print(Fore.RED+"skogen"+Fore.RESET,flattenwithbranches(["a",["b","c"]]))
-#assert(flattenwithbranches(["a",["b","c"]])==["ab"],["ac"])
+print("----------------------------------------------------")
+assert(flattenwithbranches(["a",["b","c"]])==["ab"],["ac"])
 #print("skogen",flattenwithbranches(["a",["b","c"],"d"]))
-#assert(flattenwithbranches(["a",["b","c"],"d"])==["abd","acd"])
+assert(flattenwithbranches(["a",["b","c"],"d"])==["abd","acd"])
 
 
 # get the manhattan distance between two points
