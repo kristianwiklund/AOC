@@ -9,24 +9,89 @@ from functools import cache, wraps
 import regex as re
 import re
 import math
+import sys
+
+#https://stackoverflow.com/questions/308999/what-does-functools-wraps-do
+def logged(func):
+    @wraps(func)
+    def with_logging(*args, **kwargs):
+        print(func.__name__ + "("+str(args)+","+str(kwargs)+")")
+        return func(*args, **kwargs)
+    return with_logging
+
+
+# print call trace
+from colorama import Fore
+from inspect import signature
+
+def calltrace(function):
+    def wrapper(*args, **kwargs):
+        result = function(*args, **kwargs)
+        print(Fore.RED+function.__name__+"("+str(args)+") = "+str(result)+Fore.RESET)
+        print(Fore.GREEN+"--",signature(function).parameters,Fore.RESET)
+        return result
+    return wrapper
 
 # consume a list of lists and create a flat list that have all bifurcations flattened
-def flattenwithbranches(l,pl):
+@calltrace
+def fwb(l,pl,r):
+    if len(l)==1:
+        #        print("end of the list")
 
-    if len(l)==0:
-        return pl
-    
-    a = l[0]
-    ax = l[1:]
-
-    npl=[]
-    for i in a:
+        if not len(pl):
+            return [l]
+        
+        x=[]
         for t in pl:
-            v = t+i
-            npl.append(v)
-    return flattenwithbranches(ax,npl)
+            if isinstance(t,list):
+                if isinstance(l[0],list):
+                    xss = t+l[0]
+                else:
+                    xss = t+[l[0]]
+            else:
+                if isinstance(l[0],list):
+                    xss = [t]+l[0]
+                else:
+                    xss = [t,l[0]]
+                    
+            x.append(xss)
+            print("l=",l, "pl=", pl, "t=", t, "x=", x, "xss=",xss)
+        return (x)
 
-print(flattenwithbranches([1,[2,3],4]))
+    # take the first item from the list
+    a = l.pop(0)
+
+    if not isinstance(a,list):
+        # not a list, convert to a list
+        a = [a]
+
+    if len(pl)==0:
+        npl = a
+    else:
+        npl=[]
+        #print("a",a)
+        for i in a:
+            for p in pl:
+                b = [p]+a
+                print("<p>",p,"<a>",a, "b",b)                
+                npl.append(b)
+                
+    print(l, npl)
+    return fwb(l, npl, r+1)
+
+def flattenwithbranches(l, pl=[]):
+    return fwb(l,pl,0)
+    
+
+    
+#print(flattenwithbranches([1]))
+assert(flattenwithbranches([1])==[[1]])
+assert(flattenwithbranches([1,2])==[[1,2]])
+
+print(flattenwithbranches([1,2,3]))
+assert(flattenwithbranches([1,2,3])==[[1,2,3]])
+
+#print(flattenwithbranches([1,[2,3],4]))
 sys.exit()
 
 # get the manhattan distance between two points
@@ -170,14 +235,6 @@ def cross(a, b):
         raise ValueError("wrong dimension, need 3")
     
     return c
-
-#https://stackoverflow.com/questions/308999/what-does-functools-wraps-do
-def logged(func):
-    @wraps(func)
-    def with_logging(*args, **kwargs):
-        print(func.__name__ + "("+str(args)+","+str(kwargs)+")")
-        return func(*args, **kwargs)
-    return with_logging
 
 
 # get all integers from a string
