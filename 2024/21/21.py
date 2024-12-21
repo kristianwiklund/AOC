@@ -100,43 +100,57 @@ def numpush(s):
 print("NP",numpush("029A"))
 dirprev=["A","A"]
 
-def dirpush(s,n):
+def dph(s,n):
     global dirpad
     global dirprev
     m=[]
-    
+
     for i in s:
-        if dirprev[n]==i:
-            m.append("A")
+        if dirprev[n]==s:
+            m.append("[A]")
         else:
             m.append(dirpad[dirprev[n],i])
+            
+        dirprev[n]=i
 
     return m
 
+def dirpush(s,n):
+
+    m=[]
+    for i in s:
+        m.append(dph(i,n))
+
+    return m
+
+    
+    
+    
 def encode(s):
     numprev="A"
     posprev=["A","A"]
 
 #    print("NP  ----")
     a = numpush(s)
-    a = flattenwithbranches(a)
+    a = flattenwithbranches(a)[2]
+    print("a",a)
     n = dirpush(a,0)
-    n = flattenwithbranches(n)
+    
+#    n = flattenwithbranches(n)
 #    n = dirpush(a,1)
 #    n = flattenwithbranches(n)
     
     return(a,n)
 
 a,n=encode("029A")
-
-print(n)
-
+print("----->>>",a)
+print("-----<<<",n)
+n=flattenwithbranches(n)
+pprint(n)
 sys.exit()
 
 sc=0
-for i in lines:
-
-    
+for i in lines:    
     s=dirpush(dirpush(numpush(i),0),1)
     c=decodenum(decodedir(decodedir(s)))
     assert(c==i)

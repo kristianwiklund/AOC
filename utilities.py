@@ -70,19 +70,21 @@ def fwb(l,pl,r):
     
     return fwb(l, c, r+2)
     
-    
+from sortedcontainers import SortedSet
         
 def flattenwithbranches(l, pl=[]):
-    return fwb(l,pl,0)
+    m=fwb(l,pl,0)
+    return m
     
 
     
-#print(flattenwithbranches([1]))
+#print(flattenwithbranches(["a"]))
 assert(flattenwithbranches(["a"])==[["a"]])
 assert(flattenwithbranches(["a","b"])==[["a","b"]])
 assert(flattenwithbranches(["a","b","c"])==[["a","b","c"]])
-#print("skogen",flattenwithbranches(["a",["b","c"]]))
+print(Fore.RED+"skogen"+Fore.RESET,flattenwithbranches(["a",["b","c"]]))
 assert(flattenwithbranches(["a",["b","c"]])==["ab"],["ac"])
+#print("skogen",flattenwithbranches(["a",["b","c"],"d"]))
 assert(flattenwithbranches(["a",["b","c"],"d"])==["abd","acd"])
 
 
