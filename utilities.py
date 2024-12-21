@@ -35,63 +35,68 @@ def calltrace(function):
 # consume a list of lists and create a flat list that have all bifurcations flattened
 @calltrace
 def fwb(l,pl,r):
-    if len(l)==1 and len(l[0])==1:
-        print("end of the list",l,pl)
-        
-        if not len(pl):
-            return [l]
-        
-        x=[]
-        for t in pl:
-            if isinstance(t,list):
-                if isinstance(l[0],list):
-                    xss = t+l[0]
-                else:
-                    xss = t+[l[0]]
-            else:
-                if isinstance(l[0],list):
-                    xss = [t]+l[0]
-                else:
-                    xss = [t,l[0]]
-                    
-            x.append(xss)
-            print("l=",l, "pl=", pl, "t=", t, "x=", x, "xss=",xss)
-        return (x)
 
-    # take the first item from the list
+    # trivial case, we have run out of tokens
+    if l==[]:
+        return pl
+    
+    # trivial case, completely flat list
+    nested = any(isinstance(i, list) for i in l)
+    if not nested:
+        return [l]
+
+    # l is not flat, we need to do something
+    # pop off the fist element of the list
+    
     a = l.pop(0)
-    print("postpop",a)
+
+    # add the elements of a to the elements of pl
+    # if not a list, simply slap them to the pl
+    bula=[]
     if not isinstance(a,list):
-        # not a list, convert to a list
-        a = [a]
-
-    # append everything in the first instance of the list
-    # to whatever we have collected already
-
-    # if nothing is collected, our collection is what we popped from the front of the list
-    if len(pl)==0:
-        npl = a
+        if len(pl):
+            for i in pl:
+                if isinstance(i,list):
+                    bula.append(i+[a])
+                else:
+                    bula.append([i,a])
+                    
+                return fwb(l,bula,r+1)
+        else:
+            return fwb(l,[a],r+1)
     else:
-        npl=[]
-        print("--:a",a)
-        for p in pl:
-            for i in a:                
-                b = [p]+i
-                print("<p>",p,"<a>",a, "b",b)                
-                npl.append(b)
-                
-    print("npl",l, npl)
-    return fwb(l, npl, r+1)
-
+        # a is a list, fix any branching in it
+        na = fwb(a,[],0)
+        print("na",na,a,"pl",pl)
+        if len(pl):
+            for i in pl:
+                for j in na[0]:
+                    if isinstance(i,list):
+                        if isinstance(j,list):
+                            bula.append(i+j)
+                        else:
+                            bula.append(i+[j])
+                    else:
+                        if isinstance(j,list):
+                            bula.append([i]+j)
+                        else:
+                            bula.append([i]+[j])
+            print("fula",bula, "l=",l)
+            z = fwb(l,bula,r+1)
+            print("fbz z",l,bula,z)
+            return z
+        else:
+            return fwb(l,na,r+1)
+        
 def flattenwithbranches(l, pl=[]):
     return fwb(l,pl,0)
     
 
     
 #print(flattenwithbranches([1]))
-#assert(flattenwithbranches([1])==[[1]])
-#assert(flattenwithbranches([1,2])==[[1,2]])
-#assert(flattenwithbranches([1,2,3])==[[1,2,3]])
+assert(flattenwithbranches([1])==[[1]])
+assert(flattenwithbranches([1,2])==[[1,2]])
+assert(flattenwithbranches([1,2,3])==[[1,2,3]])
 print("-----------------")
 print(flattenwithbranches([1,[2,3]]))
 sys.exit()
