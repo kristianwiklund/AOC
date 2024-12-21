@@ -28,43 +28,48 @@ def push(ss,pad):
                 hopp=["A"]
             else:
                 hopp = pad[prev,i]
+            prev=i                
         
             mcc=[]
             #print(hopp,len(hopp))
             for v in acc:
                 for t in hopp:
-                   # print("vt",v,t)
                     mcc.append(v+t)
-                    prev=i
-                
             acc=mcc
         dacc+=acc
     return acc
 
 su=0
-lines=["029A"]
+#lines=["029A"]
 for i in lines:
+
 #    t=push(push(push([i],numpad),dirpad),dirpad)
     t=push([i],numpad)
-    print(t)
-    t=list(set(t))
-    print(t)
+    #print(t)
+    #t=list(set(t))
+    #print(t)
 
-    print([decodenum(x) for x in t])
+    #print([decodenum(x) for x in t])
     
     # numpad ok
 
     t=push(t,dirpad)
-    print(t)
-    t=list(set(t))
-    print(t)
-    
-    
-    sys.exit()
+    #print(t)
+    #t=list(set(t))
+    #print(t)
+    #print([decodenum(y) for y in[decodedir(x) for x in t]])
 
-    t = min([len(x) for x in t])
-    print(t)
-    su+=t*ints(i)[0]
+    t=push(t,dirpad)
+    #print(t)
+    #t=list(set(t))
+    #print(t)
+
+    #print([decodenum(z) for z in [decodedir(y) for y in[decodedir(x) for x in t]]])
+    #print([len(x) for x in t])
+
+    y = min([len(x) for x in t])
+    print(y)
+    su+=y*ints(i)[0]
     
 print(su)
 print("29*68=1972")
