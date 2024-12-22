@@ -717,7 +717,7 @@ def overlaps(a, b):
 
 # route through a cost matrix
 # used by dijkstra function below
-def droute(arr, barr, start, stop, f=lambda x:x=="."):
+def droute(arr, barr, start, stop, f=lambda x:x==".",all=False):
 
     r = [stop]
     (x,y) = stop
