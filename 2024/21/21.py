@@ -35,8 +35,13 @@ def push(ss,pad):
                 for t in hopp:
                    # print("vt",v,t)
                     mcc.append(v+t)
-                    prev=i
-                
+                    prev=i                
+
+            acc=mcc
+        dacc+=acc
+    return acc
+
+
 su=0
 for i in lines:
     t=push(push(push([i],numpad),dirpad),dirpad)
