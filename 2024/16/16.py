@@ -110,20 +110,33 @@ def bfs2(barr, B, E):
         i = sorted([i for i in range(4) if v[i]], key=lambda t:barr[y+dirs[t][1]][x+dirs[t][0]])
         i = [(x+dirs[t][0],y+dirs[t][1]) for t in i]
         i = [t for t in i if t not in r]
-        print("i",i)
+#        print("i",i)
         for j,val in enumerate(i):
             if val:
-                print("goff")
+ #               print("goff")
                 nx,ny=val
             #    cost = 1
                 if barr[ny][nx]<cost:
                     front.add((nx,ny))
                     r.append((x,y))
-                    print("front:",front)
+             #       print("front:",front)
     return barr
 
 barr=bfs2(barr,B,E)
 print(barr)
 v=(sum(sum(barr==-1))+1)
-assert(v>492)
+print("B:",v)
+print("p:",len(p))
+#assert(v>493)
 
+barr=barr.tolist()
+for y in range(len(barr)):
+    for x in range(len(barr[y])):
+        if barr[y][x]>2**32:
+            barr[y][x]="#"
+        elif barr[y][x]==-1:
+            barr[y][x]="O"
+        else:
+            barr[y][x]="."
+
+printpath([],background=barr)
