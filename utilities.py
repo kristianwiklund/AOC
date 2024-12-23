@@ -32,6 +32,9 @@ def calltrace(function):
         return result
     return wrapper
 
+def flatten(matrix):
+    return [item for row in matrix for item in row]
+
 # from copy import deepcopy
 
 # def flippeflopp(a,b):
