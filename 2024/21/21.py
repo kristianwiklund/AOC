@@ -15,6 +15,8 @@ from pprint import pprint
 from rules import *
 
 lines = readlines("input")
+#lines=["5"]
+
 
 def push(ss,pad):
     prev="A"
@@ -22,6 +24,7 @@ def push(ss,pad):
     dacc=[]
     
     for s in ss:
+        #print(s)
         acc=[""]
         for i in s:
             if prev==i:
@@ -35,19 +38,37 @@ def push(ss,pad):
                 for t in hopp:
                    # print("vt",v,t)
                     mcc.append(v+t)
-                    prev=i                
-
+            prev=i                
             acc=mcc
+            #print(acc)
         dacc+=acc
-    return acc
+    return sorted(dacc,key=kolf2)
 
 
 su=0
 for i in lines:
-    t=push(push(push([i],numpad),dirpad),dirpad)
-    t=list(set(t))
+    print(i)
+    n=push([i], numpad)
+    print("..")
+    o=push(n, dirpad)
+    print("--")
+    p=push(o, dirpad)
+    #print("n",n)
+    #print("o",o)
+    #print("p",p)
+    t=list(set(p))
+    #print(t)
+    #print([len(x) for x in t])
+    #print([kolf2(x) for x in t])
     t = min([len(x) for x in t])
-    print(t)
+    #print(t)
     su+=t*ints(i)[0]
 print(su)
+
+#print("x",push(["^^<A"],dirpad))
+#print("y",push(['<^^A'],dirpad))
+#print("z",push(['^<^A'],dirpad))
 assert(su<226342)
+assert(su!=27235)
+assert(su!=225748)
+assert(su!=218300)

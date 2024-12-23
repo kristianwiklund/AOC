@@ -18,7 +18,43 @@ G = nx.DiGraph()
 snumpad = ["789","456","123","X0A"]
 sdirpad = ["X^A","<v>"]
 
-bop="^>v<"
+bop="^>v<A"
+
+def kolf2(s):
+
+    costzor={("^",">"):2,
+             ("^","<"):2,
+             ("^","^"):0,
+             ("^","A"):1,
+             ("^","v"):1,
+             
+             ("A","^"):1,
+             ("A",">"):1,
+             ("A","<"):3,
+             ("A","v"):2,
+             ("A","A"):0,
+             
+             ("<","v"):1,
+             ("<",">"):2,
+             ("<","^"):2,
+             ("<","A"):3,
+             ("<","<"):0,
+
+             ("v","v"):0,
+             ("v",">"):1,
+             ("v","<"):1,
+             ("v","^"):1,             
+             ("v","A"):2,             
+
+             (">",">"):0,
+             (">","^"):2,             
+             (">","<"):2,             
+             (">","v"):1,
+             (">","A"):1}
+    s="A"+s
+    v = sum([costzor[(s[x-1],s[x])] for x in range(1,len(s))])
+
+    return v
 
 for y,l in enumerate(snumpad):
     for x,v in enumerate(l):
@@ -47,9 +83,11 @@ for i in "".join(snumpad):
         for pth in pths:                        
             eal = "".join([G[pth[i]][pth[i+1]]['d'] for i in range(len(pth[:-1]))])+"A"
             numpad[i,j].append(eal)
-        numpad[i,j]=sorted(numpad[i,j],key=len)
+            
+        numpad[i,j]=sorted(numpad[i,j],key=kolf2)
         
 #print(numpad)
+
 G = nx.DiGraph()
 
 for y,l in enumerate(sdirpad):
@@ -79,7 +117,7 @@ for i in "".join(sdirpad):
         for pth in pths:                        
             eal = "".join([G[pth[i]][pth[i+1]]['d'] for i in range(len(pth[:-1]))])+"A"
             dirpad[i,j].append(eal)
-        dirpad[i,j]=sorted(dirpad[i,j],key=len)
+        dirpad[i,j]=sorted(dirpad[i,j],key=kolf2)
 #------------------------------
 
 rnumpad={}
