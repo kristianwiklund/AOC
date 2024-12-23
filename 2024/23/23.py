@@ -62,15 +62,19 @@ c=len(bopp)
 #print(bopp)
 print("A:",c)
 
-# bopp is the starter set of nodes connected to each other
-# walk through the set, find more nodes, add nodes connected to all nodes
+# ----------------------------------------------------------------
+
 
 
 ts = [x for x in G.nodes()]
 gopp = {x:list(G[x])+[x] for x in ts}
 gopp={x:list(combinations(gopp[x],3))for x in gopp}
-hopp=flatten(gopp.values())
-print(hopp)
+gopp=flatten(gopp.values())
+
+hopp=set()
+for x,y,z in gopp:
+    if x in G[y] and x in G[z] and y in G[z]:
+        hopp.add((x,y,z))
 
 klopp=set()
 for x,y,z in hopp:
@@ -100,5 +104,6 @@ klack=max([len(x) for x in klopp])
 klopp=set([x for x in klopp if len(x)==klack])
 
 print(klopp)
+print(",".join(list(sorted(list(list(klopp)[0])))))
 print(klack)
     
