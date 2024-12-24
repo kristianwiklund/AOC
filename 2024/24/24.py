@@ -16,8 +16,9 @@ from pprint import pprint
 #lines = readlines("input.short")
 
 from pyeda.boolalg.expr import *
+from pyeda.inter import *
 
-with open("input","r") as fd:
+with open("input.short.3","r") as fd:
     input = readblock(fd,convert=lambda x:tuple(x.replace(" ","").split(":")))
     logic = readblock(fd,convert=lambda x:[y.strip() for y in x.split("->")])
 
@@ -29,6 +30,14 @@ import operator
 lolol={"XOR":Xor, "AND":And, "OR":Or}
 
 #print(input)
+
+xin = [t for t in input if t[0].startswith("x")]
+yin = [t for t in input if t[0].startswith("y")]
+
+thex = exprvars("x",len(xin))
+they = exprvars("y",len(yin))
+    
+
 for i,l in enumerate(input):
 #    print("i",i,l)
     a,v=l
@@ -88,8 +97,8 @@ for i in sorted(outs.keys(),key=lambda x:-ints(x)[0]):
     s+=str(outs[i])
 print("")
 
-
 print(s,"=",int(s,2))
 
-assert(int(s,2)>31688159490575)
+
+
 
