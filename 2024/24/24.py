@@ -33,6 +33,6 @@ for x in logic:
     G.add_edge(b,a+b+c)
     G.add_edge(a+b+c,c)
 
-nx.draw_network(G, with_labels=True)
+nx.draw(G, with_labels=True)
 plt.show()
 
