@@ -18,7 +18,7 @@ from pprint import pprint
 from pyeda.boolalg.expr import *
 from pyeda.inter import *
 
-with open("input.short.3","r") as fd:
+with open("input","r") as fd:
     input = readblock(fd,convert=lambda x:tuple(x.replace(" ","").split(":")))
     logic = readblock(fd,convert=lambda x:[y.strip() for y in x.split("->")])
 
@@ -82,13 +82,20 @@ def pappagrappa(n,s=False):
     ie = G.in_edges(n)
     
     if not ie:
-        return nx.get_node_attributes(G,"inp")[n]
-
+        if s:
+            return nx.get_node_attributes(G,"inp")[n]
+        else:
+            if n.startswith("x"):
+                return thex[ints(n)[0]]
+            else:
+                return they[ints(n)[0]]
+            
+    
     ie = list(ie)
   #  print("ie",ie)
     op = nx.get_node_attributes(G,"op")[n]
     
-    return op(pappagrappa(ie[0][0]),pappagrappa(ie[1][0]), simplify=s)
+    return op(pappagrappa(ie[0][0], s=s),pappagrappa(ie[1][0], s=s), simplify=s)
 
 def calculon(G,minimize=True):
     
@@ -97,6 +104,9 @@ def calculon(G,minimize=True):
         # print("o",o)
         outs[o] = pappagrappa(o,s=minimize)
 
+    if not minimize:
+        return (None, None, outs)
+    
     s=""
     for i in sorted(outs.keys(),key=lambda x:-ints(x)[0]):
         print(i,outs[i])
@@ -105,10 +115,10 @@ def calculon(G,minimize=True):
 
     ans=int(s,2)
 
-    return(s,ans)
+    return(s,ans, outs)
 
 # ---------------
-s,ans=calculon(G)
+s,ans,_=calculon(G)
 
 print("A:",ans)
 # ---------------
@@ -136,5 +146,20 @@ print("{:>40}".format(s))
 
 print(thex,they)
 
+_,_,outs = calculon(G,minimize=False)
+print(outs)
+import graphviz
+import pathlib
 
+gvsrc=expr2bdd(outs["z00"]).to_dot()
+fp=pathlib.Path("ap.gv")
+fp.write_text(gvsrc,encoding="ascii")
+
+# ---------------------------
+
+print("-----")
+
+H = G.reverse()
+for z in zout:
+    print(z,list(nx.ancestors(G,z)))
 
