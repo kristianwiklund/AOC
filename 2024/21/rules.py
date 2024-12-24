@@ -84,7 +84,7 @@ for i in "".join(snumpad):
             eal = "".join([G[pth[i]][pth[i+1]]['d'] for i in range(len(pth[:-1]))])+"A"
             numpad[i,j].append(eal)
             
-        numpad[i,j]=sorted(numpad[i,j],key=kolf2)
+        numpad[i,j]=[sorted(numpad[i,j],key=kolf2)[0]]
         
 #print(numpad)
 
@@ -117,7 +117,7 @@ for i in "".join(sdirpad):
         for pth in pths:                        
             eal = "".join([G[pth[i]][pth[i+1]]['d'] for i in range(len(pth[:-1]))])+"A"
             dirpad[i,j].append(eal)
-        dirpad[i,j]=sorted(dirpad[i,j],key=kolf2)
+        dirpad[i,j]=[sorted(dirpad[i,j],key=kolf2)[0]]
 #------------------------------
 
 rnumpad={}
