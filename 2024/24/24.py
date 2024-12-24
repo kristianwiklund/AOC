@@ -33,15 +33,21 @@ lolol={"XOR":Xor, "AND":And, "OR":Or}
 
 xin = [t for t in input if t[0].startswith("x")]
 yin = [t for t in input if t[0].startswith("y")]
+#print(logic)
+zout = [t[1] for t in logic if t[1].startswith("z")]
+#print("z",zout)
 
 thex = exprvars("x",len(xin))
 they = exprvars("y",len(yin))
-    
+thez = exprvars("y",len(zout))
 
 for i,l in enumerate(input):
 #    print("i",i,l)
     a,v=l
-    nl = [a,v,exprvar(a)]
+    if a.startswith("x"):
+        nl = (a,v,thex[ints(a)[0]])
+    else:
+        nl = (a,v,they[ints(a)[0]])
 #    input[i] = nl
     G.add_node(a,inp=int(v))#nl[2])
 
@@ -84,21 +90,51 @@ def pappagrappa(n,s=False):
     
     return op(pappagrappa(ie[0][0]),pappagrappa(ie[1][0]), simplify=s)
 
+def calculon(G,minimize=True):
     
+    outs={}
+    for o in (node for node, out_degree in G.out_degree() if out_degree == 0):
+        # print("o",o)
+        outs[o] = pappagrappa(o,s=minimize)
 
-outs={}
-for o in (node for node, out_degree in G.out_degree() if out_degree == 0):
-   # print("o",o)
-    outs[o] = pappagrappa(o,s=True)
+    s=""
+    for i in sorted(outs.keys(),key=lambda x:-ints(x)[0]):
+        print(i,outs[i])
+        s+=str(outs[i])
+    print("")
 
-s=""
-for i in sorted(outs.keys(),key=lambda x:-ints(x)[0]):
-    print(i,outs[i])
-    s+=str(outs[i])
-print("")
+    ans=int(s,2)
 
-print(s,"=",int(s,2))
+    return(s,ans)
 
+# ---------------
+s,ans=calculon(G)
+
+print("A:",ans)
+# ---------------
+
+sx=""
+for x in sorted(xin,key=lambda v:-ints(v[0])[0]):
+    sx+=x[1]
+
+xval = int(sx,2)
+print("x=",xval)
+
+sy=""
+for y in sorted(yin,key=lambda v:-ints(v[0])[0]):
+    sy+=y[1]
+
+yval = int(sy,2)
+print("y=",yval)
+
+print("x+y=",xval+yval)
+
+sval = "{0:b}".format(xval+yval)
+
+print("{:>40}".format(sval))
+print("{:>40}".format(s))
+
+print(thex,they)
 
 
 
