@@ -11,6 +11,10 @@ import re
 import math
 import sys
 
+# transpose matrix. from python docs
+def transpose (matrix):
+    return [[row[i] for row in matrix] for i in range(len(matrix[0]))]
+    
 #https://stackoverflow.com/questions/308999/what-does-functools-wraps-do
 def logged(func):
     @wraps(func)
@@ -711,6 +715,7 @@ def checkanyaround(arr, x, y, fun, outofbounds=False):
 ___arr=[['4', '6', '7', '', '', '1', '1', '4', '', ''], ['', '', '', '*', '', '', '', '', '', ''], ['', '', '3', '5', '', '', '6', '3', '3', ''], ['', '', '', '', '', '', '#', '', '', ''], ['6', '1', '7', '*', '', '', '', '', '', ''], ['', '', '', '', '', '+', '', '5', '8', ''], ['', '', '5', '9', '2', '', '', '', '', ''], ['', '', '', '', '', '', '7', '5', '5', ''], ['', '', '', '$', '', '*', '', '', '', ''], ['', '6', '6', '4', '', '5', '9', '8', '', '']]
 
 assert(checkanyaround(___arr, 0, 0, lambda x:x!=''))
+
 
 # true if a overlaps b
 # a and b are ranges
