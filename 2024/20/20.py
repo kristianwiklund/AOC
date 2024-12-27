@@ -12,9 +12,16 @@ import numpy as np
 #import scipy
 #from functools import cache
 
-arr = readarray("input.short",split="",convert=lambda x:x)
+arr = readarray("input",split="",convert=lambda x:x)
 #lines = readlines("inputshort")
 
+if len(arr)<50:
+    tosave=20
+    tosave2=50
+else:
+    tosave=100
+    tosave2=100
+    
 hc={}
 vc={}
 start=findinarray(arr,"S")
@@ -67,7 +74,7 @@ for x,y in vc:
     if (x,y-1) in tp and (x,y+1) in tp:
         sa = abs(tp[(x,y-1)]-tp[(x,y+1)])
 #        print("cheat",(x,y),"win",abs(tp[(x,y-1)]-tp[(x,y+1)]),"a",(x,y-1),tp[(x,y-1)],"b",(x,y+1),tp[(x,y+1)])
-        if sa-2 >=100:
+        if sa-2 >= tosave:
             ck+=1
             if sa-2 in c:
                 c[sa-2].append((x,y))
@@ -86,27 +93,45 @@ print(sum(cn.values()))
 assert(ck!=5653)
 
 # to find all potential shortcuts we need to follow the path and find
-# locations to end which are within 20 manhattan distance from the normal
-# path
+# locations to end which are within 20 steps from the normal path
+# the furthest this can be is 20 manhattan distances away
+
+# "Cheats don't need to use all 20 picoseconds; cheats can last any amount of time up to and including 20 picoseconds (but can still only end when the program is on normal track)"
+
 sneak={}
 op = set()
 xox=0
 pox=0
 
+#arr[0]="-"*len(arr[0])
+#arr[len(arr)-1]="-"*len(arr[0])
+#for i in range(1,len(arr)-1):
+#    l=arr[i]
+#    l[0]="-"
+#    l[-1]="-"
+#    arr[i]=l
+    
 for i,a in enumerate(p):
-    for j,b in enumerate(p):
+    for j,b in enumerate(p[i:]):
+
+        if a==b:
+            continue
         
-        if distance(a,b)<=2:
+        if distance(a,b)>21: 
             continue
-
-        if distance(a,b)>30:
-            continue
-
+        
         pox+=1
         
         #        print(i,j)
+     
         
-        if True:
+        if False:
+            #if (a==(11,7) and b==(9,7)) or (b==(11,7) and a==(9,7)) :
+            #    print("dabot")
+            #    print ((b,a) in op )
+            #    print ((a,b) in op)
+            #    sys.exit()
+                
             if not (b,a) in op and not (a,b) in op:
                 arr[b[1]][b[0]]="#"
                 arr[a[1]][a[0]]="#"
@@ -116,25 +141,48 @@ for i,a in enumerate(p):
                 r = dijkstra(arr,a,stop=b,f=lambda x:x=="#")
                 if r:
                     (x,pp) = r
-                    if len(pp)<=22:
+
+                    if pp and len(pp)<=21: 
                         printpath(pp,background=arr)
-#                        kossan=max(tp[a],tp[b])-min(tp[a],tp[b])-len(pp)+1
-                        kossan=abs(tp[a]-tp[b])-len(pp)+1
-                        if kossan>=50: # and kossan<=len(p):
+                        #                        kossan=max(tp[a],tp[b])-min(tp[a],tp[b])-len(pp)+1
+                        # the cost to go to a is tp[a]
+                        # the cost to go from b to the end is
+                        # tp[stop]-tp[b]
+                        # the cost of the shortcut is len(pp)
+                        # old cost - new cost is savings 
+                        kossan=tp[stop]-(-1+len(pp)+tp[stop]-tp[b]+tp[a])
+                        if kossan>=tosave2: # and kossan<=len(p):
                             xox+=1
                             print(len(pp))
                             print(kossan,tp[a],tp[b],p.index(a),p.index(b))
-                            sys.exit()
                             if kossan in sneak:
                                 sneak[kossan]+=1
                             else:
                                 sneak[kossan]=1
+                    
+#                        if (a==start and b==(5,7)) or (b==start and a==(5,7)) :
+#                            print("bop",kossan)
+#                            print(pp)
+#                            sys.exit()
                         
                 arr[b[1]][b[0]]="."
                 arr[a[1]][a[0]]="."
+        else:
+            kossan=tp[stop]-(-1+distance(a,b)+tp[stop]-tp[b]+tp[a])
+            
+            if kossan>=tosave2 and kossan<=len(p):
+                xox+=1
+
+                if kossan in sneak:
+                    sneak[kossan]+=1
+                else:
+                    sneak[kossan]=1
+            
+print(".......")
 
 c=sum(sneak.values())
-print(c,xox)
-assert(c<1250947)
-print(len(p))
+pprint(sneak)
+print("B",c,xox)
+assert(c<1112786)
+#"print(len(p))
 pprint(sneak)
