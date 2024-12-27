@@ -34,7 +34,7 @@ lolol={"XOR":Xor, "AND":And, "OR":Or}
 xin = [t for t in input if t[0].startswith("x")]
 yin = [t for t in input if t[0].startswith("y")]
 #print(logic)
-zout = [t[1] for t in logic if t[1].startswith("z")]
+zout = list(sorted([t[1] for t in logic if t[1].startswith("z")],key=lambda x:ints(x)[0]))
 #print("z",zout)
 
 thex = exprvars("x",len(xin))
@@ -109,7 +109,7 @@ def calculon(G,minimize=True):
     
     s=""
     for i in sorted(outs.keys(),key=lambda x:-ints(x)[0]):
-        print(i,outs[i])
+#        print(i,outs[i])
         s+=str(outs[i])
     print("")
 
@@ -141,25 +141,50 @@ print("x+y=",xval+yval)
 
 sval = "{0:b}".format(xval+yval)
 
-print("{:>40}".format(sval))
-print("{:>40}".format(s))
-
-print(thex,they)
+print("Win : {:>50}".format(sval))
+print("Fail: {:>50}".format(s))
+print("      98765432109876543210987654321098765432109876543210")
+#print(thex,they)
 
 _,_,outs = calculon(G,minimize=False)
-print(outs)
-import graphviz
-import pathlib
+#print(outs)
+#import graphviz
+#import pathlib
 
-gvsrc=expr2bdd(outs["z00"]).to_dot()
-fp=pathlib.Path("ap.gv")
-fp.write_text(gvsrc,encoding="ascii")
+#gvsrc=expr2bdd(outs["z00"]).to_dot()
+#fp=pathlib.Path("ap.gv")
+#fp.write_text(gvsrc,encoding="ascii")
 
 # ---------------------------
 
 print("-----")
 
 H = G.reverse()
-for z in zout:
-    print(z,list(nx.ancestors(G,z)))
+vx={}
 
+for i,z in enumerate(zout):
+
+    i = len(zout)-i-1
+    
+    if sval[i]==s[i]:
+        continue
+    
+#    print("diff: ",i)
+    # find connected nodes
+    l=list(nx.ancestors(G,z))
+    # find connected inputs
+    c=[p for p in l if p.startswith("x") or p.startswith("y")]
+    # find out of order inputs
+    # does not work for the real data
+    #    c=[p for p in c if ints(p)[0]>ints(z)[0]]
+    #if len(c):
+    #    print(z,c)
+    
+    vx[z] = G.subgraph(l)
+#    print(z,l,sval[i],s[i])
+
+print(vx.keys())
+pprint(list(vx["z17"]))
+nx.draw(vx["z17"])
+plt.show()
+    
