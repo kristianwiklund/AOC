@@ -590,13 +590,13 @@ def printpath(p,nonum=True, background=None,bgin=None,end="",thex=None,highlight
                             if highlight!=background[y][x]:
                                 print(background[y][x],end="")
                             else:
-                                print(Fore.YELLOW+background[y][x]+Fore.RESET,end="")
+                                print(Fore.BLUE+background[y][x]+Fore.RESET,end="")
                         else:
                             try:
                                 if highlight!=background[y][x]:
                                     print(background[y][x],end="")
                                 else:
-                                    print(Fore.YELLOW+background[y][x]+Fore.RESET,end="")
+                                    print(Fore.BLUE+background[y][x]+Fore.RESET,end="")
                             except:
                                 pass
                             #                            print(".",end="")
@@ -803,3 +803,4 @@ __arr=["@@@@@@@@@",
 assert(__p==[(7, 6), (7, 5), (6, 5), (5, 5), (5, 4), (5, 3), (4, 3), (3, 3), (2, 3), (1, 3), (1, 2), (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (7, 2)])
 #print(__p)
 #printpath(__p,background=__arr)
+

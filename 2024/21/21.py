@@ -45,38 +45,31 @@ def push(ss,pad):
     return sorted(dacc,key=kolf2)
 
 
-#su=0
-#for i in lines:
-#    print(i)
-#    n=push([i], numpad)
-#    print("..")
-#    o=push(n, dirpad)
-#    print("--")
-#    p=push(o, dirpad)
-    #print("n",n)
-    #print("o",o)
-    #print("p",p)
-#    t=list(set(p))
-    #print(t)
-    #print([len(x) for x in t])
-    #print([kolf2(x) for x in t])
-#    t = min([len(x) for x in t])
-    #print(t)
-#    su+=t*ints(i)[0]
-#print(su)
+n=push(["<"],dirpad)
 
-#print("x",push(["^^<A"],dirpad))
-#print("y",push(['<^^A'],dirpad))
-#print("z",push(['^<^A'],dirpad))
-#assert(su<226342)
-#assert(su!=27235)
-#assert(su!=225748)
-#assert(su!=218300)
+@cache
+def ndpush(s,l):
+    global dirpad
+    
+    if l==25:
+        return l
 
-n=push(["0"],numpad)
+    l+=1
+    print(l)
+    c=0
+    s="A"+s
+    
+    for i in range(1,len(s)):
+#        print(dirpad[(s[i-1],s[i])])
+        if s[i-1]==s[i]:
+            c+=costzor[s[i-1],s[i]]
+        else:
+            c+=ndpush(dirpad[(s[i-1],s[i])][0],l)+costzor[s[i-1],s[i]]
 
-for i in range(25):
-    n=push(n,dirpad)
-    print(i,min(len(x) for x in n))
-    n=[sorted(n,key=kolf2)[0]]
-    print(i,len(n[0]))
+    return c
+
+for u in lines:
+    b = push(u,numpad)[0]
+    print("b=",b)
+    n=ndpush(b,0)
+    print(b,n)

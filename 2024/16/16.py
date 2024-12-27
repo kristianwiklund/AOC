@@ -106,7 +106,7 @@ def bfs2(barr, B, E):
 
         r = [B]
         
-        v = checkallpos(barr,x,y,lambda x:x<cost and x!=-1 and x<2**32,outofbounds=False)
+        v = checkallpos(barr,x,y,lambda x:x<=cost and x!=-1 and x<2**32,outofbounds=False)
         i = sorted([i for i in range(4) if v[i]], key=lambda t:barr[y+dirs[t][1]][x+dirs[t][0]])
         i = [(x+dirs[t][0],y+dirs[t][1]) for t in i]
         i = [t for t in i if t not in r]
@@ -123,20 +123,9 @@ def bfs2(barr, B, E):
     return barr
 
 barr=bfs2(barr,B,E)
-print(barr)
+#print(barr)
 v=(sum(sum(barr==-1))+1)
 print("B:",v)
 print("p:",len(p))
-#assert(v>493)
-
-barr=barr.tolist()
-for y in range(len(barr)):
-    for x in range(len(barr[y])):
-        if barr[y][x]>2**32:
-            barr[y][x]="#"
-        elif barr[y][x]==-1:
-            barr[y][x]="O"
-        else:
-            barr[y][x]="."
-
-printpath([],background=barr)
+assert(v>493)
+assert(v>512)
