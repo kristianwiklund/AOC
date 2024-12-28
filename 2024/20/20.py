@@ -12,17 +12,18 @@ import numpy as np
 #import scipy
 #from functools import cache
 
-fn="input.short"
+fn="input"
 
 arr = readarray(fn,split="",convert=lambda x:x)
 #lines = readlines("inputshort")
 
 if len(arr)<50:
-    tosave=20
+    tosave=0
     tosave2=50
+    print(arr)
 else:
     tosave=100
-    tosave2=100
+    tosave2=10
     
 hc={}
 vc={}
@@ -49,18 +50,17 @@ try:
     import pickle
     with open(fn+".pickle","rb") as fd:
         p=pickle.load(fd)
-
 except:
     import pickle
     r = dijkstra(arr,start,stop=stop)
     if r:
         (barr,p)=r
-        printpath(p,background=arr)
 
     with open(fn+".pickle","wb") as fd:
         pickle.dump(p,fd)
     
 
+printpath(p,background=arr)
         
 print("full time",len(p))
 
@@ -73,7 +73,7 @@ for x,y in hc:
     if (x-1,y) in tp and (x+1,y) in tp:
         sa = abs(tp[(x-1,y)]-tp[(x+1,y)])
  #       print("cheat",(x,y),"win",abs(tp[(x-1,y)]-tp[(x+1,y)]),"a",(x-1,y),tp[(x-1,y)],"b",(x+1,y),tp[(x+1,y)])
-        if sa-2 >=100:
+        if sa-2 >=tosave:
             ck+=1
             if sa-2 in c:
                 c[sa-2].append((x,y))
@@ -102,7 +102,7 @@ cn={x:len(c[x]) for x in c}
 #print(hc)
 #print(vc)
 #print(checkallpos(arr,2,2,lambda x:x==".",outofbounds=False))
-print("PArt 1:", ck)
+print("Part 1:", ck)
 #print(sum(cn.values()))
 assert(ck!=5653)
 
@@ -124,49 +124,50 @@ pox=0
 #    l[0]="-"
 #    l[-1]="-"
 #    arr[i]=l
-    
+bop=set()
+
 for i,a in enumerate(p):
-    for j,b in enumerate(p[i:]):
+    for j,b in enumerate(p[i+1:]):
 
         if a==b:
             continue
+
+        # don't check if already checked
+        if (a,b) in op:
+            continue
+
+        op.add((a,b))
         
+        # don't check if too far away
         if distance(a,b)>21: 
             continue
 
-        # find start points. check if they are in the done set
-
-        v = checkallpos(arr,a[0],a[1],lambda x:x=="#",outofbounds=False)
-        for i,v in enumerate(v):
-            
-            if not v:
-                continue
-            na = (a[0]+dirs[i][0],a[1]+dirs[i][1])
-            if (na,b) in op:
-                continue
-            
-            if distance(na,b)>21:
-                continue
-
-            op.add((na,b))
-            
-            pox+=1
-            
-            kossan=tp[stop]-(tp[a]+(tp[stop]-tp[b])+distance(a,b)-1)
+        # potential shortcut
         
-            if kossan>=tosave2 and kossan<=ck:
-                xox+=1
-            
-                if kossan in sneak:
-                    sneak[kossan]+=1
-                else:
-                    sneak[kossan]=1
+        kossan=tp[stop]-(tp[a]+(tp[stop]-tp[b])+distance(a,b)-1)
+
+        if kossan>=tosave2 and kossan<=tp[stop]:
+            xox+=1
+            bop.add((a,b))
+            if kossan in sneak:
+                sneak[kossan]+=1
+            else:
+                sneak[kossan]=1
             
 print(".......")
 
 c=sum(sneak.values())
 #pprint(sneak)
-print("B",c,xox)
+
+for (a,b) in bop:
+    arr[a[1]][a[0]]="O"
+    arr[b[1]][b[0]]="O"
+
+printpath(p,background=arr,highlight="O")
+
+print("B",c,pox,"saves longer than",tosave2)
+print("short input has 285 saves")
+
 assert(c<1112786)
 assert(c<998210)
 #"print(len(p))
