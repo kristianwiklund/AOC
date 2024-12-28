@@ -129,7 +129,7 @@ with open("shop.txt","r") as fd:
     
 
     minsta = 239889238924
-    
+    mesta= 0 
     for i,ww in enumerate(w):
         for j,aa in enumerate(a):
             for k,rr in enumerate(r):
@@ -150,14 +150,21 @@ with open("shop.txt","r") as fd:
                     player["damage"]=damage
                     player["armor"]=armor
 
-                    if deathmatch(player,boss)==1:
+                    ap = deathmatch(player,boss)
+
+                    if ap==-1:
+                        if cost>mesta:
+                            print("FAIL:", ww,"-",aa,"-",rr,"-",rl, "dam:", damage, "ac:", armor, "cost:",cost)                        
+                            mesta=cost
+                            
+                    if ap==1:
                         if cost<minsta:
-                            print(ww,"-",aa,"-",rr,"-",rl, "dam:", damage, "ac:", armor, "cost:",cost)                        
+                            print("WIN:", ww,"-",aa,"-",rr,"-",rl, "dam:", damage, "ac:", armor, "cost:",cost)                        
                             minsta=cost
 
 
 
     print("cheapest win is",minsta)
-    
+    print("expensivest fail is",mesta)
 
     
