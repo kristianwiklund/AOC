@@ -14,7 +14,7 @@ from functools import cache
 from cachetools import cached,LRUCache
 from cachetools.keys import hashkey
 
-arr = readarray("input.txt",split=".",convert=lambda x:x)
+arr = readarray("input.short",split=".",convert=lambda x:x)
 
 bp={}
 
@@ -39,10 +39,12 @@ def mkstr(t,inv,bots,buy):
     
 
 prune=0
+gobbabobb={}
 
-#@cached(cache=LRUCache(maxsize=10000000),key=lambda bp,bots,inv,t,tl:hashkey(bp,bots,inv,t))
-@cached(cache={},key=lambda bp,bots,inv,t,tl:hashkey(bp,bots,inv,t))
-def diggy(bp, bots, inv, t, tl):
+
+@cached(cache=LRUCache(maxsize=20000000),key=lambda bp,bots,inv,t,tl,**kwargs:hashkey(bp,bots,inv,t))
+#@cached(cache={},key=lambda bp,bots,inv,t,tl:hashkey(bp,bots,inv,t))
+def diggy(bp, bots, inv, t, tl,limit=24,bobarob=None):
     global best
     global firstgeode
     global prune
@@ -59,15 +61,20 @@ def diggy(bp, bots, inv, t, tl):
 #        inv[i]+=bots[i]
 
     # check if we are done
-    if t>=24:
+    if t>=limit:
         if inv[geode]+bots[geode]>best:
-            print("NB:",inv[geode]+bots[geode],"\ntl:",tl)
+            print("NB:",inv[geode]+bots[geode],"limit:",limit,"\ntl:",tl)
             print("------------------------")
             best=inv[geode]+bots[geode]
             return best
         else:
             return 0
 
+#    if limit==32:
+#        if bots[geode]==0 and t>bobarob:
+#            prune+=1
+#            return 0
+        
     if bots[geode]==0 and firstgeode<t:
         prune+=1
         return 0
@@ -81,19 +88,19 @@ def diggy(bp, bots, inv, t, tl):
             print("first geode at",t+1,"old=",firstgeode)
             firstgeode=t+1
             
-        nm=diggy(bp, ap, (inv[ore]-bp[geode][0]+bots[ore], inv[clay]+bots[clay], inv[obsidian]-bp[geode][1]+bots[obsidian], inv[geode]+bots[geode]), t+1,tl+mkstr(t,inv,bots,"geode"))
+        nm=diggy(bp, ap, (inv[ore]-bp[geode][0]+bots[ore], inv[clay]+bots[clay], inv[obsidian]-bp[geode][1]+bots[obsidian], inv[geode]+bots[geode]), t+1,tl+mkstr(t,inv,bots,"geode"),limit=limit)
         #        print("bpt")
         om = max(nm,om)
         
     if inv[ore]>=bp[obsidian][0] and inv[clay]>=bp[obsidian][1]:
         ap = (bots[0],bots[1],bots[2]+1,bots[3])
-        nm=diggy(bp, ap, (inv[ore]+bots[ore]-bp[obsidian][0],inv[clay]+bots[clay]-bp[obsidian][1],inv[obsidian]+bots[obsidian],inv[geode]+bots[geode]),t+1,tl+mkstr(t,inv,bots,"obs"))
+        nm=diggy(bp, ap, (inv[ore]+bots[ore]-bp[obsidian][0],inv[clay]+bots[clay]-bp[obsidian][1],inv[obsidian]+bots[obsidian],inv[geode]+bots[geode]),t+1,tl+mkstr(t,inv,bots,"obs"),limit=limit)
         #        print("bpt2")
         om = max(nm,om)
         
     if inv[ore]>=bp[clay]:
         ap = (bots[0],bots[1]+1,bots[2],bots[3])
-        nm=diggy(bp, ap, (inv[ore]+bots[ore]-bp[clay],inv[clay]+bots[clay],inv[obsidian]+bots[obsidian],inv[geode]+bots[geode]),t+1,tl+mkstr(t,inv,bots,"clay"))
+        nm=diggy(bp, ap, (inv[ore]+bots[ore]-bp[clay],inv[clay]+bots[clay],inv[obsidian]+bots[obsidian],inv[geode]+bots[geode]),t+1,tl+mkstr(t,inv,bots,"clay"),limit=limit)
         #       print("bpt3")
         om = max(nm,om)
                 
@@ -102,17 +109,34 @@ def diggy(bp, bots, inv, t, tl):
 #            print(inv[ore],bp[ore])
 #            sys.exit()
         ap = (bots[0]+1,bots[1],bots[2],bots[3])
-        nm=diggy(bp, ap, (inv[ore]+bots[ore]-bp[ore],inv[clay]+bots[clay],inv[obsidian]+bots[obsidian],inv[geode]+bots[geode]),t+1,tl+mkstr(t,inv,bots,"ore"))
+        nm=diggy(bp, ap, (inv[ore]+bots[ore]-bp[ore],inv[clay]+bots[clay],inv[obsidian]+bots[obsidian],inv[geode]+bots[geode]),t+1,tl+mkstr(t,inv,bots,"ore"),limit=limit)
         #        print("bpt4")
         om = max(nm,om)
         
-    nm=diggy(bp, tuple(bots), (inv[ore]+bots[ore],inv[clay]+bots[clay],inv[obsidian]+bots[obsidian],inv[geode]+bots[geode]),t+1,tl+mkstr(t,inv,bots,""))
+    nm=diggy(bp, tuple(bots), (inv[ore]+bots[ore],inv[clay]+bots[clay],inv[obsidian]+bots[obsidian],inv[geode]+bots[geode]),t+1,tl+mkstr(t,inv,bots,""),limit=limit)
     #    print("bpt5")
     om = max(nm,om)
 
     return om
     
 #front.add((bp[1],(1,0,0,0),(0,0,0,0),1,""))
+
+#ql=0
+#for x in bp.keys():
+#    print("Running",x)
+#    best=0
+#    prune=0
+#    firstgeode=23298039823
+#    diggy.cache.clear()
+#    
+#    a=diggy(bp[x],(1,0,0,0),(0,0,0,0),1,"")
+#    ql+=(1+x)*a
+#    print(x,"got",a,"pruned",prune)
+#    gobbabobb[x]=firstgeode
+    
+#print("A:",ql)
+#if len(bp)>10:
+#    assert(ql==1092)
 
 ql=0
 for x in bp.keys():
@@ -122,9 +146,9 @@ for x in bp.keys():
     firstgeode=23298039823
     diggy.cache.clear()
     
-    a=diggy(bp[x],(1,0,0,0),(0,0,0,0),1,"")
+    a=diggy(bp[x],(1,0,0,0),(0,0,0,0),1,"",limit=32)
     ql+=(1+x)*a
     print(x,"got",a,"pruned",prune)
-
-print(ql)
-assert(ql>969)
+    gobbabobb[x]=firstgeode
+    
+print("B:",ql)
