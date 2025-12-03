@@ -20,8 +20,12 @@ def bop(vv, a,o,m):
 
     for t in vv:
         try:
-            p = a[o+1:-m].index(t)
-            return p
+            if m:
+                p = a[o+1:-m].index(t)
+            else:
+                p = a[o+1:].index(t)
+                
+            return p+o+1
         except:
             continue
 
@@ -51,8 +55,48 @@ for i,v in enumerate(arr):
         except:
             continue
 
-    print(i, arr[i][p], arr[i][pp],p,pp)
+#    print(i, arr[i][p], arr[i][pp],p,pp)
     s+=arr[i][p]*10+arr[i][pp]
-
-print("part 1:",s)
     
+    q = bop(vv,arr[i],p,0)
+#    print (pp,q)
+    assert(pp==q)
+    
+print("part 1:",s)
+os=s
+
+s=0
+for i,v in enumerate(arr):
+    vv = sorted(v, reverse=True)
+
+    ss=0
+    pp=-1
+    for g in range(2):
+        ss*=10
+        p = bop(vv,arr[i],pp,1-g)
+#        print(i,arr[i][p])
+        ss+=arr[i][p]
+        pp=p
+
+    s+=ss
+    
+print("Alternate 1:",s)
+
+assert(os==s)
+
+s=0
+for i,v in enumerate(arr):
+    vv = sorted(v, reverse=True)
+
+    ss=0
+    pp=-1
+    for g in range(12):
+        ss*=10
+        p = bop(vv,arr[i],pp,11-g)
+#        print(i,arr[i][p])
+        ss+=arr[i][p]
+        pp=p
+
+    s+=ss
+
+print("Answer 2:",s)
