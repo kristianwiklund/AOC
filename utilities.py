@@ -711,6 +711,26 @@ def checkanyaround(arr, x, y, fun, outofbounds=False):
 
     return v    
 
+# count all items around an item in an array that fulfill the lambda function
+def countallaround(arr, x, y, fun, outofbounds=False):
+    s = 0
+    s += checkpos(arr,x-1,y-1,fun, outofbounds=outofbounds)
+    s += checkpos(arr,x-1,y,fun, outofbounds=outofbounds)
+    s += checkpos(arr,x-1,y+1,fun, outofbounds=outofbounds)
+    s += checkpos(arr,x,y-1,fun, outofbounds=outofbounds)
+    s += checkpos(arr,x,y+1,fun, outofbounds=outofbounds)
+    s += checkpos(arr,x+1,y-1,fun, outofbounds=outofbounds)
+    s += checkpos(arr,x+1,y,fun, outofbounds=outofbounds)
+    s += checkpos(arr,x+1,y+1,fun, outofbounds=outofbounds)
+
+    return s
+
+___barr=[['.', '.', '@', '@', '.', '@', '@', '@', '@', '.'], ['@', '@', '@', '.', '@', '.', '@', '.', '@', '@'], ['@', '@', '@', '@', '@', '.', '@', '.', '@', '@'], ['@', '.', '@', '@', '@', '@', '.', '.', '@', '.'], ['@', '@', '.', '@', '@', '@', '@', '.', '@', '@'], ['.', '@', '@', '@', '@', '@', '@', '@', '.', '@'], ['.', '@', '.', '@', '.', '@', '.', '@', '@', '@'], ['@', '.', '@', '@', '@', '.', '@', '@', '@', '@'], ['.', '@', '@', '@', '@', '@', '@', '@', '@', '.'], ['@', '.', '@', '.', '@', '@', '@', '.', '@', '.']]
+
+assert(2==(countallaround(___barr,0,0,lambda x:x=="@",outofbounds=False)))
+assert(3==(countallaround(___barr,2,0,lambda x:x=="@",outofbounds=False)))
+
+
 
 ___arr=[['4', '6', '7', '', '', '1', '1', '4', '', ''], ['', '', '', '*', '', '', '', '', '', ''], ['', '', '3', '5', '', '', '6', '3', '3', ''], ['', '', '', '', '', '', '#', '', '', ''], ['6', '1', '7', '*', '', '', '', '', '', ''], ['', '', '', '', '', '+', '', '5', '8', ''], ['', '', '5', '9', '2', '', '', '', '', ''], ['', '', '', '', '', '', '7', '5', '5', ''], ['', '', '', '$', '', '*', '', '', '', ''], ['', '6', '6', '4', '', '5', '9', '8', '', '']]
 
