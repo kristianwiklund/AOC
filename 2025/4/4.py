@@ -22,9 +22,65 @@ c=0
 for y in range(len(arr)):
     for x in range(len(arr[y])):
         if arr[y][x]=='@' and countallaround(arr,x,y,lambda x:x=='@')<4:
-#            print(x,y)
             c+=1
-            barr[y][x]='x'
 
 print("part 1:", c)
+
+#---------
+
+def bop(arr):
+    c=0
+    for y in range(len(arr)):
+        
+        for x in range(len(arr[0])):
+            if checkpos(arr,x,y,lambda x:x=="."):
+                continue
+            
+            if countallaround(arr,x,y,lambda x:x=='@')<4:
+                c+=1
+                arr[y][x]="."
+
+        for x in range(len(arr[0])-1,0,-1):
+            if checkpos(arr,x,y,lambda x:x=="."):
+                continue
+            
+            if countallaround(arr,x,y,lambda x:x=='@')<4:
+                c+=1
+                arr[y][x]="."
+
+
+    for x in range(len(arr[0])):
+
+        for y in range(len(arr)):
+            if checkpos(arr,x,y,lambda x:x=="."):
+                continue
+            
+            if countallaround(arr,x,y,lambda x:x=='@')<4:
+                c+=1
+                arr[y][x]="."
+
+        for y in range(len(arr)-1,0,-1):
+            if checkpos(arr,x,y,lambda x:x=="."):
+                continue
+            
+            if countallaround(arr,x,y,lambda x:x=='@')<4:
+                c+=1
+                arr[y][x]="."
+
+                        
+    return c
+
+#pprint(arr)
+
+s=0
+while True:
+    c=bop(arr)
+    s+=c
+    if not c:
+        break
+print(s)
+#pprint(arr)
+                
+        
+
 
