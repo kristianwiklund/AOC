@@ -824,3 +824,64 @@ assert(__p==[(7, 6), (7, 5), (6, 5), (5, 5), (5, 4), (5, 3), (4, 3), (3, 3), (2,
 #print(__p)
 #printpath(__p,background=__arr)
 
+# merge two ranges. this merges
+# a) overlapping ranges
+# b) ranges that touch, e.g. a range (0,2) will touch a range (2,3) (being that the first stops at 1)
+def rangemerge(r1,r2):
+
+    # no overlap
+
+    try:
+        p=r1.stop
+    except:
+        raise ValueError("r1 is not a range:",r1)
+
+    try:
+        p=r2.stop
+    except:
+        raise ValueError("r2 is not a range:",r2)
+    
+    if r1.stop<r2.start or r1.start>r2.stop:
+        return [r1,r2]
+
+
+    # r1 is fully enclosed within r2
+    if r1.start>=r2.start and r1.stop<=r2.stop:
+#        print("d",r1,r2,r2)
+        return [r2]
+
+    # r2 is fully enclosed within r1
+    if r2.start>=r1.start and r2.stop<=r1.stop:
+#        print("e",r1,r2,r1)
+        return [r1]
+    
+    # end of r1 is touching the start of r2
+
+    if r1.stop >= r2.start and r1.start<=r2.start:
+        r3 = range(r1.start,r2.stop)
+#        print("b",r1,r2,r3)
+        return [r3]
+
+    # end of r2 is touching the start of r1
+
+    if r2.stop >= r1.start and r2.start<=r1.start:
+        r3 = range(r2.start,r1.stop)
+#        print("c",r1,r2,r3)
+        return [r3]
+
+    assert("unhandled merge in range merge lib function"==False)
+
+#    print("bop",r1,r2)
+    
+    
+
+# 
+assert(rangemerge(range(0,2),range(3,4))==[range(0,2),range(3,4)])
+assert(rangemerge(range(3,4),range(0,2))==[range(3,4),range(0,2)])
+assert(rangemerge(range(0,2),range(1,3))==[range(0,3)])
+assert(rangemerge(range(1,3),range(0,2))==[range(0,3)])
+
+assert(rangemerge(range(1,3),range(0,4))==[range(0,4)])
+assert(rangemerge(range(0,4),range(1,3))==[range(0,4)])
+
+#

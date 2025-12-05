@@ -3,11 +3,11 @@ sys.path.append("../..")
 from utilities import *
 #import networkx as nx
 #import matplotlib.pyplot as plt
-#from copy import deepcopy
+from copy import deepcopy
 from pprint import pprint
 #from sortedcontainers import SortedList
 #from sortedcontainers import SortedDict
-#from sortedcontainers import SortedSet
+from sortedcontainers import SortedSet
 #import numpy as np
 #import scipy
 #from functools import cache
@@ -34,6 +34,29 @@ with open("input","r") as fd:
         v.append(p)
 
 
-    print(len([x for x in v if x[1]>0]))
-    
+    print("part 1:", len([x for x in v if x[1]>0]))
+
+
+    def bolibompa(l):
+        
+        for i in range(len(l)-1):
+            for j in range(i+1,len(l)):
+
+                m = rangemerge(l[i],l[j])
+                
+                if len(m)==1:
+                    l.pop(j)
+                    l.pop(i)
+                    l+=m
+
+                    return True
+
+        return False
+
+
+    while(bolibompa(fr)):
+        pass;
+
+    print("part 2:",sum([len(x) for x in fr]))
+        
     
