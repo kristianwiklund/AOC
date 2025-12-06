@@ -26,3 +26,29 @@ for i,x in enumerate(o):
     s+=eval(k)
 
 print("part 1:",s)
+
+lines = readlines("input",strip=False)
+o = lines[-1].replace(" ","")[:-1]
+
+m=[]
+for i in range(len(lines[0])):
+    y=""
+    for j in range(len(lines[:-1])):
+        y+=lines[j][i]
+    m.append(y)
+
+v=[]
+a=[]
+for i in range(len(m)):
+    if m[i]==" "*len(lines[:-1]) or m[i]=="\n"*len(lines[:-1]):
+        v.append(a)
+        a=[]
+    else:
+        a.append(str(int(m[i])))
+    
+s=0
+for i,x in enumerate(o):
+    k=x.join(v[i])
+    s+=eval(k)
+
+print("part 2:",s)

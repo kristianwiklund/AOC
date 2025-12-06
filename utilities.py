@@ -11,6 +11,13 @@ import re
 import math
 import sys
 
+# from https://stackoverflow.com/questions/312443/how-do-i-split-a-list-into-equally-sized-chunks
+
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
+
 # transpose matrix. from python docs
 def transpose (matrix):
     return [[row[i] for row in matrix] for i in range(len(matrix[0]))]
@@ -329,9 +336,12 @@ def sortdictbykey(d):
 
 # read lines and remove end linefeed
 
-def readlines(fn):
+def readlines(fn,strip=True):
     with open(fn) as fd:
-        return [x.strip() for x in fd.readlines()]
+        if strip:
+            return [x.strip() for x in fd.readlines()]
+        else:
+            return [x for x in fd.readlines()]
 
 # reads a block of lines separated with empty lines from a file
 def readblock(fd,convert=lambda x:x,strip=True):
