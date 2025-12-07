@@ -11,6 +11,10 @@ import re
 import math
 import sys
 
+def createidenticalarray(arr,value=0):
+
+    return [[value for x in range(len(arr[0]))] for y in range(len(arr))]
+
 # from https://stackoverflow.com/questions/312443/how-do-i-split-a-list-into-equally-sized-chunks
 
 def chunks(lst, n):
