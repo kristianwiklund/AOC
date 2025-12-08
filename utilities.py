@@ -143,7 +143,10 @@ def flatten(matrix):
 
 # get the manhattan distance between two points
 def distance(x,y):
-    return abs(x[0]-y[0])+abs(x[1]-y[1])
+    if len(x)==2:
+        return abs(x[0]-y[0])+abs(x[1]-y[1])
+    else:
+        return abs(x[0]-y[0])+abs(x[1]-y[1])+abs(x[2]-y[2])
 
 # find one (default) or all (if flag) items in an array matching
 def findinarray(arr,what,all=False):
