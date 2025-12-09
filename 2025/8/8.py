@@ -17,7 +17,8 @@ arr = readarray("input",split=",",convert=lambda x:int(x))
 
 G=nx.Graph()
 
-sl = SortedList(key = lambda x:x[2])
+
+
 
 for x in range(len(arr)):
     G.add_node(x)
@@ -25,7 +26,8 @@ for x in range(len(arr)):
 def edistance(x,y):
 #    print(x,y)
     return math.sqrt((x[0]-y[0])**2+(x[1]-y[1])**2+(x[2]-y[2])**2)
-    
+
+sl = SortedList(key = lambda x:x[2])
 for x in range(len(arr)-1):
     for y in range(x+1,len(arr)):
         sl.add((x,y,edistance(arr[x],arr[y])))
