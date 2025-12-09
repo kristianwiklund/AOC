@@ -11,6 +11,8 @@ from pprint import pprint
 #import numpy as np
 #import scipy
 #from functools import cache
+#from shapely.geometry.polygon import Polygon
+#from shapely import contains
 
 arr = readarray("input.short",split="",convert=lambda x:x)
 lines = readlines("input.short")
