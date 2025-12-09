@@ -510,12 +510,13 @@ def printpath(p,nonum=True, background=None,bgin=None,end="",thex=None,highlight
         mx = len(background[0])
     else:
         mx = max([x for x,y in path])
-            
+
     if background:
         my = len(background)
     else:
         my = max([y for x,y in path])
 
+        
     l = len(path)
     l = 2+1 #hack
 
@@ -587,12 +588,12 @@ def printpath(p,nonum=True, background=None,bgin=None,end="",thex=None,highlight
             if (x,y) in path:
                 if nonum:
                     if (x,y) in syms:
-                        if highlight!=background[y][x]:
+                        if background and highlight!=background[y][x]:
                             print(Fore.RED+syms[(x,y)]+Fore.RESET,end="")
                         else:
                             print(Fore.BLUE+syms[(x,y)]+Fore.RESET,end="")
                     else:
-                        if highlight!=background[y][x]:
+                        if background and highlight!=background[y][x]:
                             print(Fore.RED+"#"+Fore.RESET,end="")
                         else:
                             print(Fore.BLUE+"#"+Fore.RESET,end="")                            
