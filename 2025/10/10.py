@@ -10,27 +10,31 @@ from pprint import pprint
 #from sortedcontainers import SortedSet
 #import numpy as np
 #import scipy
-#from functools import cache
+from functools import cache
 #from shapely.geometry.polygon import Polygon
 #from shapely import contains
 
 #arr = readarray("input.short",split="",convert=lambda x:x)
-lines = readlines("input.short")
+lines = readlines("input")
 
 def pl(l):
     x,y=l.split("]")
     y,z=y.split("{")
     #    print(x,y,z)
 
-    m = [list(x.replace("[","")),eval("["+y.lstrip().rstrip().replace(" ",",").replace("(","[").replace(")","]")+"]"),eval("["+z.strip().replace("}","]"))]
+    m = [list(x.replace("[","")),eval("("+y.lstrip().rstrip().replace(" ",",")+")"),eval("["+z.strip().replace("}","]"))]
+    #    m = [list(x.replace("[","")),eval("["+y.lstrip().rstrip().replace(" ",",").replace("(","[").replace(")","]")+"]"),eval("["+z.strip().replace("}","]"))]
     return m
     
 lines = [pl(x) for x in lines]
 #print(lines)
 
-
+@cache
 def flipper(button, lamps):
 
+    if isinstance(button,int):
+        button=[button]
+        
     flip = {"#":".", ".":"#"}
 
     bock=""
@@ -42,43 +46,42 @@ def flipper(button, lamps):
 
     return bock
 
-assert(flipper([],".....")==".....")
-assert(flipper([2],".....")=="..#..")
-assert(flipper([2],"..#..")==".....")
+assert(flipper((),".....")==".....")
+assert(flipper((2),".....")=="..#..")
+assert(flipper((2),"..#..")==".....")
 
 
-
-def clickzor(li,bu, m,de=0, seen=None,vom=100000):
+@cache
+def clickzor(li,bu, m0,m1,de=0, seen=None,vom=100000,clickety=""):
 
     if de>=vom:
         return False
     
     # get which bits are manipulated with d
-    d = m[1][bu]
+    d = m1[bu]
 
     # flip the bits
     li = flipper(d,li)
 
     # if already seen, no point in continuing
-    if "".join(li) in seen:
+    if li in seen:
         return False
 
     # add to seen list
-    seen=deepcopy(seen)
-    seen.append("".join(li))
-
+    seen+=li
+    
     zor=[]
     # check if we have a match
-    if "".join(li)=="".join(m[0]):
-        return de,seen
+    if li==m0:
+        return de,clickety
     
-    for i in range(len(m[1])):
+    for i in range(len(m1)):
         # pressing the same button will flip it back, don't go there
         if i==bu:
             continue
 
         # perss button i. 
-        dum=clickzor(li,i,m,de+1,seen,vom)
+        dum=clickzor(li,i,m0,m1,de+1,seen,vom,clickety+","+str(i))
         if dum:
             ge,zork = dum
             if ge and ge<vom:
@@ -88,8 +91,14 @@ def clickzor(li,bu, m,de=0, seen=None,vom=100000):
     return vom,zor
 
 # run through the problems, flip them off...
+s=0
 for m in lines:
     print("---",m)
-    for i in range(len(m[1])):
-        print(i, clickzor(list("."*len(m[0])), i, m,de=1,seen=["."*len(m[0])]))
+    i = "."*len(m[0])
+#    print("m0m1=",m[0],m[1])
+    r = sorted(map(lambda x:clickzor(i, x, "".join(m[0]),m[1], de=1, seen=i,clickety=str(x))[0], range(len(m[1]))))
+    s+=r[0]
+
+
+print("part 1:",s)
 
