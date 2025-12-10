@@ -15,7 +15,7 @@ from functools import cache
 #from shapely import contains
 
 #arr = readarray("input.short",split="",convert=lambda x:x)
-lines = readlines("input")
+lines = readlines("input.short")
 
 def pl(l):
     x,y=l.split("]")
@@ -25,9 +25,7 @@ def pl(l):
     m = [list(x.replace("[","")),eval("("+y.lstrip().rstrip().replace(" ",",")+")"),eval("["+z.strip().replace("}","]"))]
     #    m = [list(x.replace("[","")),eval("["+y.lstrip().rstrip().replace(" ",",").replace("(","[").replace(")","]")+"]"),eval("["+z.strip().replace("}","]"))]
     return m
-    
-lines = [pl(x) for x in lines]
-#print(lines)
+
 
 @cache
 def flipper(button, lamps):
@@ -49,6 +47,31 @@ def flipper(button, lamps):
 assert(flipper((),".....")==".....")
 assert(flipper((2),".....")=="..#..")
 assert(flipper((2),"..#..")==".....")
+
+def pb(l):
+
+    a,b,c = pl(l)
+    print(b,c)
+
+    ap=eval("0b"+"".join(a).replace(".","0").replace("#","1"))
+
+    for i in b:
+        #        print(i)
+        v=flipper(i,"."*len(a))
+#        print(v)
+        bp=eval("0b"+"".join(v).replace(".","0").replace("#","1"))
+        print(bp)
+
+
+
+#lines = [pl(x) for x in lines]
+lines = [pb(x) for x in lines]
+#print(lines)
+
+sys.exit()
+
+
+
 
 
 @cache
@@ -73,6 +96,7 @@ def clickzor(li,bu, m0,m1,de=0, seen=None,vom=100000,clickety=""):
     zor=[]
     # check if we have a match
     if li==m0:
+#        print(clickety)
         return de,clickety
     
     for i in range(len(m1)):
