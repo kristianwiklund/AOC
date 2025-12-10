@@ -78,16 +78,9 @@ def clickzor(lamps, button, target, buttons, depth=0,  vom=100):
         return False
 
     lamps = lamps ^ buttons[button]
-#    if "("+str(lamps)+")" in seen:
-#        return False
-
- #   print(clickety)
 
     if lamps==target:
         return depth
-    
-  #  seen+="("+str(lamps)+")"
-    
 
     for i in range(len(buttons)):
         if i==button:
