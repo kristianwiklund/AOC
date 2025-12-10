@@ -15,7 +15,7 @@ from functools import cache
 #from shapely import contains
 
 #arr = readarray("input.short",split="",convert=lambda x:x)
-lines = readlines("input.short")
+lines = readlines("input")
 
 def pl(l):
     x,y=l.split("]")
@@ -55,13 +55,16 @@ def pb(l):
 
     ap=eval("0b"+"".join(a).replace(".","0").replace("#","1"))
 
+    but=[]
+    b = sorted(b,key=lambda x:len(str(x)))
     for i in b:
         #        print(i)
         v=flipper(i,"."*len(a))
 #        print(v)
         bp=eval("0b"+"".join(v).replace(".","0").replace("#","1"))
-        print(bp)
-
+        but.append(bp)
+        
+    return (ap,but,c)
 
 
 #lines = [pl(x) for x in lines]
@@ -69,12 +72,39 @@ lines = [pb(x) for x in lines]
 #print(lines)
 
 @cache
-def clickzor(lamps, button, target, buttons, depth=0, seen="", vom=10000000):
+def clickzor(lamps, button, target, buttons, depth=0,  vom=100):
 
-    if depth>vom:
+    if depth>=vom:
         return False
 
     lamps = lamps ^ buttons[button]
+#    if "("+str(lamps)+")" in seen:
+#        return False
+
+ #   print(clickety)
+
+    if lamps==target:
+        return depth
+    
+  #  seen+="("+str(lamps)+")"
+    
+
+    for i in range(len(buttons)):
+        if i==button:
+            continue
+
+        res = clickzor(lamps, i, target, buttons, depth+1, vom)
+        if res and res<vom:
+            vom=res
+
+    return vom
+
+# run through the problems, flip them off...
+s=0
+for m in lines:
+    print("---",m)
+    r = sorted(map(lambda x:clickzor(0, x, m[0],tuple(m[1]), depth=1), range(len(m[1]))))
+    s+=r[0]
 
 print("part 1:",s)
 
