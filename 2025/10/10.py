@@ -68,61 +68,13 @@ def pb(l):
 lines = [pb(x) for x in lines]
 #print(lines)
 
-sys.exit()
-
-
-
-
-
 @cache
-def clickzor(li,bu, m0,m1,de=0, seen=None,vom=100000,clickety=""):
+def clickzor(lamps, button, target, buttons, depth=0, seen="", vom=10000000):
 
-    if de>=vom:
-        return False
-    
-    # get which bits are manipulated with d
-    d = m1[bu]
-
-    # flip the bits
-    li = flipper(d,li)
-
-    # if already seen, no point in continuing
-    if li in seen:
+    if depth>vom:
         return False
 
-    # add to seen list
-    seen+=li
-    
-    zor=[]
-    # check if we have a match
-    if li==m0:
-#        print(clickety)
-        return de,clickety
-    
-    for i in range(len(m1)):
-        # pressing the same button will flip it back, don't go there
-        if i==bu:
-            continue
-
-        # perss button i. 
-        dum=clickzor(li,i,m0,m1,de+1,seen,vom,clickety+","+str(i))
-        if dum:
-            ge,zork = dum
-            if ge and ge<vom:
-                vom=ge
-                zor=zork
-            
-    return vom,zor
-
-# run through the problems, flip them off...
-s=0
-for m in lines:
-    print("---",m)
-    i = "."*len(m[0])
-#    print("m0m1=",m[0],m[1])
-    r = sorted(map(lambda x:clickzor(i, x, "".join(m[0]),m[1], de=1, seen=i,clickety=str(x))[0], range(len(m[1]))))
-    s+=r[0]
-
+    lamps = lamps ^ buttons[button]
 
 print("part 1:",s)
 
