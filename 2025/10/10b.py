@@ -51,15 +51,17 @@ lines=[pl(x) for x in lines]
 
 #print(lines[0])
 
-# idea: now combine the button presses in a way that integer-divides cleanly with the target
-# meaning that we need to start by factorizing the target
+# this is a multi-dimensional knapsack problem
+# Here, the weight of knapsack item i is given by a D-dimensional vector (the buttons)
+# and the knapsack has a D-dimensional capacity vector
 
 bl = lines[0][1]
 targ = lines[0][2]
 
 #print(bl)
 
-tf = [sfactors(x) for x in targ]
+
 print(targ)
-pprint(tf)
 pprint(bl)
+
+
