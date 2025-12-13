@@ -50,7 +50,7 @@ def fliptofit(board, gift, x, y):
     t = np.array(slice(board,x-1,y-1,x+1,y+1))
     g = np.array(gift)
 
-    print(t,g)
+#    print(t,g)
     
     if amatch(t,g):
         print("0G")
@@ -74,14 +74,15 @@ def fliptofit(board, gift, x, y):
 # insert an image in the board
 def pdraw(board, gift, x, y):
 
+    print("drawing",gift,"in",board)
     for x1 in range(3):
         for y1 in range(3):
-            print("==================")
-            print(x1,y1,gift[y][x])
             if gift[y1][x1]=="#":
-                print("--",board[y-1+y1][x-1+x1])
+                print(gift[y1][x1])
                 board[y-1+y1][x-1+x1]="#"
 
+    pprint(board)
+    print("----------")
     
 
 # try to fit one gift into one region, optimally
@@ -105,7 +106,7 @@ def trypiece(board, gift):
                 cnt[x,y] = c
 
     cnt=dict(sorted(cnt.items(), key=lambda item: item[1]))
-    print(cnt)
+#    print(cnt)
 
     # c is the list of locations that at least have a theoretical chance to place the boxes at
     # now check if it really can be placed there. 
@@ -116,9 +117,6 @@ def trypiece(board, gift):
         if isinstance(m, np.ndarray):
             pdraw(board, m, x, y)
             return m
-        else:
-            print("no match",x,y)
-            print(m)
             
     return False
         
@@ -131,14 +129,33 @@ def fit(region, gifts):
 
     box = ints(t[0])
     reqs = ints(t[1])
-
+    q = list()
+    
     print(box, reqs)
 
-    board = [list("."*box[0])]*box[1]
-    print(board)
-    trypiece(board, gifts[0])
+    
+    board = [list("."*box[0]) for x in range(box[1])]
 
-    pprint(board)
+    for i,req in enumerate(reqs):
+        if req:
+            q+=[gifts[i]]*req
+            
+    print(q)
+    print(board)
+    c=0
+    for i,g in enumerate(q):
+        m = trypiece(board,g)
+        if not isinstance(m, np.ndarray):
+            print("unable to place gift #",i)
+            pprint(board)
+            pprint(g)
+            pprint(m)
+            break
+        else:
+            c+=1
+
+    print(c,sum(reqs)-c)
+    
 
 fit(box[0], gifts)
         
