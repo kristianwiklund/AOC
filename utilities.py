@@ -11,6 +11,14 @@ import re
 import math
 import sys
 
+# cut out the submatrix between x1y1-x2y2 (inclusive)
+def slice(arr,x1,y1,x2,y2):
+
+    return [t[x1:x2+1] for t in arr[y1:y2+1]]
+
+
+
+
 def createidenticalarray(arr,value=0):
 
     return [[value for x in range(len(arr[0]))] for y in range(len(arr))]
@@ -694,10 +702,13 @@ def checkpos(arr, x, y, fun, outofbounds=False):
 
 # north, east, south, west
 dirs = {0:(0,-1),1:(1,0),2:(0,1),3:(-1,0)}
-
-def checkallpos(arr, x, y, fun, outofbounds=False):
+diagdirs = {0:(-1,-1),1:(-1,1),2:(1,-1),3:(1,1)}
+def checkallpos(arr, x, y, fun, outofbounds=False, diagonals=False):
 
     v= [checkpos(arr, x+dirs[i][0], y+dirs[i][1], fun, outofbounds) for i in range(4)]
+
+    if diagonals:
+        v+=[checkpos(arr, x+diagdirs[i][0], y+diagdirs[i][1], fun, outofbounds) for i in range(4)]
     #    print("cap",x,y,v)
     return v
         

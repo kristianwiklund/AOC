@@ -18,7 +18,7 @@ import itertools
 #from shapely import contains
 
 #arr = readarray("input.short",split="",convert=lambda x:x)
-lines = readlines("input")
+lines = readlines("input.short.3")
 
 
 def tf(button,ln):
@@ -111,7 +111,7 @@ def pluck(remains, button, bl, clicks,ack=None):
     # then run a descent for all options of clicks from 1 to min(vd)
 
     kossan=None
-    for i in range(min(vd),max(0,min(vd)-2),-1):
+    for i in range(min(vd),max(1,min(vd)-1),-1):
 #        print(ack,"clacking",i)
         kalven = clack(vr, vp, clicks, i, ack)
         if kalven and (not kossan or kalven<kossan):
