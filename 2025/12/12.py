@@ -3,7 +3,7 @@ sys.path.append("../..")
 from utilities import *
 #import networkx as nx
 #import matplotlib.pyplot as plt
-#from copy import deepcopy
+from copy import deepcopy
 from pprint import pprint
 #from sortedcontainers import SortedList
 from sortedcontainers import SortedDict
@@ -16,6 +16,7 @@ import numpy as np
 
 #arr = readarray("input.short",split="",convert=lambda x:x)
 #lines = readlines("input.short")
+import itertools
 
 gifts = []
 
@@ -50,39 +51,41 @@ def fliptofit(board, gift, x, y):
     t = np.array(slice(board,x-1,y-1,x+1,y+1))
     g = np.array(gift)
 
-#    print(t,g)
-    
-    if amatch(t,g):
-        print("0G")
-        return g
+    bobb=[g]
+    for i in range(1,4):
+        d = np.rot90(g,i)
+        bobb.append(d)
 
-    np.rot90(g)
-    if amatch(t,g):
-        return g
+    g = np.flip(g)
+    for i in range(4):
+        d = np.rot90(g,i)
+        bobb.append(d)
 
-    np.rot90(g)
-    if amatch(t,g):
-        return g
+    bobb = ["".join(flatten(x)) for x in bobb]
+    bobb = set(bobb)
+    bobb = [list(itertools.batched(x,3)) for x in bobb]
 
-    np.rot90(g)
-    if amatch(t,g):
-        return g
+    babb = [amatch(t,x) for x in bobb]
+#    print(babb)
 
-    return None
+    if not sum(babb):
+        return None
+    else:
+        return (bobb,babb)
     
 
 # insert an image in the board
 def pdraw(board, gift, x, y):
 
-    print("drawing",gift,"in",board)
+#    print("drawing",gift,"in",board)
     for x1 in range(3):
         for y1 in range(3):
             if gift[y1][x1]=="#":
-                print(gift[y1][x1])
+#                print(gift[y1][x1])
                 board[y-1+y1][x-1+x1]="#"
 
-    pprint(board)
-    print("----------")
+#    pprint(board)
+#    print("----------")
     
 
 # try to fit one gift into one region, optimally
@@ -111,14 +114,13 @@ def trypiece(board, gift):
     # c is the list of locations that at least have a theoretical chance to place the boxes at
     # now check if it really can be placed there. 
 
+    borkum={}
+    
     for x,y in cnt:
-
         m = fliptofit(board, gift, x, y)
-        if isinstance(m, np.ndarray):
-            pdraw(board, m, x, y)
-            return m
+        borkum[x,y] = m
             
-    return False
+    return borkum
         
     
     
@@ -131,7 +133,7 @@ def fit(region, gifts):
     reqs = ints(t[1])
     q = list()
     
-    print(box, reqs)
+#    print(box, reqs)
 
     
     board = [list("."*box[0]) for x in range(box[1])]
@@ -140,22 +142,24 @@ def fit(region, gifts):
         if req:
             q+=[gifts[i]]*req
             
-    print(q)
-    print(board)
+#    print(q)
+#    print(board)
     c=0
     for i,g in enumerate(q):
         m = trypiece(board,g)
-        if not isinstance(m, np.ndarray):
-            print("unable to place gift #",i)
-            pprint(board)
-            pprint(g)
-            pprint(m)
-            break
-        else:
-            c+=1
 
-    print(c,sum(reqs)-c)
-    
+        # m is a dict
+        # if it is of zero length, we haven't found a single spot to put it
+
+        if not len(m):
+            print("Failed to place piece",i)
+            continue
+#        print(m)
+        for key in m:
+            bobb,babb=m[key]
+            x,y=key
+            
+            pdraw(board, 
 
 fit(box[0], gifts)
         
