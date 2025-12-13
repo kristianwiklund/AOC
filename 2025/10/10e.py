@@ -19,7 +19,7 @@ import itertools
 #from shapely import contains
 
 #arr = readarray("input.shortest",split="",convert=lambda x:x)
-lines = readlines("input.short.3")
+lines = readlines("input.short")
 
 def tf(button,ln):
 
@@ -46,56 +46,12 @@ def pl(l):
 
 lines=[pl(x) for x in lines]
 
-a = np.array(lines[0][1])
-#print(a)
+a = np.array(lines[1][1])
+pprint(a)
 a = np.transpose(a)
-b = np.array(lines[0][2])
-
-#print(a,b)
-
-e = []
-from sympy import solve, solve_linear, solve_linear_system, Symbol, reduce_inequalities
-
-sy=[]
-for i,x in enumerate(a[0]):
-    sy.append(Symbol("B"+str(i)))
-#    e.append(sy[i]>0)
-#print(sy)
+b = np.array(lines[1][2])
 
 for i,v in enumerate(a):
-    s=[]
-    for x,w in enumerate(v):
-        if w:
-            s.append("sy["+str(x)+"]")
-    
-    e.append(eval("+".join(s)+"-"+str(b[i])))
-
-kossan=None
-
-bollhav=[]
-
-for i in range(len(b)-1,len(sy)+1):
-    bollhav.append(itertools.combinations(sy,i))
-
-for topp in bollhav:
-    for i,s in enumerate(topp):
-        print(s)
-        try:
-            ap = solve(e,s)
-            if len(ap):
-                x = sum([1 for x in ap if ap[x]>=0])
-                if x==len(ap):
-                    v = sum([ap[x] for x in ap])
-                    if not kossan or v<kossan:
-                        kossan = v
-                        print("wawawoom",v,ap)
-        except:
-            pass
-
-print(kossan)
-
-#s = solve(e,sy)
-#print(s)
-
+    print (v,"=",b[i])
 
 
