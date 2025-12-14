@@ -81,9 +81,10 @@ def murkla(knappar, knapp, target, summa, tryck, kossa=False):
         if kalv:
             if not kossa:
                 kossa=kalv
-            else:
-                kossa=min(kossa,kalv)
-                print("muu:",kossa)
+            elif kalv<kossa:
+                print("muu:",kossa,kalv)
+                kossa=kalv
+
 
     return kossa
 
