@@ -20,7 +20,7 @@ import itertools
 #from shapely import contains
 
 #arr = readarray("input.shortest",split="",convert=lambda x:x)
-lines = readlines("input")
+lines = readlines("input.short")
 
 def tf(button,ln):
 
