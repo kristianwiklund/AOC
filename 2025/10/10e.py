@@ -49,34 +49,33 @@ lines=[pl(x) for x in lines]
 def murkla(knappar, knapp, target, summa, tryck, kossa=False):
     global a
 
-    if kossa and tryck>kossa:
-        return False
-    
-    if knapp>=len(knappar):
-        return False
 
     if (summa>target).any():
         return False
-
     
     if (summa==target).all():
+        print("WIN")
         return tryck
 
     if knappar==[]:
         return False
-
-
-
-    kossa=None
     
+    if kossa and tryck>kossa:
+        return False
+
+#    print(" "*knapp,target,summa)
+    
+    if knapp>=len(knappar):
+        return False
+
+
+
+
     for i in range(knappar[knapp]+1):
-        if not tryck:
-            print(i)
         nysumma = copy(summa)
-        for n in range(len(nysumma)):
-            nysumma[n]+=i*a[n][knapp]
+        nysumma = [nysumma[n]+i*a[n][knapp] for n in range(len(a))]
         if (nysumma>target).any():
-            continue
+            break
             
         kalv = murkla(knappar,knapp+1, target, nysumma, tryck+i, kossa)
         if kalv:
@@ -122,10 +121,12 @@ for l in lines:
     print("calculating knappnytt...")
     knappnytt,a,b = karate(l)
     print (knappnytt, a, b)
-    sys.exit()
-    print("searching for svamp...")
-    x = murkla(knappnytt, 0, b, [0]*len(b), 0)
-    s+=x
-    print(x)
 
+    print("searching for svamp...")
+
+    x = murkla(knappnytt, 0, b, [0]*len(b), 0)
+    if x:
+        s+=x
+
+print("-------------")
 print(s)
