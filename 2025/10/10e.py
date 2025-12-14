@@ -20,7 +20,7 @@ import itertools
 #from shapely import contains
 
 #arr = readarray("input.shortest",split="",convert=lambda x:x)
-lines = readlines("input")
+lines = readlines("input.short")
 
 def tf(button,ln):
 
@@ -57,8 +57,8 @@ def murkla(knappar, knapp, target, summa, tryck, kossa=False):
         print("WIN")
         return tryck
 
-    if knappar==[]:
-        return False
+#    if knappar==[]:
+#        return False
     
     if kossa and tryck>kossa:
         return False
