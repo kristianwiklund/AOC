@@ -20,7 +20,7 @@ import itertools
 #from shapely import contains
 
 #arr = readarray("input.shortest",split="",convert=lambda x:x)
-lines = readlines("input.short")
+lines = readlines("input")
 
 def tf(button,ln):
 
@@ -46,8 +46,9 @@ def pl(l):
 
 lines=[pl(x) for x in lines]
 
-def murkla(knappar, knapp, target, summa, tryck, kossa=False):
+def murkla(knappar, knapp, target, summa, tryck):
     global a
+    global kossa
 
 
     if (summa>target).any():
@@ -77,7 +78,7 @@ def murkla(knappar, knapp, target, summa, tryck, kossa=False):
         if (nysumma>target).any():
             break
             
-        kalv = murkla(knappar,knapp+1, target, nysumma, tryck+i, kossa)
+        kalv = murkla(knappar,knapp+1, target, nysumma, tryck+i)
         if kalv:
             if not kossa:
                 kossa=kalv
@@ -125,6 +126,7 @@ for l in lines:
 
     print("searching for svamp...")
 
+    kossa=False
     x = murkla(knappnytt, 0, b, [0]*len(b), 0)
     if x:
         s+=x
