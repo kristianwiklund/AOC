@@ -20,7 +20,7 @@ import itertools
 #from shapely import contains
 
 #arr = readarray("input.shortest",split="",convert=lambda x:x)
-lines = readlines("input.short")
+lines = readlines("input")
 
 def tf(button,ln):
 
@@ -50,7 +50,9 @@ def murkla(knappar, knapp, target, summa, tryck):
     global a
     global kossa
 
-
+    if kossa and tryck>kossa:
+        return False
+    
     if (summa>target).any():
         return False
     
@@ -61,20 +63,18 @@ def murkla(knappar, knapp, target, summa, tryck):
 #    if knappar==[]:
 #        return False
     
-    if kossa and tryck>kossa:
-        return False
+
 
 #    print(" "*knapp,target,summa)
     
     if knapp>=len(knappar):
         return False
 
-
-
-
+    ttt = [a[n][knapp] for n in range(len(a))]
+    
     for i in range(knappar[knapp]+1):
-        nysumma = copy(summa)
-        nysumma = [nysumma[n]+i*a[n][knapp] for n in range(len(a))]
+#        nysumma = copy(summa)
+        nysumma = [summa[n]+i*ttt[n] for n in range(len(a))]
         if (nysumma>target).any():
             break
             
@@ -85,8 +85,7 @@ def murkla(knappar, knapp, target, summa, tryck):
             elif kalv<kossa:
                 print("muu:",kossa,kalv)
                 kossa=kalv
-
-
+                
     return kossa
 
 #print(murkla(knappnytt, 0, b, [0]*len(b),0))
@@ -121,8 +120,10 @@ for l in lines:
     print(ttt,"...",end="")
     ttt+=1
     print("calculating knappnytt...")
+    print()
     knappnytt,a,b = karate(l)
-    print (knappnytt, a, b)
+    print()
+    print (knappnytt, "\n",a,"\n", b)
 
     print("searching for svamp...")
 
@@ -130,6 +131,7 @@ for l in lines:
     x = murkla(knappnytt, 0, b, [0]*len(b), 0)
     if x:
         s+=x
+    print("svamp",s)
 
 print("-------------")
 print(s)
