@@ -29,7 +29,7 @@ with open("input.short") as fd:
         if len(b)>1 and ("#" in b[1] or "." in b[1]):
             gifts.append([list(x) for x in b[1:]])
         else:
-            box = b
+            boxen = b
 
 #print(gifts,box)
 
@@ -147,62 +147,6 @@ def trypiece(board, gift):
     return borkum
         
     
-
-# q is a list of pieces to try
-count=1
-
-# def doit(board, q, depth=1):
-#     global count
-    
-#     if not len(q):
-#         return True
-
-#     #    count+=1
-# #    print(" "*depth,"ava",count, len(q))
-
-    
-#     for i,g in enumerate(q):
-
-#         m = trypiece(board,g)
-# #        print(" "*depth,"vava",count, len(m))
-        
-#         # m is a dict
-#         # if it is of zero length, we haven't found a single spot to put it
-
-#         if not m or not len(m):
-#             return False
-        
-#         for key in m:
-#             if not m[key]:
-#                 continue
-            
-#             bobb=m[key]
-#             x,y=key
-            
-#             # bobb contains all possible flips and rotations of the piece
-#             # babb contains which of these fits in the location
-#             # x,y is where we want to drop it
-
-#             #print("***",key,"-",bobb)
-#             for xb in bobb:
-#                 pdraw(board, xb, x, y,count)
-#                 count+=1
-#                 res = doit(board, q[1:], depth+1)
-#                 if res:
-#                     return True
-#                 perase(board, xb,x,y)
-#                 count-=1
-#             return False
-            
-    
-# res=[]
-# #for x in gifts:
-# #    print(len(makeallvariants(x[1:])))
-# print("-----------")
-
-# # pairwise fitting of gifts - can we squeeze gift x into the space of gift y?
-
-
 def pwg(gift1, gift2):
 
     # start by creating all variants of both gifts
@@ -219,27 +163,112 @@ def pwg(gift1, gift2):
         ia = toint(a)
         for b in g2:
             ib = toint(b)
-            box = np.full((5,5),".")
-            pdraw(box,a,1,1)
+            box = np.full((7,7),".")
+            pdraw(box,a,3,3)
             m = trypiece(box, b)
             #            for x,y in m:
             #                pdraw(box,b,x,y,1)
             #                pprint(box)
             #                perase(box,b,x,y)
-
             if len(m):
                 for x,y in m:
                     if not (ia,ib) in possiburu:
                         possiburu[(ia,ib)]=[]
-                    possiburu[(ia,ib)].append((x-1,y-1))
+                    possiburu[(ia,ib)].append((x-3,y-3))
+#                    if (x,y)==(1,1):
+#                        pdraw(box, b, x, y, 2)
+#                        pprint(box)
+#                        perase(box,b,x,y)
 
     return possiburu
 
-kombu={}
-            
-for i in range(len(gifts)):
-    for j in range(len(gifts)):        
-        kombu|=pwg(gifts[i],gifts[j])
+def mam(gifts):
+    kombu={}
+    bungo={}
 
-pprint(kombu)
+    for i in range(len(gifts)):
+        bungo[i]=[toint("".join(flatten(x))) for x in makeallvariants(gifts[i])]
+        for j in range(len(gifts)):        
+            kombu|=pwg(gifts[i],gifts[j])
+
+    return (kombu, bungo)
+
+kombu,bungo=mam(gifts)
+        
+#for x in kombu:
+#    print("kombu=",kombu)
+
+#print("bungo=",bungo)
+
+# now try to pack the packages
+
+# box - box to put things in
+# gift - an item to place
+
+def canplace(box, kombu, g, x, y):
+    if box[y][x]!=0:
+        return False
+
+    dog={}
+    for xx in range(-2,3):
+        for yy in range(-2, 3):
+            if (xx,yy)!=(0,0):
+                print(xx,yy)
+                # collect all positions around the proposed placement that DO NOT contain an empty space.
+                if checkpos(box,xx+x,yy+y, fun=lambda x:x!=0):
+                    dog[xx,yy]=box[yy+y][xx+x]
+
+                # vacuously true
+                if not len(dog):
+                    return True
+
+    print(dog)
+
+def placeone(box, kombu, g):
+
+    print(g)
+    for x in range(len(box[0])):
+        for y in range(len(box)):
+#            print(x,y)
+
+            t = canplace(box, kombu, g, x, y)
+            if t:
+                box[y][x]=g
+                print("-")
+                pprint(box)
+                print("-")
+                return
+    
+
+def fillerup(box, kombu, bungo):
+    box = box.split(" ")
+    print(box)
+    x,y=ints(box[0])
+
+    tree = np.full((x-2,y-2),0)
+    t = box[1:]
+
+    targ = []
+    
+    for i,v in enumerate(t):
+        v=int(v)
+        if not v:
+            continue
+        
+        print(i,v,bungo[i])
+        for x in range(v):
+            targ.append(bungo[i])
+
+    print(targ)
+
+    print(bungo)
+    placeone(tree, kombu, bungo[0][0])
+    
+    
+#pprint(kombu)
+fillerup(boxen[0], kombu, bungo)
+
+
+    
+
 
