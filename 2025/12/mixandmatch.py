@@ -206,23 +206,38 @@ kombu,bungo=mam(gifts)
 # gift - an item to place
 
 def canplace(box, kombu, g, x, y):
+
     if box[y][x]!=0:
+        print("byebye")
         return False
 
     dog={}
     for xx in range(-2,3):
         for yy in range(-2, 3):
             if (xx,yy)!=(0,0):
-                print(xx,yy)
+                print("tick",xx+x,yy+y)
                 # collect all positions around the proposed placement that DO NOT contain an empty space.
                 if checkpos(box,xx+x,yy+y, fun=lambda x:x!=0):
                     dog[xx,yy]=box[yy+y][xx+x]
 
-                # vacuously true
-                if not len(dog):
-                    return True
+    # vacuously true
+    if not len(dog):
+        print("woof")
+        return True
 
-    print(dog)
+    # we are constrained by what is around the position
+    # if all the parts are compatible, we're good
+
+    for t in dog:
+        print(dog[t])
+        xxx,yyy=t
+        print(xxx-x,yyy-y)
+        print ("kombu",g,dog[t],kombu[g,dog[t]])
+        if not (xxx-x,yyy-y) in kombu[g,dog[t]]:
+            return False
+
+    return True
+#    print(dog)
 
 def placeone(box, kombu, g):
 
@@ -230,7 +245,7 @@ def placeone(box, kombu, g):
     for x in range(len(box[0])):
         for y in range(len(box)):
 #            print(x,y)
-
+            
             t = canplace(box, kombu, g, x, y)
             if t:
                 box[y][x]=g
@@ -263,6 +278,7 @@ def fillerup(box, kombu, bungo):
 
     print(bungo)
     placeone(tree, kombu, bungo[0][0])
+    placeone(tree, kombu, bungo[1][0])
     
     
 #pprint(kombu)
